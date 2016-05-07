@@ -45,6 +45,14 @@ enum {
     INPUT_PULLUP = 2U
 };
 
+void init(void);
+
+void disablePeripheralsClocks(void);
+void enablePeripheralsClocks(void);
+
+void disableDigitalInputsOfAnalogPins(void);
+void enableDigitalInputsOfAnalogPins(void);
+
 void pinMode(byte pin, byte mode);
 void digitalWrite(byte pin, byte value);
 byte digitalRead(byte pin);
