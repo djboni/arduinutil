@@ -22,8 +22,8 @@ limitations under the License.
 
 #include "Arduinutil.h"
 
-#define SET_BITS(reg, bits, cast)   do{reg = (cast)( (reg) | (bits) );   }while(0)
-#define CLEAR_BITS(reg, bits, cast) do{reg = (cast)( (reg) & (~(bits)) );}while(0)
+#define SET_BITS(reg, bits, cast)   do{reg = (cast)( (reg) | (bits) );   }while(0U)
+#define CLEAR_BITS(reg, bits, cast) do{reg = (cast)( (reg) & (~(bits)) );}while(0U)
 
 
 
@@ -35,84 +35,84 @@ static volatile byte *conv_io_to_port(byte io)
 {
     switch(io)
     {
-        case 0:    return &PORTE;
-        case 1:    return &PORTE;
-        case 2:    return &PORTE;
-        case 3:    return &PORTE;
-        case 4:    return &PORTG;
-        case 5:    return &PORTE;
-        case 6:    return &PORTH;
-        case 7:    return &PORTH;
-        case 8:    return &PORTH;
-        case 9:    return &PORTH;
-        case 10:   return &PORTB;
-        case 11:   return &PORTB;
-        case 12:   return &PORTB;
-        case 13:   return &PORTB;
+        case 0U:    return &PORTE;
+        case 1U:    return &PORTE;
+        case 2U:    return &PORTE;
+        case 3U:    return &PORTE;
+        case 4U:    return &PORTG;
+        case 5U:    return &PORTE;
+        case 6U:    return &PORTH;
+        case 7U:    return &PORTH;
+        case 8U:    return &PORTH;
+        case 9U:    return &PORTH;
+        case 10U:   return &PORTB;
+        case 11U:   return &PORTB;
+        case 12U:   return &PORTB;
+        case 13U:   return &PORTB;
 
-        case 14:   return &PORTJ;
-        case 15:   return &PORTJ;
-        case 16:   return &PORTH;
-        case 17:   return &PORTH;
-        case 18:   return &PORTD;
-        case 19:   return &PORTD;
-        case 20:   return &PORTD;
-        case 21:   return &PORTD;
+        case 14U:   return &PORTJ;
+        case 15U:   return &PORTJ;
+        case 16U:   return &PORTH;
+        case 17U:   return &PORTH;
+        case 18U:   return &PORTD;
+        case 19U:   return &PORTD;
+        case 20U:   return &PORTD;
+        case 21U:   return &PORTD;
 
-        case 22:   return &PORTA;
-        case 23:   return &PORTA;
-        case 24:   return &PORTA;
-        case 25:   return &PORTA;
-        case 26:   return &PORTA;
-        case 27:   return &PORTA;
-        case 28:   return &PORTA;
-        case 29:   return &PORTA;
-        case 30:   return &PORTC;
-        case 31:   return &PORTC;
-        case 32:   return &PORTC;
-        case 33:   return &PORTC;
-        case 34:   return &PORTC;
-        case 35:   return &PORTC;
-        case 36:   return &PORTC;
-        case 37:   return &PORTC;
+        case 22U:   return &PORTA;
+        case 23U:   return &PORTA;
+        case 24U:   return &PORTA;
+        case 25U:   return &PORTA;
+        case 26U:   return &PORTA;
+        case 27U:   return &PORTA;
+        case 28U:   return &PORTA;
+        case 29U:   return &PORTA;
+        case 30U:   return &PORTC;
+        case 31U:   return &PORTC;
+        case 32U:   return &PORTC;
+        case 33U:   return &PORTC;
+        case 34U:   return &PORTC;
+        case 35U:   return &PORTC;
+        case 36U:   return &PORTC;
+        case 37U:   return &PORTC;
 
-        case 38:   return &PORTD;
-        case 39:   return &PORTG;
-        case 40:   return &PORTG;
-        case 41:   return &PORTG;
-        case 42:   return &PORTL;
-        case 43:   return &PORTL;
-        case 44:   return &PORTL;
-        case 45:   return &PORTL;
-        case 46:   return &PORTL;
-        case 47:   return &PORTL;
-        case 48:   return &PORTL;
-        case 49:   return &PORTL;
+        case 38U:   return &PORTD;
+        case 39U:   return &PORTG;
+        case 40U:   return &PORTG;
+        case 41U:   return &PORTG;
+        case 42U:   return &PORTL;
+        case 43U:   return &PORTL;
+        case 44U:   return &PORTL;
+        case 45U:   return &PORTL;
+        case 46U:   return &PORTL;
+        case 47U:   return &PORTL;
+        case 48U:   return &PORTL;
+        case 49U:   return &PORTL;
 
-        case 50:   return &PORTB;
-        case 51:   return &PORTB;
-        case 52:   return &PORTB;
-        case 53:   return &PORTB;
+        case 50U:   return &PORTB;
+        case 51U:   return &PORTB;
+        case 52U:   return &PORTB;
+        case 53U:   return &PORTB;
 
-        case 100:  return &PORTF;
-        case 101:  return &PORTF;
-        case 102:  return &PORTF;
-        case 103:  return &PORTF;
-        case 104:  return &PORTF;
-        case 105:  return &PORTF;
-        case 106:  return &PORTF;
-        case 107:  return &PORTF;
-        case 108:  return &PORTK;
-        case 109:  return &PORTK;
-        case 110:  return &PORTK;
-        case 111:  return &PORTK;
-        case 112:  return &PORTK;
-        case 113:  return &PORTK;
-        case 114:  return &PORTK;
-        case 115:  return &PORTK;
+        case 100U:  return &PORTF;
+        case 101U:  return &PORTF;
+        case 102U:  return &PORTF;
+        case 103U:  return &PORTF;
+        case 104U:  return &PORTF;
+        case 105U:  return &PORTF;
+        case 106U:  return &PORTF;
+        case 107U:  return &PORTF;
+        case 108U:  return &PORTK;
+        case 109U:  return &PORTK;
+        case 110U:  return &PORTK;
+        case 111U:  return &PORTK;
+        case 112U:  return &PORTK;
+        case 113U:  return &PORTK;
+        case 114U:  return &PORTK;
+        case 115U:  return &PORTK;
 
-        default:   ASSERT(0);
-                   return NULL;
+        default:    ASSERT(0U);
+                    return NULL;
     }
 }
 
@@ -120,84 +120,84 @@ static byte conv_io_to_bit(byte io)
 {
     switch(io)
     {
-        case 0:    return 0;
-        case 1:    return 1;
-        case 2:    return 4;
-        case 3:    return 5;
-        case 4:    return 5;
-        case 5:    return 3;
-        case 6:    return 3;
-        case 7:    return 4;
-        case 8:    return 5;
-        case 9:    return 6;
-        case 10:   return 4;
-        case 11:   return 5;
-        case 12:   return 6;
-        case 13:   return 7;
+        case 0U:    return 0U;
+        case 1U:    return 1U;
+        case 2U:    return 4U;
+        case 3U:    return 5U;
+        case 4U:    return 5U;
+        case 5U:    return 3U;
+        case 6U:    return 3U;
+        case 7U:    return 4U;
+        case 8U:    return 5U;
+        case 9U:    return 6U;
+        case 10U:   return 4U;
+        case 11U:   return 5U;
+        case 12U:   return 6U;
+        case 13U:   return 7U;
 
-        case 14:   return 1;
-        case 15:   return 0;
-        case 16:   return 1;
-        case 17:   return 0;
-        case 18:   return 3;
-        case 19:   return 2;
-        case 20:   return 1;
-        case 21:   return 0;
+        case 14U:   return 1U;
+        case 15U:   return 0U;
+        case 16U:   return 1U;
+        case 17U:   return 0U;
+        case 18U:   return 3U;
+        case 19U:   return 2U;
+        case 20U:   return 1U;
+        case 21U:   return 0U;
 
-        case 22:   return 0;
-        case 23:   return 1;
-        case 24:   return 2;
-        case 25:   return 3;
-        case 26:   return 4;
-        case 27:   return 5;
-        case 28:   return 6;
-        case 29:   return 7;
-        case 30:   return 7;
-        case 31:   return 6;
-        case 32:   return 5;
-        case 33:   return 4;
-        case 34:   return 3;
-        case 35:   return 2;
-        case 36:   return 1;
-        case 37:   return 0;
+        case 22U:   return 0U;
+        case 23U:   return 1U;
+        case 24U:   return 2U;
+        case 25U:   return 3U;
+        case 26U:   return 4U;
+        case 27U:   return 5U;
+        case 28U:   return 6U;
+        case 29U:   return 7U;
+        case 30U:   return 7U;
+        case 31U:   return 6U;
+        case 32U:   return 5U;
+        case 33U:   return 4U;
+        case 34U:   return 3U;
+        case 35U:   return 2U;
+        case 36U:   return 1U;
+        case 37U:   return 0U;
 
-        case 38:   return 7;
-        case 39:   return 2;
-        case 40:   return 1;
-        case 41:   return 0;
-        case 42:   return 7;
-        case 43:   return 6;
-        case 44:   return 5;
-        case 45:   return 4;
-        case 46:   return 3;
-        case 47:   return 2;
-        case 48:   return 1;
-        case 49:   return 0;
+        case 38U:   return 7U;
+        case 39U:   return 2U;
+        case 40U:   return 1U;
+        case 41U:   return 0U;
+        case 42U:   return 7U;
+        case 43U:   return 6U;
+        case 44U:   return 5U;
+        case 45U:   return 4U;
+        case 46U:   return 3U;
+        case 47U:   return 2U;
+        case 48U:   return 1U;
+        case 49U:   return 0U;
 
-        case 50:   return 3;
-        case 51:   return 2;
-        case 52:   return 1;
-        case 53:   return 0;
+        case 50U:   return 3U;
+        case 51U:   return 2U;
+        case 52U:   return 1U;
+        case 53U:   return 0U;
 
-        case 100:  return 0;
-        case 101:  return 1;
-        case 102:  return 2;
-        case 103:  return 3;
-        case 104:  return 4;
-        case 105:  return 5;
-        case 106:  return 6;
-        case 107:  return 7;
-        case 108:  return 0;
-        case 109:  return 1;
-        case 110:  return 2;
-        case 111:  return 3;
-        case 112:  return 4;
-        case 113:  return 5;
-        case 114:  return 6;
-        case 115:  return 7;
+        case 100U:  return 0U;
+        case 101U:  return 1U;
+        case 102U:  return 2U;
+        case 103U:  return 3U;
+        case 104U:  return 4U;
+        case 105U:  return 5U;
+        case 106U:  return 6U;
+        case 107U:  return 7U;
+        case 108U:  return 0U;
+        case 109U:  return 1U;
+        case 110U:  return 2U;
+        case 111U:  return 3U;
+        case 112U:  return 4U;
+        case 113U:  return 5U;
+        case 114U:  return 6U;
+        case 115U:  return 7U;
 
-        default:   ASSERT(0);
-                   return 0;
+        default:    ASSERT(0U);
+                    return 0U;
     }
 }
 
