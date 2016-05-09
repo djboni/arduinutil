@@ -27,8 +27,24 @@ limitations under the License.
 
 #include <avr/interrupt.h>
 
+
+
+typedef uint8_t Size_t;
+
+
+
 #define DISABLE_INTERRUPTS() cli()
 #define ENABLE_INTERRUPTS()  sei()
+
+
+
+#define ENTER_CRITICAL()                            \
+    asm volatile("in    __tmp_reg__,__SREG__" ::);  \
+    asm volatile("cli" ::);                         \
+    asm volatile("push  __tmp_reg__" ::)
+#define EXIT_CRITICAL()                            \
+    asm volatile("pop   __tmp_reg__" ::);           \
+    asm volatile("out   __SREG__,__tmp_reg__" ::)
 
 
 
@@ -41,5 +57,7 @@ limitations under the License.
       for(;;) {}                                       \
     }                                                  \
   } while(0)
+
+
 
 #endif /* __ARDUINUTIL_CONFIG_H__ */
