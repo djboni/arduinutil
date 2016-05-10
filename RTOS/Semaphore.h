@@ -23,8 +23,8 @@ limitations under the License.
 
 #include "Config.h"
 
-namespace Arduinutil
-{
+#ifdef __cplusplus
+namespace Arduinutil {
 
 class Semaphore
 {
@@ -82,5 +82,6 @@ private:
 };
 
 } /* namespace Arduinutil */
+#endif /* __cplusplus */
 
 #endif /* __ARDUINUTIL_SEMAPHORE_H__ */

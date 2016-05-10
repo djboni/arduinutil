@@ -23,14 +23,15 @@ limitations under the License.
 #ifndef __ARDUINUTIL_H__
 #define __ARDUINUTIL_H__
 
+#include <stdint.h>
 #include <stddef.h>
+
+#include "Config.h"
 
 #ifdef __cplusplus
 namespace Arduinutil {
 extern "C" {
 #endif
-
-#include "Config.h"
 
 typedef uint8_t byte;
 typedef uint16_t word;

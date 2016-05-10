@@ -22,8 +22,8 @@ limitations under the License.
 
 #include "Config.h"
 
-namespace Arduinutil
-{
+#ifdef __cplusplus
+namespace Arduinutil {
 
 template<class T, Size_t Size>
 class Queue
@@ -220,5 +220,6 @@ bool Queue<T, Size>::pop_front(T& val)
 }
 
 } /* namespace Arduinutil */
+#endif /* __cplusplus */
 
 #endif /* __ARDUINUTIL_QUEUE_H__ */

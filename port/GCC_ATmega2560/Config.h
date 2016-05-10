@@ -27,6 +27,11 @@ limitations under the License.
 
 #include "port.h"
 
+#ifdef __cplusplus
+namespace Arduinutil {
+extern "C" {
+#endif
+
 typedef uint8_t Size_t;
 
 #define ASSERT(expr)                                   \
@@ -38,5 +43,10 @@ typedef uint8_t Size_t;
       for(;;) {}                                       \
     }                                                  \
   } while(0)
+
+#ifdef __cplusplus
+} /* extern "C" */
+} /* namespace Arduinutil */
+#endif
 
 #endif /* __ARDUINUTIL_CONFIG_H__ */
