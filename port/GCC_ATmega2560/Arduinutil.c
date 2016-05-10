@@ -28,12 +28,95 @@ limitations under the License.
 
 
 #include <avr/io.h>
+#include <avr/pgmspace.h>
+
+
+
+PROGMEM static volatile byte *const portIOLIST[] = {
+    /* 0 - 13 */
+    &PORTE, &PORTE, &PORTE, &PORTE, &PORTG, &PORTE, &PORTH, &PORTH, &PORTH,
+    &PORTH, &PORTB, &PORTB, &PORTB, &PORTB,
+    /* 14 - 21 */
+    &PORTJ, &PORTJ, &PORTH, &PORTH, &PORTD, &PORTD, &PORTD, &PORTD,
+    /* 22 - 37 */
+    &PORTA, &PORTA, &PORTA, &PORTA, &PORTA, &PORTA, &PORTA, &PORTA, &PORTC,
+    &PORTC, &PORTC, &PORTC, &PORTC, &PORTC, &PORTC, &PORTC,
+    /* 38 - 49 */
+    &PORTD, &PORTG, &PORTG, &PORTG, &PORTL, &PORTL, &PORTL, &PORTL, &PORTL,
+    &PORTL, &PORTL, &PORTL,
+    /* 50 - 53 */
+    &PORTB, &PORTB, &PORTB, &PORTB,
+    /* A0 - A15 */
+    &PORTF, &PORTF, &PORTF, &PORTF, &PORTF, &PORTF, &PORTF, &PORTF, &PORTK,
+    &PORTK, &PORTK, &PORTK, &PORTK, &PORTK, &PORTK, &PORTK
+};
+
+PROGMEM static volatile byte *const pinIOLIST[] = {
+    /* 0 - 13 */
+    &PINE, &PINE, &PINE, &PINE, &PING, &PINE, &PINH, &PINH, &PINH,
+    &PINH, &PINB, &PINB, &PINB, &PINB,
+    /* 14 - 21 */
+    &PINJ, &PINJ, &PINH, &PINH, &PIND, &PIND, &PIND, &PIND,
+    /* 22 - 37 */
+    &PINA, &PINA, &PINA, &PINA, &PINA, &PINA, &PINA, &PINA, &PINC,
+    &PINC, &PINC, &PINC, &PINC, &PINC, &PINC, &PINC,
+    /* 38 - 49 */
+    &PIND, &PING, &PING, &PING, &PINL, &PINL, &PINL, &PINL, &PINL,
+    &PINL, &PINL, &PINL,
+    /* 50 - 53 */
+    &PINB, &PINB, &PINB, &PINB,
+    /* A0 - A15 */
+    &PINF, &PINF, &PINF, &PINF, &PINF, &PINF, &PINF, &PINF, &PINK,
+    &PINK, &PINK, &PINK, &PINK, &PINK, &PINK, &PINK
+};
+
+PROGMEM static volatile byte *const ddrIOLIST[] = {
+    /* 0 - 13 */
+    &DDRE, &DDRE, &DDRE, &DDRE, &DDRG, &DDRE, &DDRH, &DDRH, &DDRH,
+    &DDRH, &DDRB, &DDRB, &DDRB, &DDRB,
+    /* 14 - 21 */
+    &DDRJ, &DDRJ, &DDRH, &DDRH, &DDRD, &DDRD, &DDRD, &DDRD,
+    /* 22 - 37 */
+    &DDRA, &DDRA, &DDRA, &DDRA, &DDRA, &DDRA, &DDRA, &DDRA, &DDRC,
+    &DDRC, &DDRC, &DDRC, &DDRC, &DDRC, &DDRC, &DDRC,
+    /* 38 - 49 */
+    &DDRD, &DDRG, &DDRG, &DDRG, &DDRL, &DDRL, &DDRL, &DDRL, &DDRL,
+    &DDRL, &DDRL, &DDRL,
+    /* 50 - 53 */
+    &DDRB, &DDRB, &DDRB, &DDRB,
+    /* A0 - A15 */
+    &DDRF, &DDRF, &DDRF, &DDRF, &DDRF, &DDRF, &DDRF, &DDRF, &DDRK,
+    &DDRK, &DDRK, &DDRK, &DDRK, &DDRK, &DDRK, &DDRK
+};
+
+PROGMEM static const byte bitIOLIST[] = {
+    /* 0 - 13 */
+    0U, 1U, 4U, 5U, 5U, 3U, 3U, 4U, 5U, 6U, 4U, 5U, 6U, 7U,
+    /* 14 - 21 */
+    1U, 0U, 1U, 0U, 3U, 2U, 1U, 0U,
+    /* 22 - 37 */
+    0U, 1U, 2U, 3U, 4U, 5U, 6U, 7U, 7U, 6U, 5U, 4U, 3U, 2U, 1U, 0U,
+    /* 38 - 49 */
+    7U, 2U, 1U, 0U, 7U, 6U, 5U, 4U, 3U, 2U, 1U, 0U,
+    /* 50 - 53 */
+    3U, 2U, 1U, 0U,
+    /* A0 - A15 */
+    0U, 1U, 2U, 3U, 4U, 5U, 6U, 7U, 0U, 1U, 2U, 3U, 4U, 5U, 6U, 7U
+};
 
 
 
 /** Microcontroller initialization. */
 void init(void)
 {
+    if( sizeof(portIOLIST) != sizeof(pinIOLIST) ||
+        sizeof(portIOLIST) != sizeof(pinIOLIST) ||
+        sizeof(portIOLIST) != sizeof(ddrIOLIST) ||
+        sizeof(portIOLIST) != 2U*sizeof(bitIOLIST))
+    {
+        ASSERT(0 && "Invalid sizes");
+    }
+
     /* Configure all pins of the microcontroller as input with pull-up
     (DDR=0,PORT=FF), even those not used by Arduino. Avoid power consumption of
     floating input pins. You can change pin direction and pull-up with pinMode()
@@ -105,198 +188,18 @@ void enableDigitalInputsOfAnalogPins(void)
     DIDR2 = 0U;
 }
 
-static volatile byte *conv_io_to_port(byte io)
-{
-    switch(io)
-    {
-        case 0U:    return &PORTE;
-        case 1U:    return &PORTE;
-        case 2U:    return &PORTE;
-        case 3U:    return &PORTE;
-        case 4U:    return &PORTG;
-        case 5U:    return &PORTE;
-        case 6U:    return &PORTH;
-        case 7U:    return &PORTH;
-        case 8U:    return &PORTH;
-        case 9U:    return &PORTH;
-        case 10U:   return &PORTB;
-        case 11U:   return &PORTB;
-        case 12U:   return &PORTB;
-        case 13U:   return &PORTB;
-
-        case 14U:   return &PORTJ;
-        case 15U:   return &PORTJ;
-        case 16U:   return &PORTH;
-        case 17U:   return &PORTH;
-        case 18U:   return &PORTD;
-        case 19U:   return &PORTD;
-        case 20U:   return &PORTD;
-        case 21U:   return &PORTD;
-
-        case 22U:   return &PORTA;
-        case 23U:   return &PORTA;
-        case 24U:   return &PORTA;
-        case 25U:   return &PORTA;
-        case 26U:   return &PORTA;
-        case 27U:   return &PORTA;
-        case 28U:   return &PORTA;
-        case 29U:   return &PORTA;
-        case 30U:   return &PORTC;
-        case 31U:   return &PORTC;
-        case 32U:   return &PORTC;
-        case 33U:   return &PORTC;
-        case 34U:   return &PORTC;
-        case 35U:   return &PORTC;
-        case 36U:   return &PORTC;
-        case 37U:   return &PORTC;
-
-        case 38U:   return &PORTD;
-        case 39U:   return &PORTG;
-        case 40U:   return &PORTG;
-        case 41U:   return &PORTG;
-        case 42U:   return &PORTL;
-        case 43U:   return &PORTL;
-        case 44U:   return &PORTL;
-        case 45U:   return &PORTL;
-        case 46U:   return &PORTL;
-        case 47U:   return &PORTL;
-        case 48U:   return &PORTL;
-        case 49U:   return &PORTL;
-
-        case 50U:   return &PORTB;
-        case 51U:   return &PORTB;
-        case 52U:   return &PORTB;
-        case 53U:   return &PORTB;
-
-        case 100U:  return &PORTF;
-        case 101U:  return &PORTF;
-        case 102U:  return &PORTF;
-        case 103U:  return &PORTF;
-        case 104U:  return &PORTF;
-        case 105U:  return &PORTF;
-        case 106U:  return &PORTF;
-        case 107U:  return &PORTF;
-        case 108U:  return &PORTK;
-        case 109U:  return &PORTK;
-        case 110U:  return &PORTK;
-        case 111U:  return &PORTK;
-        case 112U:  return &PORTK;
-        case 113U:  return &PORTK;
-        case 114U:  return &PORTK;
-        case 115U:  return &PORTK;
-
-        default:    ASSERT(0U);
-                    return NULL;
-    }
-}
-
-static byte conv_io_to_bit(byte io)
-{
-    switch(io)
-    {
-        case 0U:    return 0U;
-        case 1U:    return 1U;
-        case 2U:    return 4U;
-        case 3U:    return 5U;
-        case 4U:    return 5U;
-        case 5U:    return 3U;
-        case 6U:    return 3U;
-        case 7U:    return 4U;
-        case 8U:    return 5U;
-        case 9U:    return 6U;
-        case 10U:   return 4U;
-        case 11U:   return 5U;
-        case 12U:   return 6U;
-        case 13U:   return 7U;
-
-        case 14U:   return 1U;
-        case 15U:   return 0U;
-        case 16U:   return 1U;
-        case 17U:   return 0U;
-        case 18U:   return 3U;
-        case 19U:   return 2U;
-        case 20U:   return 1U;
-        case 21U:   return 0U;
-
-        case 22U:   return 0U;
-        case 23U:   return 1U;
-        case 24U:   return 2U;
-        case 25U:   return 3U;
-        case 26U:   return 4U;
-        case 27U:   return 5U;
-        case 28U:   return 6U;
-        case 29U:   return 7U;
-        case 30U:   return 7U;
-        case 31U:   return 6U;
-        case 32U:   return 5U;
-        case 33U:   return 4U;
-        case 34U:   return 3U;
-        case 35U:   return 2U;
-        case 36U:   return 1U;
-        case 37U:   return 0U;
-
-        case 38U:   return 7U;
-        case 39U:   return 2U;
-        case 40U:   return 1U;
-        case 41U:   return 0U;
-        case 42U:   return 7U;
-        case 43U:   return 6U;
-        case 44U:   return 5U;
-        case 45U:   return 4U;
-        case 46U:   return 3U;
-        case 47U:   return 2U;
-        case 48U:   return 1U;
-        case 49U:   return 0U;
-
-        case 50U:   return 3U;
-        case 51U:   return 2U;
-        case 52U:   return 1U;
-        case 53U:   return 0U;
-
-        case 100U:  return 0U;
-        case 101U:  return 1U;
-        case 102U:  return 2U;
-        case 103U:  return 3U;
-        case 104U:  return 4U;
-        case 105U:  return 5U;
-        case 106U:  return 6U;
-        case 107U:  return 7U;
-        case 108U:  return 0U;
-        case 109U:  return 1U;
-        case 110U:  return 2U;
-        case 111U:  return 3U;
-        case 112U:  return 4U;
-        case 113U:  return 5U;
-        case 114U:  return 6U;
-        case 115U:  return 7U;
-
-        default:    ASSERT(0U);
-                    return 0U;
-    }
-}
-
-static volatile byte *conv_port_to_pin(volatile byte *port)
-{
-    return port - 2U;
-}
-
-static volatile byte *conv_port_to_ddr(volatile byte *port)
-{
-    return port - 1U;
-}
 
 
 /** Change pin configuration. The modes are INPUT, OUTPUT and INPUT_PULLUP.
 
-Note: Use pin 100+X for analog pin X. */
+Note: Use pin ANALOGIO+X for analog pin X. */
 void pinMode(byte io, byte mode)
 {
-    volatile byte *port, *ddr;
-    byte bit;
+    volatile byte *port = pgm_read_word(&portIOLIST[io]);
+    volatile byte *ddr = pgm_read_word(&ddrIOLIST[io]);
+    byte bit = pgm_read_byte(&bitIOLIST[io]);
 
-    port = conv_io_to_port(io);
-    ddr = conv_port_to_ddr(port);
-    bit = conv_io_to_bit(io);
+    ASSERT(io < MAXIO);
 
     switch(mode)
     {
@@ -313,7 +216,7 @@ void pinMode(byte io, byte mode)
         case INPUT_PULLUP:
             /* Input. */
             CLEAR_BITS(*ddr, (1U << bit), byte);
-            /* Disable pull-up. */
+            /* Enable pull-up. */
             SET_BITS(*port, (1U << bit), byte);
             break;
     }
@@ -321,14 +224,13 @@ void pinMode(byte io, byte mode)
 
 /** Change pin output value or input pull-up. The values are LOW and HIGH.
 
-Note: Use pin 100+X for analog pin X. */
+Note: Use pin ANALOGIO+X for analog pin X. */
 void digitalWrite(byte io, byte value)
 {
-    volatile byte *port;
-    byte bit;
+    volatile byte *port = pgm_read_word(&portIOLIST[io]);
+    byte bit = pgm_read_byte(&bitIOLIST[io]);
 
-    port = conv_io_to_port(io);
-    bit = conv_io_to_bit(io);
+    ASSERT(io < MAXIO);
 
     switch(value)
     {
@@ -343,14 +245,13 @@ void digitalWrite(byte io, byte value)
 
 /** Read pin input value. The values returned are LOW and HIGH.
 
-Note: Use pin 100+X for analog pin X. */
+Note: Use pin ANALOGIO+X for analog pin X. */
 byte digitalRead(byte io)
 {
-    volatile byte *port;
-    byte bit;
+    volatile byte *pin = pgm_read_word(&pinIOLIST[io]);
+    byte bit = pgm_read_byte(&bitIOLIST[io]);
 
-    port = conv_io_to_port(io);
-    bit = conv_io_to_bit(io);
+    ASSERT(io < MAXIO);
 
-    return ( *conv_port_to_pin(port) & (1U << bit) ) != 0U;
+    return ( *pin & (1U << bit) ) != 0U;
 }

@@ -23,6 +23,11 @@ limitations under the License.
 #ifndef __ARDUINUTIL_PORT_H__
 #define __ARDUINUTIL_PORT_H__
 
+#define inline __inline
+
+#define ANALOGIO 54U
+#define MAXIO    (ANALOGIO+16U)
+
 #define DISABLE_INTERRUPTS() __asm volatile("cli" ::)
 #define ENABLE_INTERRUPTS()  __asm volatile("sei" ::)
 
