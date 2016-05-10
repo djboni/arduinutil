@@ -23,30 +23,11 @@ limitations under the License.
 #ifndef __ARDUINUTIL_CONFIG_H__
 #define __ARDUINUTIL_CONFIG_H__
 
+#include <stdint.h>
 
-
-#include <avr/interrupt.h>
-
-
+#include "port.h"
 
 typedef uint8_t Size_t;
-
-
-
-#define DISABLE_INTERRUPTS() cli()
-#define ENABLE_INTERRUPTS()  sei()
-
-
-
-#define ENTER_CRITICAL()                            \
-    asm volatile("in    __tmp_reg__,__SREG__" ::);  \
-    asm volatile("cli" ::);                         \
-    asm volatile("push  __tmp_reg__" ::)
-#define EXIT_CRITICAL()                            \
-    asm volatile("pop   __tmp_reg__" ::);           \
-    asm volatile("out   __SREG__,__tmp_reg__" ::)
-
-
 
 #define ASSERT(expr)                                   \
   do {                                                 \
@@ -57,7 +38,5 @@ typedef uint8_t Size_t;
       for(;;) {}                                       \
     }                                                  \
   } while(0)
-
-
 
 #endif /* __ARDUINUTIL_CONFIG_H__ */
