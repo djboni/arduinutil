@@ -23,31 +23,15 @@ limitations under the License.
 #ifndef __ARDUINUTIL_PORT_H__
 #define __ARDUINUTIL_PORT_H__
 
-#ifdef __cplusplus
-namespace Arduinutil {
-extern "C" {
-#else
-/* Avoid C90 complaining about inline in some AVR headers. */
 #define inline __inline
-#endif
 
-#define ANALOGIO 54U
-#define MAXIO    (ANALOGIO + 16U)
+#define ANALOGIO 8U
+#define MAXIO    (ANALOGIO + 8U)
 
-#define DISABLE_INTERRUPTS() __asm volatile("cli" ::)
-#define ENABLE_INTERRUPTS()  __asm volatile("sei" ::)
+#define DISABLE_INTERRUPTS() do{}while(0U)
+#define ENABLE_INTERRUPTS()  do{}while(0U)
 
-#define ENTER_CRITICAL()                              \
-    __asm volatile("in    __tmp_reg__,__SREG__" ::);  \
-    __asm volatile("cli" ::);                         \
-    __asm volatile("push  __tmp_reg__" ::)
-#define EXIT_CRITICAL()                               \
-    __asm volatile("pop   __tmp_reg__" ::);           \
-    __asm volatile("out   __SREG__,__tmp_reg__" ::)
-
-#ifdef __cplusplus
-} /* extern "C" */
-} /* namespace Arduinutil */
-#endif
+#define ENTER_CRITICAL() do{}while(0U)
+#define EXIT_CRITICAL()  do{}while(0U)
 
 #endif /* __ARDUINUTIL_PORT_H__ */
