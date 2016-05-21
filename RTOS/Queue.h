@@ -33,7 +33,6 @@ public:
 
     inline bool full() const;
     inline bool empty() const;
-    inline Size_t numUsed() const;
     inline Size_t size() const;
 
     bool front(T& val);
@@ -75,13 +74,6 @@ template<class T, Size_t Size>
 bool Queue<T, Size>::empty() const
 {
     return NumUsed == 0;
-}
-
-/** Return the number of used positions in the queue. */
-template<class T, Size_t Size>
-Size_t Queue<T, Size>::numUsed() const
-{
-    return NumUsed;
 }
 
 /** Return the total number of positions in the queue. */
