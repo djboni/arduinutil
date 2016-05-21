@@ -44,6 +44,11 @@ public:
     bool pop_back(T& val);
     bool pop_front(T& val);
 
+    /* FIFO */
+    inline bool send(const T& val) { return push_back(val); }
+    inline bool receive(T& val) { return pop_front(val); }
+    inline bool peek(T& val) { return front(val); }
+
 private:
     T Buff[Size]; /* Data storage */
     Size_t PosFront; /* First used position */
