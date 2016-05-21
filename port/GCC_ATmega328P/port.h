@@ -2,8 +2,7 @@
 Arduinutil - Arduino compatible library written in C/C++
 
 Supported microcontrollers:
-    ATmega328P
-    ATmega2560
+    See Arduinutil.h
 
 
 Copyright 2016 Djones A. Boni
@@ -21,46 +20,34 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#ifndef __ARDUINUTIL_H__
-#define __ARDUINUTIL_H__
-
-#include <stdint.h>
-#include <stddef.h>
-
-#include "Config.h"
+#ifndef __ARDUINUTIL_PORT_H__
+#define __ARDUINUTIL_PORT_H__
 
 #ifdef __cplusplus
 namespace Arduinutil {
 extern "C" {
+#else
+/* Avoid C90 complaining about inline in some AVR headers. */
+#define inline __inline
 #endif
 
-typedef uint8_t byte;
-typedef uint16_t word;
+#define ANALOGIO 14U
+#define MAXIO    (ANALOGIO + 6U)
 
-enum {
-    LOW          = 0U,
-    HIGH         = 1U,
+#define DISABLE_INTERRUPTS() __asm volatile("cli" ::)
+#define ENABLE_INTERRUPTS()  __asm volatile("sei" ::)
 
-    INPUT        = 0U,
-    OUTPUT       = 1U,
-    INPUT_PULLUP = 2U
-};
-
-void init(void);
-
-void disablePeripheralsClocks(void);
-void enablePeripheralsClocks(void);
-
-void disableDigitalInputsOfAnalogPins(void);
-void enableDigitalInputsOfAnalogPins(void);
-
-void pinMode(byte pin, byte mode);
-void digitalWrite(byte pin, byte value);
-byte digitalRead(byte pin);
+#define ENTER_CRITICAL()                              \
+    __asm volatile("in    __tmp_reg__,__SREG__" ::);  \
+    __asm volatile("cli" ::);                         \
+    __asm volatile("push  __tmp_reg__" ::)
+#define EXIT_CRITICAL()                               \
+    __asm volatile("pop   __tmp_reg__" ::);           \
+    __asm volatile("out   __SREG__,__tmp_reg__" ::)
 
 #ifdef __cplusplus
 } /* extern "C" */
 } /* namespace Arduinutil */
 #endif
 
-#endif /* __ARDUINUTIL_H__ */
+#endif /* __ARDUINUTIL_PORT_H__ */

@@ -2,8 +2,7 @@
 Arduinutil - Arduino compatible library written in C/C++
 
 Supported microcontrollers:
-    ATmega328P
-    ATmega2560
+    See Arduinutil.h
 
 
 Copyright 2016 Djones A. Boni
@@ -21,46 +20,33 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#ifndef __ARDUINUTIL_H__
-#define __ARDUINUTIL_H__
+#ifndef __ARDUINUTIL_CONFIG_H__
+#define __ARDUINUTIL_CONFIG_H__
 
 #include <stdint.h>
-#include <stddef.h>
 
-#include "Config.h"
+#include "port.h"
 
 #ifdef __cplusplus
 namespace Arduinutil {
 extern "C" {
 #endif
 
-typedef uint8_t byte;
-typedef uint16_t word;
+typedef uint8_t Size_t;
 
-enum {
-    LOW          = 0U,
-    HIGH         = 1U,
-
-    INPUT        = 0U,
-    OUTPUT       = 1U,
-    INPUT_PULLUP = 2U
-};
-
-void init(void);
-
-void disablePeripheralsClocks(void);
-void enablePeripheralsClocks(void);
-
-void disableDigitalInputsOfAnalogPins(void);
-void enableDigitalInputsOfAnalogPins(void);
-
-void pinMode(byte pin, byte mode);
-void digitalWrite(byte pin, byte value);
-byte digitalRead(byte pin);
+#define ASSERT(expr)                                   \
+  do {                                                 \
+    if((expr) == 0)                                    \
+    {                                                  \
+      DISABLE_INTERRUPTS();                            \
+      /*assert_function(__FILE__, __LINE__, #expr);*/  \
+      for(;;) {}                                       \
+    }                                                  \
+  } while(0)
 
 #ifdef __cplusplus
 } /* extern "C" */
 } /* namespace Arduinutil */
 #endif
 
-#endif /* __ARDUINUTIL_H__ */
+#endif /* __ARDUINUTIL_CONFIG_H__ */
