@@ -29,9 +29,26 @@ template<class T, Size_t Size>
 class Vector
 {
 public:
-    Vector();
-    inline Size_t size() const;
-    inline T& operator[](Size_t pos);
+
+    /** Default constructor. */
+    Vector():
+            Buff()
+    {
+    }
+
+    /** Return the capacity (total number of positions) of the vector. */
+    inline Size_t size() const
+    {
+        return Size;
+    }
+
+    /** Return a reference to the position pos of the vector (pos must be in the
+    range 0 to Size-1). */
+    inline T& operator[](Size_t pos)
+    {
+        ASSERT(pos < Size);
+        return Buff[pos];
+    }
 
 private:
     T Buff[Size]; /* Data storage */
@@ -40,29 +57,6 @@ private:
     Vector(const Vector& o);
     void operator=(const Vector& o);
 };
-
-/** Default constructor. */
-template<class T, Size_t Size>
-Vector<T, Size>::Vector() :
-        Buff()
-{
-}
-
-/** Return the capacity (total number of positions) of the vector. */
-template<class T, Size_t Size>
-Size_t Vector<T, Size>::size() const
-{
-    return Size;
-}
-
-/** Return a reference to the position pos of the vector (pos must be in the
-range 0 to Size-1). */
-template<class T, Size_t Size>
-T& Vector<T, Size>::operator[](Size_t pos)
-{
-    ASSERT(pos < Size);
-    return Buff[pos];
-}
 
 } /* namespace Arduinutil */
 #endif /* __cplusplus */
