@@ -30,25 +30,11 @@ class Vector
 {
 public:
     Vector();
-
-    inline bool full() const;
-    inline bool empty() const;
-    inline Size_t numUsed() const;
     inline Size_t size() const;
-
-    bool front(T& val);
-    bool back(T& val);
-
-    bool push_back(const T& val);
-    bool pop_back(T& val);
-
-    T& operator[](Size_t pos);
+    inline T& operator[](Size_t pos);
 
 private:
-    Size_t NumUsed; /* Number of used positions */
     T Buff[Size]; /* Data storage */
-
-
 
     /* Should not use these */
     Vector(const Vector& o);
@@ -58,29 +44,8 @@ private:
 /** Default constructor. */
 template<class T, Size_t Size>
 Vector<T, Size>::Vector() :
-        NumUsed(0U), Buff()
+        Buff()
 {
-}
-
-/** Return true if the vector is full, false otherwise. */
-template<class T, Size_t Size>
-bool Vector<T, Size>::full() const
-{
-    return NumUsed == Size;
-}
-
-/** Return true if the vector is empty, false otherwise. */
-template<class T, Size_t Size>
-bool Vector<T, Size>::empty() const
-{
-    return NumUsed == 0;
-}
-
-/** Return the number of used positions of the vector. */
-template<class T, Size_t Size>
-Size_t Vector<T, Size>::numUsed() const
-{
-    return NumUsed;
 }
 
 /** Return the capacity (total number of positions) of the vector. */
@@ -90,78 +55,12 @@ Size_t Vector<T, Size>::size() const
     return Size;
 }
 
-/** Copy the front of the vector to val, without removing it. On success returns
-true, false otherwise (vector empty). */
-template<class T, Size_t Size>
-bool Vector<T, Size>::front(T& val)
-{
-    if(NumUsed != 0)
-    {
-        val = Buff[0U];
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-/** Copy the back of the vector to val, without removing it. On success returns
-true, false otherwise (vector empty). */
-template<class T, Size_t Size>
-bool Vector<T, Size>::back(T& val)
-{
-    if(NumUsed != 0)
-    {
-        val = Buff[NumUsed - 1U];
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-/** Insert val in the back of the vector. On success returns true, false
-otherwise (vector at full capacity). */
-template<class T, Size_t Size>
-bool Vector<T, Size>::push_back(const T& val)
-{
-    if(NumUsed != Size)
-    {
-        Buff[NumUsed++] = val;
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-/** Remove the back of the vector and copy it to val. On success returns true,
-false otherwise (vector empty). */
-template<class T, Size_t Size>
-bool Vector<T, Size>::pop_back(T& val)
-{
-    if(NumUsed != 0)
-    {
-        val = Buff[--NumUsed];
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
 /** Return a reference to the position pos of the vector (pos must be in the
 range 0 to Size-1). */
 template<class T, Size_t Size>
 T& Vector<T, Size>::operator[](Size_t pos)
 {
     ASSERT(pos < Size);
-    if(pos >= NumUsed)
-        NumUsed = pos + 1U;
     return Buff[pos];
 }
 
