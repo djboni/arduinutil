@@ -25,7 +25,7 @@ limitations under the License.
 #ifdef __cplusplus
 namespace Arduinutil {
 
-template<class T, Size_t Size>
+template<class T, Size_t Size, bool Assert=true>
 class Vector
 {
 public:
@@ -46,7 +46,8 @@ public:
     range 0 to Size-1). */
     inline T& operator[](Size_t pos)
     {
-        ASSERT(pos < Size);
+        if(Assert)
+            ASSERT(pos < Size);
         return Buff[pos];
     }
 
