@@ -25,7 +25,7 @@ limitations under the License.
 #ifdef __cplusplus
 namespace Arduinutil {
 
-template<class T, Size_t Capacity>
+template<class T, Size_t Size>
 class Queue
 {
 public:
@@ -33,8 +33,8 @@ public:
 
     inline bool full() const;
     inline bool empty() const;
+    inline Size_t numUsed() const;
     inline Size_t size() const;
-    inline Size_t capacity() const;
 
     bool front(T& val);
     bool back(T& val);
@@ -46,10 +46,10 @@ public:
     bool pop_front(T& val);
 
 private:
-    T Buff[Capacity]; /* Data storage */
+    T Buff[Size]; /* Data storage */
     Size_t PosFront; /* First used position */
     Size_t PosBack; /* First unused position */
-    Size_t Size; /* Number of used positions */
+    Size_t NumUsed; /* Number of used positions */
 
     /* Should not use these */
     Queue(const Queue& o);
@@ -57,44 +57,44 @@ private:
 };
 
 /** Default constructor. */
-template<class T, Size_t Capacity>
-Queue<T, Capacity>::Queue() :
-        Buff(), PosFront(0), PosBack(0), Size(0)
+template<class T, Size_t Size>
+Queue<T, Size>::Queue() :
+        Buff(), PosFront(0), PosBack(0), NumUsed(0)
 {
 }
 
 /** Return true if the queue is full, false otherwise. */
-template<class T, Size_t Capacity>
-bool Queue<T, Capacity>::full() const
+template<class T, Size_t Size>
+bool Queue<T, Size>::full() const
 {
-    return Size == Capacity;
+    return NumUsed == Size;
 }
 
 /** Return true if the queue is empty, false otherwise. */
-template<class T, Size_t Capacity>
-bool Queue<T, Capacity>::empty() const
+template<class T, Size_t Size>
+bool Queue<T, Size>::empty() const
 {
-    return Size == 0;
+    return NumUsed == 0;
 }
 
 /** Return the number of used positions in the queue. */
-template<class T, Size_t Capacity>
-Size_t Queue<T, Capacity>::size() const
+template<class T, Size_t Size>
+Size_t Queue<T, Size>::numUsed() const
+{
+    return NumUsed;
+}
+
+/** Return the total number of positions in the queue. */
+template<class T, Size_t Size>
+Size_t Queue<T, Size>::size() const
 {
     return Size;
 }
 
-/** Return the total number of positions in the queue. */
-template<class T, Size_t Capacity>
-Size_t Queue<T, Capacity>::capacity() const
-{
-    return Capacity;
-}
-
 /** Copy the front of the queue to val, without removing it from the queue. On
 success returns true, false otherwise (queue empty). */
-template<class T, Size_t Capacity>
-bool Queue<T, Capacity>::front(T& val)
+template<class T, Size_t Size>
+bool Queue<T, Size>::front(T& val)
 {
     bool ret;
     ENTER_CRITICAL();
@@ -111,8 +111,8 @@ bool Queue<T, Capacity>::front(T& val)
 
 /** Copy the back of the queue to val, without removing it from the queue. On
 success returns true, false otherwise (queue empty). */
-template<class T, Size_t Capacity>
-bool Queue<T, Capacity>::back(T& val)
+template<class T, Size_t Size>
+bool Queue<T, Size>::back(T& val)
 {
     bool ret;
     ENTER_CRITICAL();
@@ -120,7 +120,7 @@ bool Queue<T, Capacity>::back(T& val)
         ret = !empty();
         if (ret)
         {
-            val = Buff[PosBack == 0 ? Capacity - 1 : PosBack - 1];
+            val = Buff[PosBack == 0 ? Size - 1 : PosBack - 1];
         }
     }
     EXIT_CRITICAL();
@@ -129,8 +129,8 @@ bool Queue<T, Capacity>::back(T& val)
 
 /** Insert val in the back of the queue. On success returns true, false
 otherwise (queue full). */
-template<class T, Size_t Capacity>
-bool Queue<T, Capacity>::push_back(const T& val)
+template<class T, Size_t Size>
+bool Queue<T, Size>::push_back(const T& val)
 {
     bool ret;
     ENTER_CRITICAL();
@@ -139,9 +139,9 @@ bool Queue<T, Capacity>::push_back(const T& val)
         if (ret)
         {
             Buff[PosBack++] = val;
-            if (PosBack >= Capacity)
+            if (PosBack >= Size)
                 PosBack = 0;
-            ++Size;
+            ++NumUsed;
         }
     }
     EXIT_CRITICAL();
@@ -150,8 +150,8 @@ bool Queue<T, Capacity>::push_back(const T& val)
 
 /** Insert val in the front of the queue. On success returns true, false
 otherwise (queue full). */
-template<class T, Size_t Capacity>
-bool Queue<T, Capacity>::push_front(const T& val)
+template<class T, Size_t Size>
+bool Queue<T, Size>::push_front(const T& val)
 {
     bool ret;
     ENTER_CRITICAL();
@@ -160,9 +160,9 @@ bool Queue<T, Capacity>::push_front(const T& val)
         if (ret)
         {
             if (PosFront <= 0)
-                PosFront = Capacity;
+                PosFront = Size;
             Buff[--PosFront] = val;
-            ++Size;
+            ++NumUsed;
         }
     }
     EXIT_CRITICAL();
@@ -171,8 +171,8 @@ bool Queue<T, Capacity>::push_front(const T& val)
 
 /** Remove the back of the queue and copy it to val. On success returns true,
 false otherwise (queue empty). */
-template<class T, Size_t Capacity>
-bool Queue<T, Capacity>::pop_back(T& val)
+template<class T, Size_t Size>
+bool Queue<T, Size>::pop_back(T& val)
 {
     bool ret;
     ENTER_CRITICAL();
@@ -181,9 +181,9 @@ bool Queue<T, Capacity>::pop_back(T& val)
         if (ret)
         {
             if (PosBack <= 0)
-                PosBack = Capacity;
+                PosBack = Size;
             val = Buff[--PosBack];
-            --Size;
+            --NumUsed;
         }
     }
     EXIT_CRITICAL();
@@ -192,8 +192,8 @@ bool Queue<T, Capacity>::pop_back(T& val)
 
 /** Remove the front of the queue and copy it to val. On success returns true,
 false otherwise (queue empty). */
-template<class T, Size_t Capacity>
-bool Queue<T, Capacity>::pop_front(T& val)
+template<class T, Size_t Size>
+bool Queue<T, Size>::pop_front(T& val)
 {
     bool ret;
     ENTER_CRITICAL();
@@ -202,9 +202,9 @@ bool Queue<T, Capacity>::pop_front(T& val)
         if (ret)
         {
             val = Buff[PosFront++];
-            if (PosFront >= Capacity)
+            if (PosFront >= Size)
                 PosFront = 0;
-            --Size;
+            --NumUsed;
         }
     }
     EXIT_CRITICAL();

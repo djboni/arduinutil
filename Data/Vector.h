@@ -25,7 +25,7 @@ limitations under the License.
 #ifdef __cplusplus
 namespace Arduinutil {
 
-template<class T, Size_t Capacity>
+template<class T, Size_t Size>
 class Vector
 {
 public:
@@ -33,8 +33,8 @@ public:
 
     inline bool full() const;
     inline bool empty() const;
+    inline Size_t numUsed() const;
     inline Size_t size() const;
-    inline Size_t capacity() const;
 
     bool front(T& val);
     bool back(T& val);
@@ -45,8 +45,8 @@ public:
     T& operator[](Size_t pos);
 
 private:
-    Size_t Size; /* Number of used positions */
-    T Buff[Capacity]; /* Data storage */
+    Size_t NumUsed; /* Number of used positions */
+    T Buff[Size]; /* Data storage */
 
 
 
@@ -56,46 +56,46 @@ private:
 };
 
 /** Default constructor. */
-template<class T, Size_t Capacity>
-Vector<T, Capacity>::Vector() :
-        Size(0U), Buff()
+template<class T, Size_t Size>
+Vector<T, Size>::Vector() :
+        NumUsed(0U), Buff()
 {
 }
 
 /** Return true if the vector is full, false otherwise. */
-template<class T, Size_t Capacity>
-bool Vector<T, Capacity>::full() const
+template<class T, Size_t Size>
+bool Vector<T, Size>::full() const
 {
-    return Size == Capacity;
+    return NumUsed == Size;
 }
 
 /** Return true if the vector is empty, false otherwise. */
-template<class T, Size_t Capacity>
-bool Vector<T, Capacity>::empty() const
+template<class T, Size_t Size>
+bool Vector<T, Size>::empty() const
 {
-    return Size == 0;
+    return NumUsed == 0;
 }
 
 /** Return the number of used positions of the vector. */
-template<class T, Size_t Capacity>
-Size_t Vector<T, Capacity>::size() const
+template<class T, Size_t Size>
+Size_t Vector<T, Size>::numUsed() const
+{
+    return NumUsed;
+}
+
+/** Return the capacity (total number of positions) of the vector. */
+template<class T, Size_t Size>
+Size_t Vector<T, Size>::size() const
 {
     return Size;
 }
 
-/** Return the capacity (total number of positions) of the vector. */
-template<class T, Size_t Capacity>
-Size_t Vector<T, Capacity>::capacity() const
-{
-    return Capacity;
-}
-
 /** Copy the front of the vector to val, without removing it. On success returns
 true, false otherwise (vector empty). */
-template<class T, Size_t Capacity>
-bool Vector<T, Capacity>::front(T& val)
+template<class T, Size_t Size>
+bool Vector<T, Size>::front(T& val)
 {
-    if(Size != 0)
+    if(NumUsed != 0)
     {
         val = Buff[0U];
         return true;
@@ -108,12 +108,12 @@ bool Vector<T, Capacity>::front(T& val)
 
 /** Copy the back of the vector to val, without removing it. On success returns
 true, false otherwise (vector empty). */
-template<class T, Size_t Capacity>
-bool Vector<T, Capacity>::back(T& val)
+template<class T, Size_t Size>
+bool Vector<T, Size>::back(T& val)
 {
-    if(Size != 0)
+    if(NumUsed != 0)
     {
-        val = Buff[Size - 1U];
+        val = Buff[NumUsed - 1U];
         return true;
     }
     else
@@ -124,12 +124,12 @@ bool Vector<T, Capacity>::back(T& val)
 
 /** Insert val in the back of the vector. On success returns true, false
 otherwise (vector at full capacity). */
-template<class T, Size_t Capacity>
-bool Vector<T, Capacity>::push_back(const T& val)
+template<class T, Size_t Size>
+bool Vector<T, Size>::push_back(const T& val)
 {
-    if(Size != Capacity)
+    if(NumUsed != Size)
     {
-        Buff[Size++] = val;
+        Buff[NumUsed++] = val;
         return true;
     }
     else
@@ -140,12 +140,12 @@ bool Vector<T, Capacity>::push_back(const T& val)
 
 /** Remove the back of the vector and copy it to val. On success returns true,
 false otherwise (vector empty). */
-template<class T, Size_t Capacity>
-bool Vector<T, Capacity>::pop_back(T& val)
+template<class T, Size_t Size>
+bool Vector<T, Size>::pop_back(T& val)
 {
-    if(Size != 0)
+    if(NumUsed != 0)
     {
-        val = Buff[--Size];
+        val = Buff[--NumUsed];
         return true;
     }
     else
@@ -156,12 +156,12 @@ bool Vector<T, Capacity>::pop_back(T& val)
 
 /** Return a reference to the position pos of the vector (pos must be in the
 range 0 to Size-1). */
-template<class T, Size_t Capacity>
-T& Vector<T, Capacity>::operator[](Size_t pos)
+template<class T, Size_t Size>
+T& Vector<T, Size>::operator[](Size_t pos)
 {
-    ASSERT(pos < Capacity);
-    if(pos >= Size)
-        Size = pos + 1U;
+    ASSERT(pos < Size);
+    if(pos >= NumUsed)
+        NumUsed = pos + 1U;
     return Buff[pos];
 }
 
