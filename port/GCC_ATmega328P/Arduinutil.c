@@ -88,6 +88,8 @@ void init(void)
     PORTD = 0xFFU;
 
     disablePeripheralsClocks();
+
+    ENABLE_INTERRUPTS();
 }
 
 /** Disable all peripherals clocks for lower power consumption.

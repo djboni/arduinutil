@@ -145,6 +145,8 @@ void init(void)
     PORTL = 0xFFU;
 
     disablePeripheralsClocks();
+
+    ENABLE_INTERRUPTS();
 }
 
 /** Disable all peripherals clocks for lower power consumption.
