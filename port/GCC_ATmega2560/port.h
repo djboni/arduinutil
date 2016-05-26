@@ -45,6 +45,9 @@ extern "C" {
     __asm volatile("pop   __tmp_reg__" ::);           \
     __asm volatile("out   __SREG__,__tmp_reg__" ::)
 
+#define ENTER_CRITICAL_IF_CONCURRENT() if(Concurrent) ENTER_CRITICAL()
+#define EXIT_CRITICAL_IF_CONCURRENT()  if(Concurrent) EXIT_CRITICAL()
+
 #ifdef __cplusplus
 } /* extern "C" */
 } /* namespace Arduinutil */

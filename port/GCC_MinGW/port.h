@@ -34,4 +34,7 @@ limitations under the License.
 #define ENTER_CRITICAL() do{}while(0U)
 #define EXIT_CRITICAL()  do{}while(0U)
 
+#define ENTER_CRITICAL_IF_CONCURRENT() if(Concurrent) ENTER_CRITICAL()
+#define EXIT_CRITICAL_IF_CONCURRENT()  if(Concurrent) EXIT_CRITICAL()
+
 #endif /* __ARDUINUTIL_PORT_H__ */
