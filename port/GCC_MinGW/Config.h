@@ -23,6 +23,7 @@ limitations under the License.
 #ifndef __ARDUINUTIL_CONFIG_H__
 #define __ARDUINUTIL_CONFIG_H__
 
+#include <stdint.h>
 #include <stddef.h>
 #include <assert.h>
 

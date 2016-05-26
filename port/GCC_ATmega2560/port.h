@@ -48,6 +48,8 @@ extern "C" {
 #define ENTER_CRITICAL_IF_CONCURRENT() if(Concurrent) ENTER_CRITICAL()
 #define EXIT_CRITICAL_IF_CONCURRENT()  if(Concurrent) EXIT_CRITICAL()
 
+#define WAIT() __asm volatile("sleep" ::)
+
 #ifdef __cplusplus
 } /* extern "C" */
 } /* namespace Arduinutil */
