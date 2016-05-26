@@ -26,7 +26,7 @@ limitations under the License.
 #ifdef __cplusplus
 namespace Arduinutil {
 
-template<class T, Size_t Size, bool Assert=true>
+template<class T, Size_t Size, bool Assert=true, bool Concurrent=false>
 class Circular
 {
 public:
@@ -52,75 +52,129 @@ public:
     /** Return the capacity (total number of positions) of the list. */
     inline Size_t size() const
     {
-        return Size;
+        Size_t ret;
+
+        ENTER_CRITICAL_IF_CONCURRENT();
+        {
+            ret = Size;
+        }
+        EXIT_CRITICAL_IF_CONCURRENT();
+
+        return ret;
     }
 
     /** Return the number of used positions of the list. */
     inline Size_t numUsed() const
     {
-        return NumUsed;
+        Size_t ret;
+
+        ENTER_CRITICAL_IF_CONCURRENT();
+        {
+            ret = NumUsed;
+        }
+        EXIT_CRITICAL_IF_CONCURRENT();
+
+        return ret;
     }
 
     /** Return the number of free positions of the list. */
     inline Size_t numFree() const
     {
-        return size() - numUsed();
+        Size_t ret;
+
+        ENTER_CRITICAL_IF_CONCURRENT();
+        {
+            ret = size() - numUsed();
+        }
+        EXIT_CRITICAL_IF_CONCURRENT();
+
+        return ret;
     }
 
     /** Insert val in the front of the list. */
     inline void push_front(const T& val)
     {
         if(Assert)
-            ASSERT(NumUsed < Size);
-        ++NumUsed;
-        Head = Head == 0 ? Size-1 : Head-1;
-        Buff[Head] = val;
+            ASSERT(numUsed() < Size);
+
+        ENTER_CRITICAL_IF_CONCURRENT();
+        {
+            ++NumUsed;
+            Head = Head == 0 ? Size-1 : Head-1;
+            Buff[Head] = val;
+        }
+        EXIT_CRITICAL_IF_CONCURRENT();
     }
 
     /** Insert val in the back of the list. */
     inline void push_back(const T& val)
     {
         if(Assert)
-            ASSERT(NumUsed < Size);
-        ++NumUsed;
-        Buff[Tail] = val;
-        Tail = Tail == Size-1 ? 0 : Tail+1;
+            ASSERT(numUsed() < Size);
+
+        ENTER_CRITICAL_IF_CONCURRENT();
+        {
+            ++NumUsed;
+            Buff[Tail] = val;
+            Tail = Tail == Size-1 ? 0 : Tail+1;
+        }
+        EXIT_CRITICAL_IF_CONCURRENT();
     }
 
     /** Remove the value in the front of the list. */
     inline void pop_front(T& val)
     {
         if(Assert)
-            ASSERT(NumUsed > 0);
-        --NumUsed;
-        val = Buff[Head];
-        Head = Head == Size-1 ? 0 : Head+1;
+            ASSERT(numUsed() > 0);
+
+        ENTER_CRITICAL_IF_CONCURRENT();
+        {
+            --NumUsed;
+            val = Buff[Head];
+            Head = Head == Size-1 ? 0 : Head+1;
+        }
+        EXIT_CRITICAL_IF_CONCURRENT();
     }
 
     /** Remove the value in the back of the list. */
     inline void pop_back(T& val)
     {
         if(Assert)
-            ASSERT(NumUsed > 0);
-        --NumUsed;
-        Tail = Tail == 0 ? Size-1 : Tail-1;
-        val = Buff[Tail];
+            ASSERT(numUsed() > 0);
+
+        ENTER_CRITICAL_IF_CONCURRENT();
+        {
+            --NumUsed;
+            Tail = Tail == 0 ? Size-1 : Tail-1;
+            val = Buff[Tail];
+        }
+        EXIT_CRITICAL_IF_CONCURRENT();
     }
 
     /** Get the value in the front of the list. */
     inline void front(T& val)
     {
         if(Assert)
-            ASSERT(NumUsed > 0);
-        val = Buff[Head];
+            ASSERT(numUsed() > 0);
+
+        ENTER_CRITICAL_IF_CONCURRENT();
+        {
+            val = Buff[Head];
+        }
+        EXIT_CRITICAL_IF_CONCURRENT();
     }
 
     /** Get the value in the back of the list. */
     inline void back(T& val)
     {
         if(Assert)
-            ASSERT(NumUsed > 0);
-        val = Buff[Tail == 0 ? Size-1 : Tail-1];
+            ASSERT(numUsed() > 0);
+
+        ENTER_CRITICAL_IF_CONCURRENT();
+        {
+            val = Buff[Tail == 0 ? Size-1 : Tail-1];
+        }
+        EXIT_CRITICAL_IF_CONCURRENT();
     }
 
 private:
