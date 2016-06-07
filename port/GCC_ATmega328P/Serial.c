@@ -23,6 +23,10 @@ limitations under the License.
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "Arduinutil.h"
+#include "Data/cCircular.h"
+
+static struct cCircular RxBuff;
+uint8_t RxBuff_data[SERIAL_RBUFSZ];
 
 static void USART0_begin(uint32_t speed, uint32_t config)
 {
@@ -33,6 +37,8 @@ static void USART0_begin(uint32_t speed, uint32_t config)
     PRR &= ~(1U << PRUSART0); /* Enable UART clock. */
 
     UCSR0B = 0; /* Disable TX and RX. */
+
+    cCircular_init(&RxBuff, &RxBuff_data[0], sizeof(RxBuff_data));
 
     /* Set speed and other configurations. */
     UBRR0 = speed;
@@ -76,14 +82,17 @@ static void USART0_writeBuff(const void *buff, uint16_t length)
 
 static int16_t USART0_read(void)
 {
-    int16_t ret = -1;
-    if(UCSR0A & (1U << RXC0))
-        ret = UDR0;
-    return ret;
+    uint8_t data;
+    uint8_t status = cCircular_popfront(&RxBuff, &data);
+    if(status == 0U)
+        return -1;
+    else
+        return data;
 }
 
 ISR(USART_RX_vect)
 {
+    cCircular_pushback(&RxBuff, UDR0);
 }
 
 ISR(USART_UDRE_vect)
@@ -96,10 +105,10 @@ ISR(USART_TX_vect)
 
 struct USART0_Serial Serial =
 {
-    USART0_begin, 
-    USART0_end, 
-    USART0_write, 
-    USART0_writeStr, 
+    USART0_begin,
+    USART0_end,
+    USART0_write,
+    USART0_writeStr,
     USART0_writeBuff,
     USART0_read
 };

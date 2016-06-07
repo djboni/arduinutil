@@ -32,6 +32,8 @@ namespace Arduinutil {
 extern "C" {
 #endif
 
+#define SERIAL_RBUFSZ 64U
+
 typedef uint8_t Size_t;
 
 #define ASSERT(expr)                                   \
