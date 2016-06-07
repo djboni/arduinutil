@@ -58,6 +58,17 @@ void pinMode(byte pin, byte mode);
 void digitalWrite(byte pin, byte value);
 byte digitalRead(byte pin);
 
+struct USART0_Serial {
+    void (*const begin)(uint32_t speed, uint32_t config);
+    void (*const end)(void);
+    void (*const write)(uint8_t data);
+    void (*const writeStr)(const void *str);
+    void (*const writeBuff)(const void *buff, uint16_t length);
+    int16_t (*const read)(void);
+};
+
+extern struct USART0_Serial Serial;
+
 #ifdef __cplusplus
 } /* extern "C" */
 } /* namespace Arduinutil */
