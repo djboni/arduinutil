@@ -62,6 +62,11 @@ static Size_t USART0_available(void)
     return cCircular_used(&RxBuff);
 }
 
+static void USART0_flush(void)
+{
+    while(cCircular_used(&RxBuff) != 0U) { WAIT(); }
+}
+
 static void USART0_write(uint8_t data)
 {
     if((UCSR0A & (1U << UDRE0)))
@@ -124,5 +129,6 @@ struct USART0_Serial Serial =
     USART0_writeStr,
     USART0_writeBuff,
     USART0_read,
-    USART0_available
+    USART0_available,
+    USART0_flush
 };
