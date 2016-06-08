@@ -32,15 +32,21 @@ void init(void)
 {
     /* Configure all pins of the microcontroller as input with pull-up
     (DDR=0,PORT=FF), even those not used by Arduino. Avoid power consumption of
-    floating input pins. You can change pin direction and pull-up with pinMode()
-    or make changes directly here. */
+    floating input pins.
+
+    Analog pins have the pull-ups disabled, but the digital inputs for these
+    pins are also disabled.
+
+    You can change pin direction and pull-up with pinMode() or make changes
+    directly here. */
     DDRB = 0U;
     PORTB = 0xFFU;
     DDRC = 0U;
-    PORTC = 0xFFU;
+    PORTC = 0xC0U;
     DDRD = 0U;
     PORTD = 0xFFU;
 
+    disableDigitalInputsOfAnalogPins();
     disablePeripheralsClocks();
 
     ENABLE_INTERRUPTS();
