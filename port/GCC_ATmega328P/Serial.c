@@ -28,6 +28,9 @@ limitations under the License.
 static struct cCircular RxBuff;
 uint8_t RxBuff_data[SERIAL_RBUFSZ];
 
+static struct cCircular TxBuff;
+uint8_t TxBuff_data[SERIAL_TBUFSZ];
+
 static void USART0_begin(uint32_t speed, uint32_t config)
 {
     /* Rounding speed value.
@@ -39,6 +42,7 @@ static void USART0_begin(uint32_t speed, uint32_t config)
     UCSR0B = 0; /* Disable TX and RX. */
 
     cCircular_init(&RxBuff, &RxBuff_data[0], sizeof(RxBuff_data));
+    cCircular_init(&TxBuff, &TxBuff_data[0], sizeof(TxBuff_data));
 
     /* Set speed and other configurations. */
     UBRR0 = speed;
@@ -53,41 +57,45 @@ static void USART0_end(void)
     PRR |= (1 << PRUSART0); /* Disable UART clock. */
 }
 
+static Size_t USART0_available(void)
+{
+    return cCircular_used(&RxBuff);
+}
+
 static void USART0_write(uint8_t data)
 {
-    while(!(UCSR0A & (1U << UDRE0))) {}
-    UDR0 = data;
+    if((UCSR0A & (1U << UDRE0)))
+    {
+        UDR0 = data;
+    }
+    else
+    {
+        UCSR0B |= (1U << UDRIE0);
+        while(!cCircular_pushback(&TxBuff, data)) { WAIT(); }
+    }
 }
 
 static void USART0_writeStr(const void *str)
 {
     const uint8_t *s = (const uint8_t *)str;
     while(*s != 0U)
-    {
-        USART0_write(*s);
-        ++s;
-    }
+        USART0_write(*s++);
 }
 
 static void USART0_writeBuff(const void *buff, uint16_t length)
 {
     const uint8_t *b = (const uint8_t *)buff;
-    while(length != 0)
-    {
-        USART0_write(*b);
-        ++b;
-        --length;
-    }
+    while(length-- != 0)
+        USART0_write(*b++);
 }
 
 static int16_t USART0_read(void)
 {
     uint8_t data;
-    uint8_t status = cCircular_popfront(&RxBuff, &data);
-    if(status == 0U)
-        return -1;
-    else
+    if(cCircular_popfront(&RxBuff, &data))
         return data;
+    else
+        return -1;
 }
 
 ISR(USART_RX_vect)
@@ -97,6 +105,11 @@ ISR(USART_RX_vect)
 
 ISR(USART_UDRE_vect)
 {
+    uint8_t data;
+    if(cCircular_popfront(&TxBuff, &data))
+        UDR0 = data;
+    else
+        UCSR0B &= ~(1U << UDRIE0);
 }
 
 ISR(USART_TX_vect)
@@ -110,5 +123,6 @@ struct USART0_Serial Serial =
     USART0_write,
     USART0_writeStr,
     USART0_writeBuff,
-    USART0_read
+    USART0_read,
+    USART0_available
 };

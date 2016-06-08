@@ -65,6 +65,7 @@ struct USART0_Serial {
     void (*const writeStr)(const void *str);
     void (*const writeBuff)(const void *buff, uint16_t length);
     int16_t (*const read)(void);
+    Size_t (*const available)(void);
 };
 
 extern struct USART0_Serial Serial;
