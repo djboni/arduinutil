@@ -31,8 +31,50 @@ extern "C" {
 #define inline __inline
 #endif
 
+/*******************************************************************************
+Digital.c
+*******************************************************************************/
+
 #define ANALOGIO 54U
 #define MAXIO    (ANALOGIO + 16U)
+
+/*******************************************************************************
+Analog.c
+*******************************************************************************/
+
+/* Analog/Digital pins */
+#define A0       (ANALOGIO + 0U)
+#define A1       (ANALOGIO + 1U)
+#define A2       (ANALOGIO + 2U)
+#define A3       (ANALOGIO + 3U)
+#define A4       (ANALOGIO + 4U)
+#define A5       (ANALOGIO + 5U)
+#define A6       (ANALOGIO + 6U)
+#define A7       (ANALOGIO + 7U)
+#define A8       (ANALOGIO + 8U)
+#define A9       (ANALOGIO + 9U)
+#define A10      (ANALOGIO + 10U)
+#define A11      (ANALOGIO + 11U)
+#define A12      (ANALOGIO + 12U
+#define A13      (ANALOGIO + 13U)
+#define A14      (ANALOGIO + 14U)
+#define A15      (ANALOGIO + 15U)
+/* Analog only internal */
+#define A1V1     (ANALOGIO + 16U)
+
+enum AnalogReferences {
+    EXTERNAL     = 0x00U, /* External voltage on AREF. */
+    INTERNALVCC  = 0x01U, /* Internal voltage VCC. */
+    INTERNAL1V1  = 0x02U, /* Internal voltage reference 1.1V. */
+    INTERNAL2V56 = 0x03U, /* Internal voltage reference 2.56V. */
+    /* Arduino IDE compatibility. */
+    DEFAULT      = INTERNALVCC,
+    INTERNAL     = INTERNAL1V1
+};
+
+/*******************************************************************************
+Others
+*******************************************************************************/
 
 #define DISABLE_INTERRUPTS() __asm volatile("cli" ::)
 #define ENABLE_INTERRUPTS()  __asm volatile("sei" ::)
@@ -49,6 +91,10 @@ extern "C" {
 #define EXIT_CRITICAL_IF_CONCURRENT()  if(Concurrent) EXIT_CRITICAL()
 
 #define WAIT() __asm volatile("sleep" ::)
+
+/*******************************************************************************
+Serial.c
+*******************************************************************************/
 
 #define SERIAL_CONF(A,B,C) ((A)|((B)<<8UL)|((C)<<16UL))
 #define SERIAL_5N1 SERIAL_CONF(0x00UL, 0x98UL, 0x00UL)
