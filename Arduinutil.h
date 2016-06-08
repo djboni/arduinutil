@@ -58,6 +58,11 @@ void pinMode(byte pin, byte mode);
 void digitalWrite(byte pin, byte value);
 byte digitalRead(byte pin);
 
+void adcBegin(void);
+void adcEnd(void);
+uint16_t analogRead(uint8_t analog);
+void analogReference(uint8_t reference);
+
 struct USART0_Serial {
     void (*const begin)(uint32_t speed, uint32_t config);
     void (*const end)(void);

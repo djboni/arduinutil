@@ -31,8 +31,43 @@ extern "C" {
 #define inline __inline
 #endif
 
+/*******************************************************************************
+Digital.c
+*******************************************************************************/
+
 #define ANALOGIO 14U
 #define MAXIO    (ANALOGIO + 6U)
+
+/*******************************************************************************
+Analog.c
+*******************************************************************************/
+
+/* Analog/Digital pins */
+#define A0       (ANALOGIO + 0U)
+#define A1       (ANALOGIO + 1U)
+#define A2       (ANALOGIO + 2U)
+#define A3       (ANALOGIO + 3U)
+#define A4       (ANALOGIO + 4U)
+#define A5       (ANALOGIO + 5U)
+/* Analog only pins */
+#define A6       (ANALOGIO + 6U)
+#define A7       (ANALOGIO + 7U)
+/* Analog only internal */
+#define ATEMP    (ANALOGIO + 8U)
+#define A1V1     (ANALOGIO + 14U)
+
+enum AnalogReferences {
+    EXTERNAL     = 0x00U, /* External voltage on AREF. */
+    INTERNALVCC  = 0x01U, /* Internal voltage VCC. */
+    INTERNAL1V1  = 0x03U, /* Internal voltage reference 1.1V. */
+    /* Arduino IDE compatibility. */
+    DEFAULT      = INTERNALVCC,
+    INTERNAL     = INTERNAL1V1
+};
+
+/*******************************************************************************
+Others
+*******************************************************************************/
 
 #define DISABLE_INTERRUPTS() __asm volatile("cli" ::)
 #define ENABLE_INTERRUPTS()  __asm volatile("sei" ::)
@@ -49,6 +84,10 @@ extern "C" {
 #define EXIT_CRITICAL_IF_CONCURRENT()  if(Concurrent) EXIT_CRITICAL()
 
 #define WAIT() __asm volatile("sleep" ::)
+
+/*******************************************************************************
+Serial.c
+*******************************************************************************/
 
 #define SERIAL_CONF(A,B,C) ((A)|((B)<<8UL)|((C)<<16UL))
 #define SERIAL_5N1 SERIAL_CONF(0x00UL, 0x98UL, 0x00UL)
