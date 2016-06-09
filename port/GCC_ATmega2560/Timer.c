@@ -24,8 +24,7 @@ limitations under the License.
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-#define TIMER_US_COUNT_SUM (TIMER_PRESCALER * 1000UL / (F_CPU / 1000UL))
-#define TIMER_US_SUM (256UL * TIMER_US_COUNT_SUM)
+#define TIMER_US_SUM(x) (((x) * (TIMER_PRESCALER * 125UL)) / (F_CPU / 8000UL))
 
 static uint32_t TimerUs = 0U;
 
@@ -84,7 +83,7 @@ void timerEnd(void)
 
 ISR(TIMER0_OVF_vect)
 {
-    TimerUs += TIMER_US_SUM;
+    TimerUs += TIMER_US_SUM(256U);
 }
 
 /** Return the number of milliseconds the system is running since last call to
@@ -106,13 +105,13 @@ uint32_t micros(void)
     uint8_t count;
     ENTER_CRITICAL();
     {
-        count = TCNT0;
         us = TimerUs;
+        count = TCNT0;
         if(TIFR0 & (1U << TOV0))
             count = 255U;
     }
     EXIT_CRITICAL();
-    return (us + count * TIMER_US_COUNT_SUM);
+    return (us + TIMER_US_SUM(count));
 }
 
 /** Stop execution for a given time in milliseconds.
@@ -129,5 +128,5 @@ Note: This function requires interrupts to be enabled. */
 void delayMicroseconds(uint32_t us)
 {
     uint32_t call_time = micros();
-    while( (int32_t)(micros() - call_time) < (int32_t)us ) {}
+    while((micros() - call_time) < us) {}
 }
