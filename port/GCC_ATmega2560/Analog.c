@@ -51,17 +51,35 @@ void adcEnd(void)
     PRR0 |= (1U << PRADC); /* Disable ADC clock. */
 }
 
+/** Start an analog to digital conversion. */
+void analogConvertStart(uint8_t analog)
+{
+    analog = pgm_read_byte(&muxADC[analog - A0]);
+    ADMUX = (ADMUX & ~(0x1FU << MUX0)) | ((analog & 0x1FU) << MUX0);
+    ADCSRB = (ADCSRB & ~(1U << MUX5)) | (((analog & 0x20U) >> 5U) << MUX5);
+    ADCSRA |= (1U << ADSC);
+}
+
+/** Check if an analog to digital conversion has finished.
+
+Return 1U if the conversion has finished, 0U otherwise. */
+uint8_t analogConvertReady(void)
+{
+	return (ADCSRA & (1U << ADIF)) != 0U;
+}
+
+/** Get the value from the analog to digital conversion. */
+uint16_t analogConvertGetValue(void)
+{
+	return ADC;
+}
+
 /** Read and return an analog value. */
 uint16_t analogRead(uint8_t analog)
 {
-    analog = pgm_read_byte(&muxADC[analog - A0]);
-    
-    ADMUX = (ADMUX & ~(0x1FU << MUX0)) | ((analog & 0x1FU) << MUX0);
-    ADCSRB = (ADCSRB & ~(1U << MUX5)) | (((analog & 0x20U) >> 5U) << MUX5);
-
-    ADCSRA |= (1U << ADSC);
-    while(!(ADCSRA & (1U << ADIF))) {}
-    return ADC;
+	analogConvertStart(analog);
+	while(!analogConvertReady()) {}
+	return analogConvertGetValue();
 }
 
 /** Set analog reference.

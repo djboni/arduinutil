@@ -60,6 +60,9 @@ byte digitalRead(byte pin);
 
 void adcBegin(void);
 void adcEnd(void);
+void analogConvertStart(uint8_t analog);
+uint8_t analogConvertReady(void);
+uint16_t analogConvertGetValue(void);
 uint16_t analogRead(uint8_t analog);
 void analogReference(uint8_t reference);
 

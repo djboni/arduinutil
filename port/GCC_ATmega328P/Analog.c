@@ -41,14 +41,34 @@ void adcEnd(void)
     PRR |= (1U << PRADC); /* Disable ADC clock. */
 }
 
-/** Read and return an analog value. */
-uint16_t analogRead(uint8_t analog)
+/** Start an analog to digital conversion. */
+void analogConvertStart(uint8_t analog)
 {
     analog -= A0;
     ADMUX = (ADMUX & ~(0x0FU << MUX0)) | (analog << MUX0);
     ADCSRA |= (1U << ADSC);
-    while(!(ADCSRA & (1U << ADIF))) {}
-    return ADC;
+}
+
+/** Check if an analog to digital conversion has finished.
+
+Return 1U if the conversion has finished, 0U otherwise. */
+uint8_t analogConvertReady(void)
+{
+	return (ADCSRA & (1U << ADIF)) != 0U;
+}
+
+/** Get the value from the analog to digital conversion. */
+uint16_t analogConvertGetValue(void)
+{
+	return ADC;
+}
+
+/** Read and return an analog value. */
+uint16_t analogRead(uint8_t analog)
+{
+	analogConvertStart(analog);
+	while(!analogConvertReady()) {}
+	return analogConvertGetValue();
 }
 
 /** Set analog reference.
