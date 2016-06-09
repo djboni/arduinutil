@@ -63,6 +63,13 @@ void adcEnd(void);
 uint16_t analogRead(uint8_t analog);
 void analogReference(uint8_t reference);
 
+void timerBegin(void);
+void timerEnd(void);
+uint32_t millis(void);
+uint32_t micros(void);
+void delay(uint32_t ms);
+void delayMicroseconds(uint32_t us);
+
 struct USART0_Serial {
     void (*const begin)(uint32_t speed, uint32_t config);
     void (*const end)(void);
