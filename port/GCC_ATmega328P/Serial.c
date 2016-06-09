@@ -33,9 +33,21 @@ uint8_t TxBuff_data[SERIAL_TBUFSZ];
 
 static void USART0_begin(uint32_t speed, uint32_t config)
 {
-    /* Rounding speed value.
-    speed = F_CPU / (16U * speed) - 1U; */
-    speed = (F_CPU - 8U * speed) / (16U * speed);
+    uint8_t ucsra;
+    uint32_t ubrr;
+
+    ubrr = (F_CPU - 4U * speed) / (8U * speed);
+    ucsra = config;
+
+    if(ubrr > 0x0FFFU)
+    {
+        ubrr = (F_CPU - 8U * speed) / (16U * speed);
+        ucsra &= ~(1U << U2X0);
+    }
+    else
+    {
+        ucsra |= (1U << U2X0);
+    }
 
     PRR &= ~(1U << PRUSART0); /* Enable UART clock. */
 
@@ -45,8 +57,8 @@ static void USART0_begin(uint32_t speed, uint32_t config)
     cCircular_init(&TxBuff, &TxBuff_data[0], sizeof(TxBuff_data));
 
     /* Set speed and other configurations. */
-    UBRR0 = speed;
-    UCSR0A = config;
+    UBRR0 = ubrr;
+    UCSR0A = ucsra;
     UCSR0B = config >> 8U;
     UCSR0C = config >> 16U;
 }
@@ -84,14 +96,14 @@ static void USART0_write(const void *str)
 {
     const uint8_t *s = (const uint8_t *)str;
     while(*s != 0U)
-    	USART0_writeByte(*s++);
+        USART0_writeByte(*s++);
 }
 
 static void USART0_writeBuff(const void *buff, uint16_t length)
 {
     const uint8_t *b = (const uint8_t *)buff;
     while(length-- != 0)
-    	USART0_writeByte(*b++);
+        USART0_writeByte(*b++);
 }
 
 static int16_t USART0_read(void)
