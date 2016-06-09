@@ -73,8 +73,8 @@ void delayMicroseconds(uint32_t us);
 struct USART0_Serial {
     void (*const begin)(uint32_t speed, uint32_t config);
     void (*const end)(void);
-    void (*const write)(uint8_t data);
-    void (*const writeStr)(const void *str);
+    void (*const writeByte)(uint8_t data);
+    void (*const write)(const void *str);
     void (*const writeBuff)(const void *buff, uint16_t length);
     int16_t (*const read)(void);
     Size_t (*const available)(void);

@@ -67,7 +67,7 @@ static void USART0_flush(void)
     while(cCircular_used(&TxBuff) != 0U) { WAIT(); }
 }
 
-static void USART0_write(uint8_t data)
+static void USART0_writeByte(uint8_t data)
 {
     if((UCSR0A & (1U << UDRE0)))
     {
@@ -80,18 +80,18 @@ static void USART0_write(uint8_t data)
     }
 }
 
-static void USART0_writeStr(const void *str)
+static void USART0_write(const void *str)
 {
     const uint8_t *s = (const uint8_t *)str;
     while(*s != 0U)
-        USART0_write(*s++);
+    	USART0_writeByte(*s++);
 }
 
 static void USART0_writeBuff(const void *buff, uint16_t length)
 {
     const uint8_t *b = (const uint8_t *)buff;
     while(length-- != 0)
-        USART0_write(*b++);
+    	USART0_writeByte(*b++);
 }
 
 static int16_t USART0_read(void)
@@ -125,8 +125,8 @@ struct USART0_Serial Serial =
 {
     USART0_begin,
     USART0_end,
+    USART0_writeByte,
     USART0_write,
-    USART0_writeStr,
     USART0_writeBuff,
     USART0_read,
     USART0_available,
