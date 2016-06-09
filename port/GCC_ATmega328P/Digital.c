@@ -64,8 +64,8 @@ PROGMEM static const byte bitIOLIST[] = {
 Note: Use pin ANALOGIO+X for analog pin X. */
 void pinMode(byte io, byte mode)
 {
-    volatile byte *port = pgm_read_word(&portIOLIST[io]);
-    volatile byte *ddr = pgm_read_word(&ddrIOLIST[io]);
+    volatile byte *port = (volatile byte *)pgm_read_word(&portIOLIST[io]);
+    volatile byte *ddr = (volatile byte *)pgm_read_word(&ddrIOLIST[io]);
     byte bit = pgm_read_byte(&bitIOLIST[io]);
 
     ASSERT(io < MAXIO);
@@ -96,7 +96,7 @@ void pinMode(byte io, byte mode)
 Note: Use pin ANALOGIO+X for analog pin X. */
 void digitalWrite(byte io, byte value)
 {
-    volatile byte *port = pgm_read_word(&portIOLIST[io]);
+    volatile byte *port = (volatile byte *)pgm_read_word(&portIOLIST[io]);
     byte bit = pgm_read_byte(&bitIOLIST[io]);
 
     ASSERT(io < MAXIO);
@@ -117,7 +117,7 @@ void digitalWrite(byte io, byte value)
 Note: Use pin ANALOGIO+X for analog pin X. */
 byte digitalRead(byte io)
 {
-    volatile byte *pin = pgm_read_word(&pinIOLIST[io]);
+    volatile byte *pin = (volatile byte *)pgm_read_word(&pinIOLIST[io]);
     byte bit = pgm_read_byte(&bitIOLIST[io]);
 
     ASSERT(io < MAXIO);
