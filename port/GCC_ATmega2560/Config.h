@@ -35,6 +35,8 @@ extern "C" {
 #define SERIAL_RBUFSZ 64U
 #define SERIAL_TBUFSZ 64U
 
+#define TIMER_PRESCALER 1024U
+
 typedef uint8_t Size_t;
 
 #define ASSERT(expr)                                   \

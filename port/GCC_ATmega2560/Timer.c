@@ -34,7 +34,7 @@ void timerBegin(void)
 {
     uint8_t prescaler;
 
-    PRR &= ~(1U << PRTIM0); /* Enable timer clock. */
+    PRR0 &= ~(1U << PRTIM0); /* Enable timer clock. */
 
     TIMSK0 = 0U; /* Disable timer interrupts. */
 
@@ -79,7 +79,7 @@ void timerBegin(void)
 void timerEnd(void)
 {
     TIMSK0 = 0U; /* Disable timer interrupts. */
-    PRR |= (1U << PRTIM0); /* Disable timer clock. */
+    PRR0 |= (1U << PRTIM0); /* Disable timer clock. */
 }
 
 ISR(TIMER0_OVF_vect)
