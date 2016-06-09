@@ -64,7 +64,7 @@ static Size_t USART0_available(void)
 
 static void USART0_flush(void)
 {
-    while(cCircular_used(&RxBuff) != 0U) { WAIT(); }
+    while(cCircular_used(&TxBuff) != 0U) { WAIT(); }
 }
 
 static void USART0_write(uint8_t data)
