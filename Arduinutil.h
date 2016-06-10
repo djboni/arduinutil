@@ -68,6 +68,7 @@ void analogReference(uint8_t reference);
 
 void timerBegin(void);
 void timerEnd(void);
+uint32_t timerGetCounts(void);
 uint32_t millis(void);
 uint32_t micros(void);
 void delay(uint32_t ms);

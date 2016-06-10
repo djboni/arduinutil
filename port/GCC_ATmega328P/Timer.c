@@ -24,9 +24,16 @@ limitations under the License.
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-#define TIMER_US_SUM(x) (((x) * (TIMER_PRESCALER * 125UL)) / (F_CPU / 8000UL))
+#define TIMER_US_SUM(x)         ( (x) * ((TIMER_PRESCALER * 125UL) / (F_CPU / 8000UL)) )
+#if (TIMER_US_SUM(1U) == 0U)
+    /* Especial case for smaller prescaleres (1U and 8U @ 16MHz). */
+    #undef TIMER_US_SUM
+    #define TIMER_US_SUM_1(x)   ( ((x) * (TIMER_PRESCALER * 125UL)) / (F_CPU / 8000UL) )
+    #define TIMER_US_SUM_256(x) ( (x) * TIMER_US_SUM_1(256U) )
+    #define TIMER_US_SUM(x)     ( TIMER_US_SUM_256(x >> 8UL) + TIMER_US_SUM_1(x & 0xFFUL) )
+#endif
 
-static uint32_t TimerUs = 0U;
+static uint32_t TimerIntCount = 0U;
 
 /** Enable Timer. */
 void timerBegin(void)
@@ -78,16 +85,16 @@ void timerBegin(void)
 void timerEnd(void)
 {
     TIMSK0 = 0U; /* Disable timer interrupts. */
+    TCCR0B = 0U; /* Disable clock source. */
     PRR |= (1U << PRTIM0); /* Disable timer clock. */
 }
 
 ISR(TIMER0_OVF_vect)
 {
-    TimerUs += TIMER_US_SUM(256U);
+    TimerIntCount += 256U;
 }
 
-/** Return the number of milliseconds the system is running since last call to
-timerBegin().
+/** Return the number of milliseconds the timer is running.
 
 Note: This function may return an outdated value if interrupts are disabled. */
 uint32_t millis(void)
@@ -95,23 +102,30 @@ uint32_t millis(void)
     return micros() / 1000UL;
 }
 
-/** Return the number of microseconds the system is running since last call to
-timerBegin().
+/** Return the number of microseconds the timer is running.
 
 Note: This function may return an outdated value if interrupts are disabled. */
 uint32_t micros(void)
 {
-    uint32_t us;
-    uint8_t count;
+    return TIMER_US_SUM(timerGetCounts());
+}
+
+/** Return the number of counts the timer had.
+
+Note: This function may return an outdated value if interrupts are disabled. */
+uint32_t timerGetCounts(void)
+{
+    uint32_t timerIntCount;
+    uint8_t timerCount;
     ENTER_CRITICAL();
     {
-        us = TimerUs;
-        count = TCNT0;
+        timerIntCount = TimerIntCount;
+        timerCount = TCNT0;
         if(TIFR0 & (1U << TOV0))
-            count = 255U;
+            timerCount = 255U;
     }
     EXIT_CRITICAL();
-    return (us + TIMER_US_SUM(count));
+    return (timerIntCount + timerCount);
 }
 
 /** Stop execution for a given time in milliseconds.
