@@ -94,6 +94,18 @@ ISR(TIMER0_OVF_vect)
     TimerIntCount += 256U;
 }
 
+/** Convert timer counts to microseconds. */
+uint32_t timerConvCountToUs(uint32_t count)
+{
+    return TIMER_US_SUM(count);
+}
+
+/** Convert microseconds to timer counts. */
+uint32_t timerConvUsToCount(uint32_t us)
+{
+    return us / TIMER_US_SUM(1U);
+}
+
 /** Return the number of milliseconds the timer is running.
 
  Note: This function may return an outdated value if interrupts are disabled. */
@@ -107,7 +119,7 @@ uint32_t millis(void)
  Note: This function may return an outdated value if interrupts are disabled. */
 uint32_t micros(void)
 {
-    return TIMER_US_SUM(timerGetCounts());
+    return timerConvCountToUs(timerGetCounts());
 }
 
 /** Return the number of counts the timer had.
@@ -141,8 +153,9 @@ void delay(uint32_t ms)
  Note: This function requires interrupts to be enabled. */
 void delayMicroseconds(uint32_t us)
 {
-    uint32_t call_time = micros();
-    while((micros() - call_time) < us)
+    uint32_t call_time = timerGetCounts();
+    us = timerConvUsToCount(us);
+    while((timerGetCounts() - call_time) < us)
     {
     }
 }
