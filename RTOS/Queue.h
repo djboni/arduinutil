@@ -1,21 +1,21 @@
 /*
-Arduinutil Queue - Queue implementation in C++
+ Arduinutil Queue - Queue implementation in C++
 
 
-Copyright 2016 Djones A. Boni
+ Copyright 2016 Djones A. Boni
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+ http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
 
 #ifndef __ARDUINUTIL_QUEUE_H__
 #define __ARDUINUTIL_QUEUE_H__
@@ -45,9 +45,18 @@ public:
     bool pop_front(T& val);
 
     /* FIFO */
-    inline bool send(const T& val) { return push_back(val); }
-    inline bool receive(T& val) { return pop_front(val); }
-    inline bool peek(T& val) { return front(val); }
+    inline bool send(const T& val)
+    {
+        return push_back(val);
+    }
+    inline bool receive(T& val)
+    {
+        return pop_front(val);
+    }
+    inline bool peek(T& val)
+    {
+        return front(val);
+    }
 
 private:
     T Buff[Size]; /* Data storage */
@@ -89,7 +98,7 @@ Size_t Queue<T, Size>::size() const
 }
 
 /** Copy the front of the queue to val, without removing it from the queue. On
-success returns true, false otherwise (queue empty). */
+ success returns true, false otherwise (queue empty). */
 template<class T, Size_t Size>
 bool Queue<T, Size>::front(T& val)
 {
@@ -97,7 +106,7 @@ bool Queue<T, Size>::front(T& val)
     ENTER_CRITICAL();
     {
         ret = !empty();
-        if (ret)
+        if(ret)
         {
             val = Buff[PosFront];
         }
@@ -107,7 +116,7 @@ bool Queue<T, Size>::front(T& val)
 }
 
 /** Copy the back of the queue to val, without removing it from the queue. On
-success returns true, false otherwise (queue empty). */
+ success returns true, false otherwise (queue empty). */
 template<class T, Size_t Size>
 bool Queue<T, Size>::back(T& val)
 {
@@ -115,7 +124,7 @@ bool Queue<T, Size>::back(T& val)
     ENTER_CRITICAL();
     {
         ret = !empty();
-        if (ret)
+        if(ret)
         {
             val = Buff[PosBack == 0 ? Size - 1 : PosBack - 1];
         }
@@ -125,7 +134,7 @@ bool Queue<T, Size>::back(T& val)
 }
 
 /** Insert val in the back of the queue. On success returns true, false
-otherwise (queue full). */
+ otherwise (queue full). */
 template<class T, Size_t Size>
 bool Queue<T, Size>::push_back(const T& val)
 {
@@ -133,10 +142,10 @@ bool Queue<T, Size>::push_back(const T& val)
     ENTER_CRITICAL();
     {
         ret = !full();
-        if (ret)
+        if(ret)
         {
             Buff[PosBack++] = val;
-            if (PosBack >= Size)
+            if(PosBack >= Size)
                 PosBack = 0;
             ++NumUsed;
         }
@@ -146,7 +155,7 @@ bool Queue<T, Size>::push_back(const T& val)
 }
 
 /** Insert val in the front of the queue. On success returns true, false
-otherwise (queue full). */
+ otherwise (queue full). */
 template<class T, Size_t Size>
 bool Queue<T, Size>::push_front(const T& val)
 {
@@ -154,9 +163,9 @@ bool Queue<T, Size>::push_front(const T& val)
     ENTER_CRITICAL();
     {
         ret = !full();
-        if (ret)
+        if(ret)
         {
-            if (PosFront <= 0)
+            if(PosFront <= 0)
                 PosFront = Size;
             Buff[--PosFront] = val;
             ++NumUsed;
@@ -167,7 +176,7 @@ bool Queue<T, Size>::push_front(const T& val)
 }
 
 /** Remove the back of the queue and copy it to val. On success returns true,
-false otherwise (queue empty). */
+ false otherwise (queue empty). */
 template<class T, Size_t Size>
 bool Queue<T, Size>::pop_back(T& val)
 {
@@ -175,9 +184,9 @@ bool Queue<T, Size>::pop_back(T& val)
     ENTER_CRITICAL();
     {
         ret = !empty();
-        if (ret)
+        if(ret)
         {
-            if (PosBack <= 0)
+            if(PosBack <= 0)
                 PosBack = Size;
             val = Buff[--PosBack];
             --NumUsed;
@@ -188,7 +197,7 @@ bool Queue<T, Size>::pop_back(T& val)
 }
 
 /** Remove the front of the queue and copy it to val. On success returns true,
-false otherwise (queue empty). */
+ false otherwise (queue empty). */
 template<class T, Size_t Size>
 bool Queue<T, Size>::pop_front(T& val)
 {
@@ -196,10 +205,10 @@ bool Queue<T, Size>::pop_front(T& val)
     ENTER_CRITICAL();
     {
         ret = !empty();
-        if (ret)
+        if(ret)
         {
             val = Buff[PosFront++];
-            if (PosFront >= Size)
+            if(PosFront >= Size)
                 PosFront = 0;
             --NumUsed;
         }

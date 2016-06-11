@@ -1,24 +1,24 @@
 /*
-Arduinutil - Arduino compatible library written in C/C++
+ Arduinutil - Arduino compatible library written in C/C++
 
-Supported microcontrollers:
-    See Arduinutil.h
+ Supported microcontrollers:
+ See Arduinutil.h
 
 
-Copyright 2016 Djones A. Boni
+ Copyright 2016 Djones A. Boni
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+ http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
 
 #ifndef __ARDUINUTIL_PORT_H__
 #define __ARDUINUTIL_PORT_H__
@@ -32,15 +32,15 @@ extern "C" {
 #endif
 
 /*******************************************************************************
-Digital.c
-*******************************************************************************/
+ Digital.c
+ ******************************************************************************/
 
 #define ANALOGIO 54U
 #define MAXIO    (ANALOGIO + 16U)
 
 /*******************************************************************************
-Analog.c
-*******************************************************************************/
+ Analog.c
+ ******************************************************************************/
 
 /* Analog/Digital pins */
 #define A0       (ANALOGIO + 0U)
@@ -63,29 +63,29 @@ Analog.c
 #define A1V1     (ANALOGIO + 16U)
 
 enum AnalogReferences {
-    EXTERNAL     = 0x00U, /* External voltage on AREF. */
-    INTERNALVCC  = 0x01U, /* Internal voltage VCC. */
-    INTERNAL1V1  = 0x02U, /* Internal voltage reference 1.1V. */
+    EXTERNAL = 0x00U, /* External voltage on AREF. */
+    INTERNALVCC = 0x01U, /* Internal voltage VCC. */
+    INTERNAL1V1 = 0x02U, /* Internal voltage reference 1.1V. */
     INTERNAL2V56 = 0x03U, /* Internal voltage reference 2.56V. */
     /* Arduino IDE compatibility. */
-    DEFAULT      = INTERNALVCC,
-    INTERNAL     = INTERNAL1V1
+    DEFAULT = INTERNALVCC,
+    INTERNAL = INTERNAL1V1
 };
 
 /*******************************************************************************
-Others
-*******************************************************************************/
+ Others
+ ******************************************************************************/
 
-#define DISABLE_INTERRUPTS() __asm volatile("cli" ::)
-#define ENABLE_INTERRUPTS()  __asm volatile("sei" ::)
+#define DISABLE_INTERRUPTS() do{ __asm volatile("cli" ::); }while(0U)
+#define ENABLE_INTERRUPTS()  do{ __asm volatile("sei" ::); }while(0U)
 
-#define ENTER_CRITICAL()                              \
+#define ENTER_CRITICAL() do{                          \
     __asm volatile("in    __tmp_reg__,__SREG__" ::);  \
     __asm volatile("cli" ::);                         \
-    __asm volatile("push  __tmp_reg__" ::)
-#define EXIT_CRITICAL()                               \
+    __asm volatile("push  __tmp_reg__" ::);           }while(0U)
+#define EXIT_CRITICAL() do{                           \
     __asm volatile("pop   __tmp_reg__" ::);           \
-    __asm volatile("out   __SREG__,__tmp_reg__" ::)
+    __asm volatile("out   __SREG__,__tmp_reg__" ::);  }while(0U)
 
 #define ENTER_CRITICAL_IF_CONCURRENT() if(Concurrent) ENTER_CRITICAL()
 #define EXIT_CRITICAL_IF_CONCURRENT()  if(Concurrent) EXIT_CRITICAL()
@@ -93,8 +93,8 @@ Others
 #define WAIT() __asm volatile("sleep" ::)
 
 /*******************************************************************************
-Serial.c
-*******************************************************************************/
+ Serial.c
+ ******************************************************************************/
 
 #define SERIAL_CONF(A,B,C) ((A)|((B)<<8UL)|((C)<<16UL))
 #define SERIAL_5N1 SERIAL_CONF(0x00UL, 0x98UL, 0x00UL)

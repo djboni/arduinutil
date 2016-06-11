@@ -1,24 +1,24 @@
 /*
-Arduinutil Circular - Byte circular list implementation in C
+ Arduinutil Circular - Byte circular list implementation in C
 
-Supported microcontrollers:
-    See Arduinutil.h
+ Supported microcontrollers:
+ See Arduinutil.h
 
 
-Copyright 2016 Djones A. Boni
+ Copyright 2016 Djones A. Boni
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+ http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
 
 #include "cCircular.h"
 
@@ -95,7 +95,7 @@ uint8_t cCircular_popback(struct cCircular *o, uint8_t *val)
         {
             --(o->Used);
             if(--(o->Tail) >= o->Size)
-                o->Tail = o->Size-1U;
+                o->Tail = o->Size - 1U;
             *val = o->Buff[o->Tail];
         }
     }

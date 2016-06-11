@@ -1,24 +1,24 @@
 /*
-Arduinutil - Arduino compatible library written in C/C++
+ Arduinutil - Arduino compatible library written in C/C++
 
-Supported microcontrollers:
-    See Arduinutil.h
+ Supported microcontrollers:
+ See Arduinutil.h
 
 
-Copyright 2016 Djones A. Boni
+ Copyright 2016 Djones A. Boni
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+ http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -76,7 +76,10 @@ static Size_t USART0_available(void)
 
 static void USART0_flush(void)
 {
-    while(cCircular_used(&TxBuff) != 0U) { WAIT(); }
+    while(cCircular_used(&TxBuff) != 0U)
+    {
+        WAIT();
+    }
 }
 
 static void USART0_writeByte(uint8_t data)
@@ -88,7 +91,10 @@ static void USART0_writeByte(uint8_t data)
     else
     {
         UCSR0B |= (1U << UDRIE0);
-        while(!cCircular_pushback(&TxBuff, data)) { WAIT(); }
+        while(!cCircular_pushback(&TxBuff, data))
+        {
+            WAIT();
+        }
     }
 }
 
@@ -124,9 +130,9 @@ ISR(USART0_UDRE_vect)
 {
     uint8_t data;
     if(cCircular_popfront(&TxBuff, &data))
-        UDR0 = data;
+    UDR0 = data;
     else
-        UCSR0B &= ~(1U << UDRIE0);
+    UCSR0B &= ~(1U << UDRIE0);
 }
 
 ISR(USART0_TX_vect)

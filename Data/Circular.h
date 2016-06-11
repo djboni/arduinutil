@@ -1,21 +1,21 @@
 /*
-Arduinutil Circular - Circular list implementation in C++
+ Arduinutil Circular - Circular list implementation in C++
 
 
-Copyright 2016 Djones A. Boni
+ Copyright 2016 Djones A. Boni
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+ http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
 
 #ifndef __ARDUINUTIL_CIRCULAR_H__
 #define __ARDUINUTIL_CIRCULAR_H__
@@ -26,13 +26,13 @@ limitations under the License.
 #ifdef __cplusplus
 namespace Arduinutil {
 
-template<class T, Size_t Size, bool Assert=true, bool Concurrent=false>
+template<class T, Size_t Size, bool Assert = true, bool Concurrent = false>
 class Circular
 {
 public:
 
     /** Default constructor. */
-    Circular():
+    Circular() :
             Buff(), Head(0), Tail(0), NumUsed(0)
     {
     }
@@ -100,7 +100,7 @@ public:
         ENTER_CRITICAL_IF_CONCURRENT();
         {
             ++NumUsed;
-            Head = Head == 0 ? Size-1 : Head-1;
+            Head = Head == 0 ? Size - 1 : Head - 1;
             Buff[Head] = val;
         }
         EXIT_CRITICAL_IF_CONCURRENT();
@@ -116,7 +116,7 @@ public:
         {
             ++NumUsed;
             Buff[Tail] = val;
-            Tail = Tail == Size-1 ? 0 : Tail+1;
+            Tail = Tail == Size - 1 ? 0 : Tail + 1;
         }
         EXIT_CRITICAL_IF_CONCURRENT();
     }
@@ -131,7 +131,7 @@ public:
         {
             --NumUsed;
             val = Buff[Head];
-            Head = Head == Size-1 ? 0 : Head+1;
+            Head = Head == Size - 1 ? 0 : Head + 1;
         }
         EXIT_CRITICAL_IF_CONCURRENT();
     }
@@ -145,7 +145,7 @@ public:
         ENTER_CRITICAL_IF_CONCURRENT();
         {
             --NumUsed;
-            Tail = Tail == 0 ? Size-1 : Tail-1;
+            Tail = Tail == 0 ? Size - 1 : Tail - 1;
             val = Buff[Tail];
         }
         EXIT_CRITICAL_IF_CONCURRENT();
@@ -172,7 +172,7 @@ public:
 
         ENTER_CRITICAL_IF_CONCURRENT();
         {
-            val = Buff[Tail == 0 ? Size-1 : Tail-1];
+            val = Buff[Tail == 0 ? Size - 1 : Tail - 1];
         }
         EXIT_CRITICAL_IF_CONCURRENT();
     }
