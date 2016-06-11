@@ -24,14 +24,17 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-#define TIMER_US_SUM(x)         ( (x) * ((TIMER_PRESCALER * 125UL) / (F_CPU / 8000UL)) )
-#if (TIMER_US_SUM(1U) == 0U)
-/* Especial case for smaller prescaleres (1U and 8U @ 16MHz). */
-#undef TIMER_US_SUM
-#define TIMER_US_SUM_1(x)   ( ((x) * (TIMER_PRESCALER * 125UL)) / (F_CPU / 8000UL) )
-#define TIMER_US_SUM_256(x) ( (x) * TIMER_US_SUM_1(256U) )
-#define TIMER_US_SUM(x)     ( TIMER_US_SUM_256(x >> 8UL) + TIMER_US_SUM_1(x & 0xFFUL) )
-#endif
+#if (TIMER_USE_FLOAT != 0)
+
+#define CONV_TIMER_CNT_TO_US ((TIMER_PRESCALER * 1000000.0) / F_CPU)
+#define CONV_US_TO_TIMER_CNT (F_CPU / (TIMER_PRESCALER * 1000000.0))
+
+#else /* TIMER_USE_FLOAT */
+
+#define CONV_TIMER_CNT_TO_US ((TIMER_PRESCALER * 1000000UL) / F_CPU)
+#define CONV_US_TO_TIMER_CNT F_CPU / (TIMER_PRESCALER * 1000000UL)
+
+#endif /* TIMER_USE_FLOAT */
 
 static uint32_t TimerIntCount = 0U;
 
@@ -97,13 +100,13 @@ ISR(TIMER0_OVF_vect)
 /** Convert timer counts to microseconds. */
 uint32_t timerConvCountToUs(uint32_t count)
 {
-    return TIMER_US_SUM(count);
+    return count * CONV_TIMER_CNT_TO_US;
 }
 
 /** Convert microseconds to timer counts. */
 uint32_t timerConvUsToCount(uint32_t us)
 {
-    return us / TIMER_US_SUM(1U);
+    return us * CONV_US_TO_TIMER_CNT;
 }
 
 /** Return the number of milliseconds the timer is running.

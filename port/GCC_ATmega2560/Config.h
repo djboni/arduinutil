@@ -36,6 +36,7 @@ extern "C" {
 #define SERIAL_TBUFSZ 64U
 
 #define TIMER_PRESCALER 1024U
+#define TIMER_USE_FLOAT 1
 
 typedef uint8_t Size_t;
 
