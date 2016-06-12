@@ -87,7 +87,7 @@ struct USART0_Serial {
     void (* const flush)(void);
 };
 
-extern struct USART0_Serial Serial;
+extern const struct USART0_Serial Serial;
 
 #ifdef __cplusplus
 } /* extern "C" */

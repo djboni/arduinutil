@@ -139,7 +139,7 @@ ISR(USART_TX_vect)
 {
 }
 
-struct USART0_Serial Serial =
+const struct USART0_Serial Serial =
 {
     USART0_begin,
     USART0_end,
