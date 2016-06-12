@@ -22,8 +22,13 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <avr/pgmspace.h>
 #include "Arduinutil.h"
 #include "Data/cCircular.h"
+#include <stdio.h>
+#include <stdarg.h>
+
+PROGMEM static const char msg_overflow[] = "Overflow!\n";
 
 static struct cCircular RxBuff;
 uint8_t RxBuff_data[SERIAL_RBUFSZ];
@@ -112,6 +117,20 @@ static void USART0_writeBuff(const void *buff, uint16_t length)
         USART0_writeByte(*b++);
 }
 
+static void USART0_print(const void *format, ...)
+{
+    char buf[SERIAL_PRINT_BUFSZ];
+    {
+        va_list vl;
+        va_start(vl, format);
+        if(vsnprintf(buf, SERIAL_PRINT_BUFSZ, format, vl) >=
+                (int)SERIAL_PRINT_BUFSZ)
+            strncpy_P(buf, msg_overflow, SERIAL_PRINT_BUFSZ);
+        va_end(vl);
+    }
+    USART0_write(buf);
+}
+
 static int16_t USART0_read(void)
 {
     uint8_t data;
@@ -148,5 +167,6 @@ const struct USART0_Serial Serial =
     USART0_writeBuff,
     USART0_read,
     USART0_available,
-    USART0_flush
+    USART0_flush,
+    USART0_print
 };
