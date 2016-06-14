@@ -57,6 +57,8 @@ void enableDigitalInputsOfAnalogPins(void);
 void pinMode(byte pin, byte mode);
 void digitalWrite(byte pin, byte value);
 byte digitalRead(byte pin);
+void enableExternalInterrupt(uint8_t pin);
+void disableExternalInterrupt(uint8_t pin);
 
 void adcBegin(void);
 void adcEnd(void);

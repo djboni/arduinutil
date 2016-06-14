@@ -49,6 +49,16 @@ void init(void)
     disableDigitalInputsOfAnalogPins();
     disablePeripheralsClocks();
 
+    /* Configure external interrupts registers. */
+    EIMSK = 0U;
+    EIFR = 0x03U;
+    PCICR = 0U;
+    PCIFR = 0x07U;
+    PCMSK0 = 0U;
+    PCMSK1 = 0U;
+    PCMSK2 = 0U;
+    PCICR = 0x07U;
+
     ENABLE_INTERRUPTS();
 }
 

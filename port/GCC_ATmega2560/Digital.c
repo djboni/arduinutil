@@ -27,6 +27,7 @@
 
 #include <avr/io.h>
 #include <avr/pgmspace.h>
+#include <avr/interrupt.h>
 
 PROGMEM static volatile byte * const portIOLIST[] = {
         /* 0 - 13 */
@@ -164,4 +165,96 @@ byte digitalRead(byte io)
     ASSERT(io < MAXIO);
 
     return (*pin & (1U << bit)) != 0U;
+}
+
+struct InterruptRegBit_t {
+    volatile uint8_t *reg;
+    uint8_t bit;
+};
+
+static struct InterruptRegBit_t convIoToInterruptRegister(uint8_t io)
+{
+    struct InterruptRegBit_t intrpt;
+    uint16_t port = (uint16_t)pgm_read_word(&portIOLIST[io]);
+    intrpt.bit = pgm_read_byte(&bitIOLIST[io]);
+
+    ASSERT(io < MAXIO);
+
+    switch(port)
+    {
+    case (uint16_t)&PORTB:
+        intrpt.reg = &PCMSK0;
+        break;
+    case (uint16_t)&PORTE:
+        intrpt.reg = &PCMSK1;
+        break;
+    case (uint16_t)&PORTJ:
+        intrpt.reg = &PCMSK1;
+        intrpt.bit += 1U;
+        break;
+    case (uint16_t)&PORTK:
+        intrpt.reg = &PCMSK2;
+        break;
+    default:
+        ASSERT(0); /* Invalid port. */
+    }
+
+    return intrpt;
+}
+
+/** Enable external interrupt.
+
+ The processor interrupts whenever any of the enabled pins state changes.
+ The 3 available interrupts vectors are shared within each port. Therefore
+ application must check by software which pin changed and to what state.
+
+ Pins 53-50,10-13 (PORTB) use the interrupt vector PCINT0_vect.
+ Pin 0(RX) (PORTE[0]) use the interrupt vector PCINT1_vect.
+ Pins 15,14 (PORTJ[0-1]) use the interrupt vector PCINT1_vect.
+ Unrouted pins PORTJ[2-6] use the interrupt vector PCINT1_vect.
+ Pins A8-A15 (PORTK) use the interrupt vector PCINT2_vect.
+
+ *  // SETUP
+ *  digitalWrite(13, digitalRead(53));
+ *  enableExternalInterrupt(53);
+ *
+ *  // PORTB ISR
+ *  ISR(PCINT0_vect) {
+ *      static uint8_t port_last;
+ *
+ *      uint8_t port_now = PINB;
+ *      uint8_t port_changed = port_last ^ port_now;
+ *      port_last = port_now;
+ *
+ *      if(port_changed & (1 << PINB0)) {
+ *          if(port_now & (1 << PINB0)) {
+ *              // Rising edge
+ *          }
+ *          else {
+ *              // Falling edge
+ *          }
+ *      }
+ *
+ *      // Check other pins
+ *  }
+ */
+void enableExternalInterrupt(uint8_t io)
+{
+    struct InterruptRegBit_t intrpt = convIoToInterruptRegister(io);
+    ENTER_CRITICAL();
+    {
+        *intrpt.reg |= (1U << intrpt.bit);
+    }
+    EXIT_CRITICAL();
+}
+
+/** Disable external interrupt. */
+void disableExternalInterrupt(uint8_t io)
+{
+    struct InterruptRegBit_t intrpt = convIoToInterruptRegister(io);
+    ENTER_CRITICAL();
+    {
+        *intrpt.reg &= ~(1U << intrpt.bit);
+    }
+    EXIT_CRITICAL();
 }

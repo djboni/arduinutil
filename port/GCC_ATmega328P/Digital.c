@@ -27,6 +27,7 @@
 
 #include <avr/io.h>
 #include <avr/pgmspace.h>
+#include <avr/interrupt.h>
 
 PROGMEM static volatile byte * const portIOLIST[] = {
         /* 0 - 13 */
@@ -123,4 +124,86 @@ byte digitalRead(byte io)
     ASSERT(io < MAXIO);
 
     return (*pin & (1U << bit)) != 0U;
+}
+
+static volatile uint8_t * convIoToInterruptRegister(uint8_t io)
+{
+    volatile uint8_t *reg;
+    uint16_t port = (uint16_t)pgm_read_word(&portIOLIST[io]);
+
+    ASSERT(io < MAXIO);
+
+    switch(port)
+    {
+    case (uint16_t)&PORTB:
+        reg = &PCMSK0;
+        break;
+    case (uint16_t)&PORTC:
+        reg = &PCMSK1;
+        break;
+    case (uint16_t)&PORTD:
+        reg = &PCMSK0;
+        break;
+    default:
+        ASSERT(0); /* Invalid port. */
+    }
+
+    return reg;
+}
+
+/** Enable external interrupt.
+
+ The processor interrupts whenever any of the enabled pins state changes.
+ The 3 available interrupts vectors are shared within each port. Therefore
+ application must check by software which pin changed and to what state.
+
+ Pins 0-7 (PORTD) use the interrupt vector PCINT2_vect.
+ Pins 8-13 (PORTB) use the interrupt vector PCINT0_vect.
+ Pins A0-A5 (PORTC) use the interrupt vector PCINT1_vect.
+
+ *  // SETUP
+ *  digitalWrite(13, digitalRead(8));
+ *  enableExternalInterrupt(8);
+ *
+ *  // PORTB ISR
+ *  ISR(PCINT0_vect) {
+ *      static uint8_t port_last;
+ *
+ *      uint8_t port_now = PINB;
+ *      uint8_t port_changed = port_last ^ port_now;
+ *      port_last = port_now;
+ *
+ *      if(port_changed & (1 << PINB0)) {
+ *          if(port_now & (1 << PINB0)) {
+ *              // Rising edge
+ *          }
+ *          else {
+ *              // Falling edge
+ *          }
+ *      }
+ *
+ *      // Check other pins
+ *  }
+ */
+void enableExternalInterrupt(uint8_t io)
+{
+    volatile uint8_t *reg = convIoToInterruptRegister(io);
+    uint8_t bit = pgm_read_byte(&bitIOLIST[io]);
+    ENTER_CRITICAL();
+    {
+        *reg |= (1U << bit);
+    }
+    EXIT_CRITICAL();
+}
+
+/** Disable external interrupt. */
+void disableExternalInterrupt(uint8_t io)
+{
+    volatile uint8_t *reg = convIoToInterruptRegister(io);
+    uint8_t bit = pgm_read_byte(&bitIOLIST[io]);
+    ENTER_CRITICAL();
+    {
+        *reg &= ~(1U << bit);
+    }
+    EXIT_CRITICAL();
 }
