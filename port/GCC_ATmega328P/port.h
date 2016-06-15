@@ -38,6 +38,13 @@ extern "C" {
 #define ANALOGIO 14U
 #define MAXIO    (ANALOGIO + 6U)
 
+enum DigitalInterruptModes {
+    /* LOW = 0x00U, */
+    CHANGE = 0x01U,
+    FALLING = 0x02U,
+    RISING = 0x03U
+};
+
 /*******************************************************************************
  Analog.c
  ******************************************************************************/

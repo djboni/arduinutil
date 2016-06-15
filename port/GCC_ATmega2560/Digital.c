@@ -101,6 +101,8 @@ PROGMEM static const byte bitIOLIST[] = {
         0U, 1U, 2U, 3U, 4U, 5U, 6U, 7U, 0U, 1U, 2U, 3U, 4U, 5U, 6U, 7U
 };
 
+static void (*extIntVector[6U])(void) = {0};
+
 /** Change pin configuration. The modes are INPUT, OUTPUT and INPUT_PULLUP.
 
  Note: Use pin ANALOGIO+X for analog pin X. */
@@ -257,4 +259,142 @@ void disableExternalInterrupt(uint8_t io)
         *intrpt.reg &= ~(1U << intrpt.bit);
     }
     EXIT_CRITICAL();
+}
+
+/** Enable external interrupt.
+
+ Only pins 2, 3, 18, 19, 20 and 21 are able to use this function.
+ isr is a pointer to the function to be called when the interrupt fires.
+ mode is the interrupt mode. See enum DigitalInterruptModes. */
+void attachInterrupt(uint8_t pin, void (*isr)(void), uint8_t mode)
+{
+    mode &= 0x03U;
+
+    switch(pin) {
+    case 2U:
+    {
+        EIMSK &= ~(1U << INT4);
+        EIFR = (1U << INTF4);
+        EICRB = (EICRA & ~(0x03U << ISC40)) | (mode << ISC40);
+        extIntVector[4U] = isr;
+        EIMSK |= (1U << INT4);
+        break;
+    }
+    case 3U:
+    {
+        EIMSK &= ~(1U << INT5);
+        EIFR = (1U << INTF5);
+        EICRB = (EICRA & ~(0x03U << ISC50)) | (mode << ISC50);
+        extIntVector[5U] = isr;
+        EIMSK |= (1U << INT5);
+        break;
+    }
+    case 18U:
+    {
+        EIMSK &= ~(1U << INT3);
+        EIFR = (1U << INTF3);
+        EICRA = (EICRA & ~(0x03U << ISC30)) | (mode << ISC30);
+        extIntVector[3U] = isr;
+        EIMSK |= (1U << INT3);
+        break;
+    }
+    case 19U:
+    {
+        EIMSK &= ~(1U << INT2);
+        EIFR = (1U << INTF2);
+        EICRA = (EICRA & ~(0x03U << ISC20)) | (mode << ISC20);
+        extIntVector[2U] = isr;
+        EIMSK |= (1U << INT2);
+        break;
+    }
+    case 20U:
+    {
+        EIMSK &= ~(1U << INT1);
+        EIFR = (1U << INTF1);
+        EICRA = (EICRA & ~(0x03U << ISC10)) | (mode << ISC10);
+        extIntVector[1U] = isr;
+        EIMSK |= (1U << INT1);
+        break;
+    }
+    case 21U:
+    {
+        EIMSK &= ~(1U << INT0);
+        EIFR = (1U << INTF0);
+        EICRA = (EICRA & ~(0x03U << ISC00)) | (mode << ISC00);
+        extIntVector[0U] = isr;
+        EIMSK |= (1U << INT0);
+        break;
+    }
+    default:
+        ASSERT(0); /* Invalid interrupt pin. */
+    }
+}
+
+/** Disable external interrupt. */
+void detachInterrupt(uint8_t pin)
+{
+    switch(pin) {
+    case 2U:
+    {
+        EIMSK &= ~(1U << INT0);
+        break;
+    }
+    case 3U:
+    {
+        EIMSK &= ~(1U << INT1);
+        break;
+    }
+    case 18U:
+    {
+        EIMSK &= ~(1U << INT2);
+        break;
+    }
+    case 19U:
+    {
+        EIMSK &= ~(1U << INT3);
+        break;
+    }
+    case 20U:
+    {
+        EIMSK &= ~(1U << INT4);
+        break;
+    }
+    case 21U:
+    {
+        EIMSK &= ~(1U << INT5);
+        break;
+    }
+    default:
+        ASSERT(0); /* Invalid interrupt pin. */
+    }
+}
+
+ISR(INT0_vect)
+{
+    extIntVector[0U]();
+}
+
+ISR(INT1_vect)
+{
+    extIntVector[1U]();
+}
+
+ISR(INT2_vect)
+{
+    extIntVector[2U]();
+}
+
+ISR(INT3_vect)
+{
+    extIntVector[3U]();
+}
+
+ISR(INT4_vect)
+{
+    extIntVector[4U]();
+}
+
+ISR(INT5_vect)
+{
+    extIntVector[5U]();
 }

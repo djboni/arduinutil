@@ -60,6 +60,8 @@ PROGMEM static const byte bitIOLIST[] = {
         0U, 1U, 2U, 3U, 4U, 5U
 };
 
+static void (*extIntVector[2U])(void) = {NULL, NULL};
+
 /** Change pin configuration. The modes are INPUT, OUTPUT and INPUT_PULLUP.
 
  Note: Use pin ANALOGIO+X for analog pin X. */
@@ -206,4 +208,75 @@ void disableExternalInterrupt(uint8_t io)
         *reg &= ~(1U << bit);
     }
     EXIT_CRITICAL();
+}
+
+/** Convert a digital pin to a interrupt number.
+
+ In this implementation it does nothing other than avoid breaking people code.
+ */
+uint8_t digitalPinToInterrupt(uint8_t pin)
+{
+    return pin;
+}
+
+/** Enable external interrupt.
+
+ Only pins 2 and 3 are able to use this function.
+ isr is a pointer to the function to be called when the interrupt fires.
+ mode is the interrupt mode. See enum DigitalInterruptModes. */
+void attachInterrupt(uint8_t pin, void (*isr)(void), uint8_t mode)
+{
+    mode &= 0x03U;
+
+    switch(pin) {
+    case 2U:
+    {
+        EIMSK &= ~(1U << INT0);
+        EIFR = (1U << INTF0);
+        EICRA = (EICRA & ~(0x03U << ISC00)) | (mode << ISC00);
+        extIntVector[0U] = isr;
+        EIMSK |= (1U << INT0);
+        break;
+    }
+    case 3U:
+    {
+        EIMSK &= ~(1U << INT1);
+        EIFR = (1U << INTF1);
+        EICRA = (EICRA & ~(0x03U << ISC10)) | (mode << ISC10);
+        extIntVector[1U] = isr;
+        EIMSK |= (1U << INT1);
+        break;
+    }
+    default:
+        ASSERT(0); /* Invalid interrupt pin. */
+    }
+}
+
+/** Disable external interrupt. */
+void detachInterrupt(uint8_t pin)
+{
+    switch(pin) {
+    case 2U:
+    {
+        EIMSK &= ~(1U << INT0);
+        break;
+    }
+    case 3U:
+    {
+        EIMSK &= ~(1U << INT1);
+        break;
+    }
+    default:
+        ASSERT(0); /* Invalid interrupt pin. */
+    }
+}
+
+ISR(INT0_vect)
+{
+    extIntVector[0U]();
+}
+
+ISR(INT1_vect)
+{
+    extIntVector[1U]();
 }
