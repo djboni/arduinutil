@@ -88,7 +88,7 @@ void timerEnd(void)
 
 ISR(TIMER0_OVF_vect)
 {
-    TimerIntCount += 256U;
+    TimerIntCount += 1U;
 }
 
 /** Convert timer counts to milliseconds. */
@@ -146,7 +146,7 @@ uint32_t timerCounts(void)
             timerCount = 255U;
     }
     EXIT_CRITICAL();
-    return (timerIntCount + timerCount);
+    return (timerIntCount * 256UL + timerCount);
 }
 
 /** Stop execution for a given time in milliseconds.
