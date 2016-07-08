@@ -28,6 +28,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#if (SERIAL_ENABLE != 0)
+
 PROGMEM static const char msg_overflow[] = "Overflow!\n";
 
 static struct cCircular RxBuff;
@@ -157,4 +159,6 @@ ISR(USART_UDRE_vect)
 ISR(USART_TX_vect)
 {
 }
+
+#endif /* SERIAL_ENABLE */
 

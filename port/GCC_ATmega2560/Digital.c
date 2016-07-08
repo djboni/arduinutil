@@ -101,8 +101,6 @@ PROGMEM static const byte bitIOLIST[] = {
         0U, 1U, 2U, 3U, 4U, 5U, 6U, 7U, 0U, 1U, 2U, 3U, 4U, 5U, 6U, 7U
 };
 
-static void (*extIntVector[6U])(void) = {0};
-
 /** Change pin configuration. The modes are INPUT, OUTPUT and INPUT_PULLUP.
 
  Note: Use pin ANALOGIO+X for analog pin X. */
@@ -173,6 +171,8 @@ struct InterruptRegBit_t {
     volatile uint8_t *reg;
     uint8_t bit;
 };
+
+#if (DIGITAL_EXTERNAL_INT_ENABLE != 0)
 
 static struct InterruptRegBit_t convIoToInterruptRegister(uint8_t io)
 {
@@ -259,6 +259,21 @@ void disableExternalInterrupt(uint8_t io)
         *intrpt.reg &= ~(1U << intrpt.bit);
     }
     EXIT_CRITICAL();
+}
+
+#endif /* DIGITAL_EXTERNAL_INT_ENABLE */
+
+#if (DIGITAL_ATTACH_INT_ENABLE != 0)
+
+static void (*extIntVector[6U])(void) = {0};
+
+/** Convert a digital pin to a interrupt number.
+
+ In this implementation it does nothing other than avoid breaking people code.
+ */
+uint8_t digitalPinToInterrupt(uint8_t pin)
+{
+    return pin;
 }
 
 /** Enable external interrupt.
@@ -398,3 +413,5 @@ ISR(INT5_vect)
 {
     extIntVector[5U]();
 }
+
+#endif /* DIGITAL_ATTACH_INT_ENABLE */

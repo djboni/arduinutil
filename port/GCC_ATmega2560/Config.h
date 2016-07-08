@@ -32,11 +32,18 @@ namespace Arduinutil {
 extern "C" {
 #endif
 
-#define SERIAL_RBUFSZ 64U
-#define SERIAL_TBUFSZ 64U
-#define SERIAL_PRINT_BUFSZ 32U
+#define SERIAL_ENABLE                0
+#define SERIAL_RBUFSZ                64U
+#define SERIAL_TBUFSZ                64U
+#define SERIAL_PRINT_BUFSZ           32U
 
-#define TIMER_PRESCALER 1024U
+#define TIMER_ENABLE                 0
+#define TIMER_PRESCALER              1024U
+
+#define ANALOG_ENABLE                0
+
+#define DIGITAL_EXTERNAL_INT_ENABLE  0
+#define DIGITAL_ATTACH_INT_ENABLE    0
 
 typedef uint8_t Size_t;
 

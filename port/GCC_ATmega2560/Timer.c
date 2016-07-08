@@ -24,6 +24,8 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
+#if (TIMER_ENABLE != 0)
+
 #define CONV_TIMER_CNT_TO_US (TIMER_PRESCALER * 125UL) / (F_CPU / 8000UL)
 #define CONV_US_TO_TIMER_CNT (F_CPU / 8000UL) / (TIMER_PRESCALER * 125UL)
 
@@ -175,3 +177,5 @@ void delayCounts(uint32_t counts)
     {
     }
 }
+
+#endif /* TIMER_ENABLE */

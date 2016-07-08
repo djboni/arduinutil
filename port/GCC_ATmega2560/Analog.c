@@ -24,6 +24,8 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 
+#if (ANALOG_ENABLE != 0)
+
 PROGMEM static const byte muxADC[] = {
         /* A0 - A7 */
         0U, 1U, 2U, 3U, 4U, 5U, 6U, 7U,
@@ -90,4 +92,7 @@ uint16_t analogRead(uint8_t analog)
 void analogReference(uint8_t reference)
 {
     ADMUX = (ADMUX & ~(0x03U << REFS0)) | (reference << REFS0);
+
 }
+
+#endif /* ANALOG_ENABLE */

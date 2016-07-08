@@ -23,6 +23,8 @@
 #include "Arduinutil.h"
 #include <avr/io.h>
 
+#if (ANALOG_ENABLE != 0)
+
 /** Enable ADC. */
 void adcBegin(void)
 {
@@ -80,3 +82,5 @@ void analogReference(uint8_t reference)
 {
     ADMUX = (ADMUX & ~(0x03U << REFS0)) | (reference << REFS0);
 }
+
+#endif /* ANALOG_ENABLE */
