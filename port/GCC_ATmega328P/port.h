@@ -24,7 +24,6 @@
 #define __ARDUINUTIL_PORT_H__
 
 #ifdef __cplusplus
-namespace Arduinutil {
 extern "C" {
 #else
 /* Avoid C90 complaining about inline in some AVR headers. */
@@ -124,7 +123,6 @@ enum AnalogReferences {
 
 #ifdef __cplusplus
 } /* extern "C" */
-} /* namespace Arduinutil */
 #endif
 
 #endif /* __ARDUINUTIL_PORT_H__ */

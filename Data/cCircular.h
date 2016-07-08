@@ -27,7 +27,6 @@
 #include "Arduinutil.h"
 
 #ifdef __cplusplus
-namespace Arduinutil {
 extern "C" {
 #endif
 
@@ -50,7 +49,6 @@ Size_t cCircular_free(const struct cCircular *o);
 
 #ifdef __cplusplus
 } /* extern "C" */
-} /* namespace Arduinutil */
 #endif
 
 #endif /* __ARDUINUTIL_CCIRCULAR_H__ */

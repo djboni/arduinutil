@@ -27,7 +27,6 @@
 #include "port.h"
 
 #ifdef __cplusplus
-namespace Arduinutil {
 extern "C" {
 #endif
 
@@ -58,7 +57,6 @@ typedef uint8_t Size_t;
 
 #ifdef __cplusplus
 } /* extern "C" */
-} /* namespace Arduinutil */
 #endif
 
 #endif /* __ARDUINUTIL_CONFIG_H__ */

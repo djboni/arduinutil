@@ -30,7 +30,6 @@
 #include "Config.h"
 
 #ifdef __cplusplus
-namespace Arduinutil {
 extern "C" {
 #endif
 
@@ -96,7 +95,6 @@ int16_t Serial_read(void);
 
 #ifdef __cplusplus
 } /* extern "C" */
-} /* namespace Arduinutil */
 #endif
 
 #endif /* __ARDUINUTIL_H__ */
