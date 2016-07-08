@@ -144,7 +144,7 @@ static volatile uint8_t * convIoToInterruptRegister(uint8_t io)
         reg = &PCMSK1;
         break;
     case (uint16_t)&PORTD:
-        reg = &PCMSK0;
+        reg = &PCMSK2;
         break;
     default:
         ASSERT(0); /* Invalid port. */
