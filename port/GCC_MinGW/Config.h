@@ -23,10 +23,10 @@
 #ifndef __ARDUINUTIL_CONFIG_H__
 #define __ARDUINUTIL_CONFIG_H__
 
+#include "port.h"
 #include <stdint.h>
 #include <stddef.h>
 #include <assert.h>
-#include "port.h"
 
 #ifdef __cplusplus
 extern "C" {

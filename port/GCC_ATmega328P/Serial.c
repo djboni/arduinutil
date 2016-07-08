@@ -20,11 +20,11 @@
  limitations under the License.
  */
 
+#include "Arduinutil.h"
+#include "Data/queue.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
-#include "Arduinutil.h"
-#include "Data/cCircular.h"
 #include <stdio.h>
 #include <stdarg.h>
 

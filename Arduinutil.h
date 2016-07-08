@@ -24,10 +24,9 @@
 #ifndef __ARDUINUTIL_H__
 #define __ARDUINUTIL_H__
 
+#include "Config.h"
 #include <stdint.h>
 #include <stddef.h>
-
-#include "Config.h"
 
 #ifdef __cplusplus
 extern "C" {

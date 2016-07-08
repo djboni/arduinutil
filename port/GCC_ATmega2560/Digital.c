@@ -21,13 +21,12 @@
  */
 
 #include "Arduinutil.h"
-
-#define SET_BITS(reg, bits, cast)   do{reg=(cast)((reg)|(bits));}while(0U)
-#define CLEAR_BITS(reg, bits, cast) do{reg=(cast)((reg)&(~(bits)));}while(0U)
-
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <avr/interrupt.h>
+
+#define SET_BITS(reg, bits, cast)   do{reg=(cast)((reg)|(bits));}while(0U)
+#define CLEAR_BITS(reg, bits, cast) do{reg=(cast)((reg)&(~(bits)));}while(0U)
 
 PROGMEM static volatile byte * const portIOLIST[] = {
         /* 0 - 13 */

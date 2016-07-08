@@ -21,11 +21,10 @@
  */
 
 #include "Arduinutil.h"
+#include <avr/io.h>
 
 #define SET_BITS(reg, bits, cast)   do{reg=(cast)((reg)|(bits));}while(0U)
 #define CLEAR_BITS(reg, bits, cast) do{reg=(cast)((reg)&(~(bits)));}while(0U)
-
-#include <avr/io.h>
 
 /** Microcontroller initialization. */
 void init(void)

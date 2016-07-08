@@ -1,5 +1,5 @@
 /*
- Arduinutil Circular - Byte circular list implementation in C
+ Arduinutil Queue - Queue implementation in C
 
  Supported microcontrollers:
  See Arduinutil.h
@@ -20,11 +20,11 @@
  limitations under the License.
  */
 
-#ifndef __ARDUINUTIL_CCIRCULAR_H__
-#define __ARDUINUTIL_CCIRCULAR_H__
+#ifndef __ARDUINUTIL_QUEUE_H__
+#define __ARDUINUTIL_QUEUE_H__
 
-#include <stdint.h>
 #include "Arduinutil.h"
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -51,4 +51,4 @@ Size_t cCircular_free(const struct cCircular *o);
 } /* extern "C" */
 #endif
 
-#endif /* __ARDUINUTIL_CCIRCULAR_H__ */
+#endif /* __ARDUINUTIL_QUEUE_H__ */
