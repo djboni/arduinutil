@@ -1,5 +1,5 @@
 /*
- Arduinutil - Arduino compatible library written in C/C++
+ Arduinutil - Arduino-like library written in C
 
  Supported microcontrollers:
  See Arduinutil.h
