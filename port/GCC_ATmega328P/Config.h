@@ -37,7 +37,6 @@ extern "C" {
 #define SERIAL_PRINT_BUFSZ 32U
 
 #define TIMER_PRESCALER 1024U
-#define TIMER_USE_FLOAT 1
 
 typedef uint8_t Size_t;
 
