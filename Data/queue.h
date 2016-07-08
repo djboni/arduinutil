@@ -30,7 +30,7 @@
 extern "C" {
 #endif
 
-struct cCircular {
+struct Queue_t {
     uint8_t *Buff;
     Size_t Size;
     Size_t Used;
@@ -38,14 +38,14 @@ struct cCircular {
     Size_t Tail;
 };
 
-void cCircular_init(struct cCircular *o, uint8_t *buff, Size_t size);
-uint8_t cCircular_pushfront(struct cCircular *o, uint8_t val);
-uint8_t cCircular_pushback(struct cCircular *o, uint8_t val);
-uint8_t cCircular_popfront(struct cCircular *o, uint8_t *val);
-uint8_t cCircular_popback(struct cCircular *o, uint8_t *val);
-Size_t cCircular_size(const struct cCircular *o);
-Size_t cCircular_used(const struct cCircular *o);
-Size_t cCircular_free(const struct cCircular *o);
+void Queue_init(struct Queue_t *o, uint8_t *buff, Size_t size);
+uint8_t Queue_pushfront(struct Queue_t *o, uint8_t val);
+uint8_t Queue_pushback(struct Queue_t *o, uint8_t val);
+uint8_t Queue_popfront(struct Queue_t *o, uint8_t *val);
+uint8_t Queue_popback(struct Queue_t *o, uint8_t *val);
+Size_t Queue_size(const struct Queue_t *o);
+Size_t Queue_used(const struct Queue_t *o);
+Size_t Queue_free(const struct Queue_t *o);
 
 #ifdef __cplusplus
 } /* extern "C" */

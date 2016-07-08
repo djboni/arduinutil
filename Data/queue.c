@@ -23,7 +23,7 @@
 #include "Data/queue.h"
 #include <string.h>
 
-void cCircular_init(struct cCircular *o, uint8_t *buff, Size_t size)
+void Queue_init(struct Queue_t *o, uint8_t *buff, Size_t size)
 {
     o->Buff = buff;
     o->Size = size;
@@ -32,12 +32,12 @@ void cCircular_init(struct cCircular *o, uint8_t *buff, Size_t size)
     o->Tail = 0U;
 }
 
-uint8_t cCircular_pushfront(struct cCircular *o, uint8_t val)
+uint8_t Queue_pushfront(struct Queue_t *o, uint8_t val)
 {
     uint8_t ret;
     ENTER_CRITICAL();
     {
-        ret = cCircular_free(o) != 0U;
+        ret = Queue_free(o) != 0U;
         if(ret != 0U)
         {
             ++(o->Used);
@@ -50,12 +50,12 @@ uint8_t cCircular_pushfront(struct cCircular *o, uint8_t val)
     return ret;
 }
 
-uint8_t cCircular_pushback(struct cCircular *o, uint8_t val)
+uint8_t Queue_pushback(struct Queue_t *o, uint8_t val)
 {
     uint8_t ret;
     ENTER_CRITICAL();
     {
-        ret = cCircular_free(o) != 0U;
+        ret = Queue_free(o) != 0U;
         if(ret != 0U)
         {
             ++(o->Used);
@@ -68,12 +68,12 @@ uint8_t cCircular_pushback(struct cCircular *o, uint8_t val)
     return ret;
 }
 
-uint8_t cCircular_popfront(struct cCircular *o, uint8_t *val)
+uint8_t Queue_popfront(struct Queue_t *o, uint8_t *val)
 {
     uint8_t ret;
     ENTER_CRITICAL();
     {
-        ret = cCircular_used(o) != 0U;
+        ret = Queue_used(o) != 0U;
         if(ret != 0U)
         {
             --(o->Used);
@@ -86,12 +86,12 @@ uint8_t cCircular_popfront(struct cCircular *o, uint8_t *val)
     return ret;
 }
 
-uint8_t cCircular_popback(struct cCircular *o, uint8_t *val)
+uint8_t Queue_popback(struct Queue_t *o, uint8_t *val)
 {
     uint8_t ret;
     ENTER_CRITICAL();
     {
-        ret = cCircular_used(o) != 0U;
+        ret = Queue_used(o) != 0U;
         if(ret != 0U)
         {
             --(o->Used);
@@ -104,12 +104,12 @@ uint8_t cCircular_popback(struct cCircular *o, uint8_t *val)
     return ret;
 }
 
-Size_t cCircular_size(const struct cCircular *o)
+Size_t Queue_size(const struct Queue_t *o)
 {
     return o->Size;
 }
 
-Size_t cCircular_used(const struct cCircular *o)
+Size_t Queue_used(const struct Queue_t *o)
 {
     Size_t ret;
     ENTER_CRITICAL();
@@ -120,7 +120,7 @@ Size_t cCircular_used(const struct cCircular *o)
     return ret;
 }
 
-Size_t cCircular_free(const struct cCircular *o)
+Size_t Queue_free(const struct Queue_t *o)
 {
-    return cCircular_size(o) - cCircular_used(o);
+    return Queue_size(o) - Queue_used(o);
 }

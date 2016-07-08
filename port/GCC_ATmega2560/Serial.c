@@ -32,10 +32,10 @@
 
 PROGMEM static const char msg_overflow[] = "Overflow!\n";
 
-static struct cCircular RxBuff;
+static struct Queue_t RxBuff;
 uint8_t RxBuff_data[SERIAL_RBUFSZ];
 
-static struct cCircular TxBuff;
+static struct Queue_t TxBuff;
 uint8_t TxBuff_data[SERIAL_TBUFSZ];
 
 void Serial_begin(uint32_t speed, uint32_t config)
@@ -60,8 +60,8 @@ void Serial_begin(uint32_t speed, uint32_t config)
 
     UCSR0B = 0; /* Disable TX and RX. */
 
-    cCircular_init(&RxBuff, &RxBuff_data[0], sizeof(RxBuff_data));
-    cCircular_init(&TxBuff, &TxBuff_data[0], sizeof(TxBuff_data));
+    Queue_init(&RxBuff, &RxBuff_data[0], sizeof(RxBuff_data));
+    Queue_init(&TxBuff, &TxBuff_data[0], sizeof(TxBuff_data));
 
     /* Set speed and other configurations. */
     UBRR0 = ubrr;
@@ -78,12 +78,12 @@ void Serial_end(void)
 
 Size_t Serial_available(void)
 {
-    return cCircular_used(&RxBuff);
+    return Queue_used(&RxBuff);
 }
 
 void Serial_flush(void)
 {
-    while(cCircular_used(&TxBuff) != 0U)
+    while(Queue_used(&TxBuff) != 0U)
     {
         WAIT();
     }
@@ -98,7 +98,7 @@ void Serial_writeByte(uint8_t data)
     else
     {
         UCSR0B |= (1U << UDRIE0);
-        while(!cCircular_pushback(&TxBuff, data))
+        while(!Queue_pushback(&TxBuff, data))
         {
             WAIT();
         }
@@ -136,7 +136,7 @@ void Serial_print(const void *format, ...)
 int16_t Serial_read(void)
 {
     uint8_t data;
-    if(cCircular_popfront(&RxBuff, &data))
+    if(Queue_popfront(&RxBuff, &data))
         return data;
     else
         return -1;
@@ -144,13 +144,13 @@ int16_t Serial_read(void)
 
 ISR(USART0_RX_vect)
 {
-    cCircular_pushback(&RxBuff, UDR0);
+    Queue_pushback(&RxBuff, UDR0);
 }
 
 ISR(USART0_UDRE_vect)
 {
     uint8_t data;
-    if(cCircular_popfront(&TxBuff, &data))
+    if(Queue_popfront(&TxBuff, &data))
     UDR0 = data;
     else
     UCSR0B &= ~(1U << UDRIE0);
