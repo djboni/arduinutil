@@ -26,6 +26,11 @@
 #include <stdint.h>
 #include "Arduinutil.h"
 
+#ifdef __cplusplus
+namespace Arduinutil {
+extern "C" {
+#endif
+
 struct cCircular {
     uint8_t *Buff;
     Size_t Size;
@@ -42,5 +47,10 @@ uint8_t cCircular_popback(struct cCircular *o, uint8_t *val);
 Size_t cCircular_size(const struct cCircular *o);
 Size_t cCircular_used(const struct cCircular *o);
 Size_t cCircular_free(const struct cCircular *o);
+
+#ifdef __cplusplus
+} /* extern "C" */
+} /* namespace Arduinutil */
+#endif
 
 #endif /* __ARDUINUTIL_CCIRCULAR_H__ */

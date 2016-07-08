@@ -23,7 +23,13 @@
 #ifndef __ARDUINUTIL_PORT_H__
 #define __ARDUINUTIL_PORT_H__
 
+#ifdef __cplusplus
+namespace Arduinutil {
+extern "C" {
+#else
+/* Avoid C90 complaining about inline in some AVR headers. */
 #define inline __inline
+#endif
 
 #define ANALOGIO 8U
 #define MAXIO    (ANALOGIO + 8U)
@@ -38,5 +44,10 @@
 #define EXIT_CRITICAL_IF_CONCURRENT()  if(Concurrent) EXIT_CRITICAL()
 
 #define WAIT() do{}while(0U)
+
+#ifdef __cplusplus
+} /* extern "C" */
+} /* namespace Arduinutil */
+#endif
 
 #endif /* __ARDUINUTIL_PORT_H__ */

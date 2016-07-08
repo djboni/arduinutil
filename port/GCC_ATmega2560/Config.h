@@ -24,7 +24,6 @@
 #define __ARDUINUTIL_CONFIG_H__
 
 #include <stdint.h>
-
 #include "port.h"
 
 #ifdef __cplusplus

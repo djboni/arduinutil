@@ -26,11 +26,20 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <assert.h>
-
 #include "port.h"
+
+#ifdef __cplusplus
+namespace Arduinutil {
+extern "C" {
+#endif
 
 typedef size_t Size_t;
 
 #define ASSERT(expr) assert(expr)
+
+#ifdef __cplusplus
+} /* extern "C" */
+} /* namespace Arduinutil */
+#endif
 
 #endif /* __ARDUINUTIL_CONFIG_H__ */
