@@ -36,7 +36,7 @@ uint8_t RxBuff_data[SERIAL_RBUFSZ];
 static struct cCircular TxBuff;
 uint8_t TxBuff_data[SERIAL_TBUFSZ];
 
-static void USART0_begin(uint32_t speed, uint32_t config)
+void Serial_begin(uint32_t speed, uint32_t config)
 {
     uint8_t ucsra;
     uint32_t ubrr;
@@ -68,18 +68,18 @@ static void USART0_begin(uint32_t speed, uint32_t config)
     UCSR0C = config >> 16U;
 }
 
-static void USART0_end(void)
+void Serial_end(void)
 {
     UCSR0B = 0; /* Disable TX and RX. */
     PRR |= (1 << PRUSART0); /* Disable UART clock. */
 }
 
-static Size_t USART0_available(void)
+Size_t Serial_available(void)
 {
     return cCircular_used(&RxBuff);
 }
 
-static void USART0_flush(void)
+void Serial_flush(void)
 {
     while(cCircular_used(&TxBuff) != 0U)
     {
@@ -87,7 +87,7 @@ static void USART0_flush(void)
     }
 }
 
-static void USART0_writeByte(uint8_t data)
+void Serial_writeByte(uint8_t data)
 {
     if((UCSR0A & (1U << UDRE0)))
     {
@@ -103,21 +103,21 @@ static void USART0_writeByte(uint8_t data)
     }
 }
 
-static void USART0_write(const void *str)
+void Serial_write(const void *str)
 {
     const uint8_t *s = (const uint8_t *)str;
     while(*s != 0U)
-        USART0_writeByte(*s++);
+        Serial_writeByte(*s++);
 }
 
-static void USART0_writeBuff(const void *buff, uint16_t length)
+void Serial_writeBuff(const void *buff, uint16_t length)
 {
     const uint8_t *b = (const uint8_t *)buff;
     while(length-- != 0)
-        USART0_writeByte(*b++);
+        Serial_writeByte(*b++);
 }
 
-static void USART0_print(const void *format, ...)
+void Serial_print(const void *format, ...)
 {
     char buf[SERIAL_PRINT_BUFSZ];
     {
@@ -128,10 +128,10 @@ static void USART0_print(const void *format, ...)
             strncpy_P(buf, msg_overflow, SERIAL_PRINT_BUFSZ);
         va_end(vl);
     }
-    USART0_write(buf);
+    Serial_write(buf);
 }
 
-static int16_t USART0_read(void)
+int16_t Serial_read(void)
 {
     uint8_t data;
     if(cCircular_popfront(&RxBuff, &data))
@@ -158,15 +158,3 @@ ISR(USART_TX_vect)
 {
 }
 
-const struct USART0_Serial Serial =
-{
-    USART0_begin,
-    USART0_end,
-    USART0_writeByte,
-    USART0_write,
-    USART0_writeBuff,
-    USART0_read,
-    USART0_available,
-    USART0_flush,
-    USART0_print
-};

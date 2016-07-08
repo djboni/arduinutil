@@ -84,19 +84,15 @@ uint32_t micros(void);
 void delay(uint32_t ms);
 void delayMicroseconds(uint32_t us);
 
-struct USART0_Serial {
-    void (* const begin)(uint32_t speed, uint32_t config);
-    void (* const end)(void);
-    void (* const writeByte)(uint8_t data);
-    void (* const write)(const void *str);
-    void (* const writeBuff)(const void *buff, uint16_t length);
-    int16_t (* const read)(void);
-    Size_t (* const available)(void);
-    void (* const flush)(void);
-    void (* const print)(const void *format, ...);
-};
-
-extern const struct USART0_Serial Serial;
+void Serial_begin(uint32_t speed, uint32_t config);
+void Serial_end(void);
+Size_t Serial_available(void);
+void Serial_flush(void);
+void Serial_writeByte(uint8_t data);
+void Serial_write(const void *str);
+void Serial_writeBuff(const void *buff, uint16_t length);
+void Serial_print(const void *format, ...);
+int16_t Serial_read(void);
 
 #ifdef __cplusplus
 } /* extern "C" */
