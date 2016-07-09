@@ -30,9 +30,6 @@ extern "C" {
 #define inline __inline
 #endif
 
-#define ANALOGIO 8U
-#define MAXIO    (ANALOGIO + 8U)
-
 #define DISABLE_INTERRUPTS() do{}while(0U)
 #define ENABLE_INTERRUPTS()  do{}while(0U)
 
