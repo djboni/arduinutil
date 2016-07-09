@@ -60,8 +60,8 @@ void Serial_begin(uint32_t speed, uint32_t config)
 
     UCSR0B = 0; /* Disable TX and RX. */
 
-    Queue_init(&RxBuff, &RxBuff_data[0], sizeof(RxBuff_data));
-    Queue_init(&TxBuff, &TxBuff_data[0], sizeof(TxBuff_data));
+    Queue_init(&RxBuff, &RxBuff_data[0], sizeof(RxBuff_data), sizeof(RxBuff_data[0]));
+    Queue_init(&TxBuff, &TxBuff_data[0], sizeof(TxBuff_data), sizeof(TxBuff_data[0]));
 
     /* Set speed and other configurations. */
     UBRR0 = ubrr;
@@ -98,7 +98,7 @@ void Serial_writeByte(uint8_t data)
     else
     {
         UCSR0B |= (1U << UDRIE0);
-        while(!Queue_pushback(&TxBuff, data))
+        while(!Queue_pushback(&TxBuff, &data))
         {
             WAIT();
         }
@@ -144,7 +144,8 @@ int16_t Serial_read(void)
 
 ISR(USART_RX_vect)
 {
-    Queue_pushback(&RxBuff, UDR0);
+    uint8_t data = UDR0;
+    Queue_pushback(&RxBuff, &data);
 }
 
 ISR(USART_UDRE_vect)

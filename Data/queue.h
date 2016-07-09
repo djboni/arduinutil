@@ -1,9 +1,6 @@
 /*
  Arduinutil Queue - Queue implementation in C
 
- Supported microcontrollers:
- See Arduinutil.h
-
 
  Copyright 2016 Djones A. Boni
 
@@ -31,21 +28,30 @@ extern "C" {
 #endif
 
 struct Queue_t {
-    uint8_t *Buff;
-    Size_t Size;
+    Size_t ItemSize;
+    Size_t Free;
     Size_t Used;
-    Size_t Head;
-    Size_t Tail;
+    Size_t WLock;
+    Size_t RLock;
+    uint8_t *Head;
+    uint8_t *Tail;
+    uint8_t *Buff;
+    uint8_t *BufEnd;
 };
 
-void Queue_init(struct Queue_t *o, uint8_t *buff, Size_t size);
-uint8_t Queue_pushfront(struct Queue_t *o, uint8_t val);
-uint8_t Queue_pushback(struct Queue_t *o, uint8_t val);
-uint8_t Queue_popfront(struct Queue_t *o, uint8_t *val);
-uint8_t Queue_popback(struct Queue_t *o, uint8_t *val);
-Size_t Queue_size(const struct Queue_t *o);
+void Queue_init(struct Queue_t *o, uint8_t *buff, Size_t length, Size_t item_size);
+uint8_t Queue_pushfront(struct Queue_t *o, const void *val);
+uint8_t Queue_pushback(struct Queue_t *o, const void *val);
+uint8_t Queue_popfront(struct Queue_t *o, void *val);
+uint8_t Queue_popback(struct Queue_t *o, void *val);
+Size_t Queue_length(const struct Queue_t *o);
 Size_t Queue_used(const struct Queue_t *o);
 Size_t Queue_free(const struct Queue_t *o);
+
+#define Queue_send(o, val)     Queue_pushback(o, val)
+#define Queue_receive(o, val)  Queue_popfront(o, val)
+#define Queue_empty(o)         (Queue_used(o) == 0U)
+#define Queue_full(o)          (Queue_free(o) == 0U)
 
 #ifdef __cplusplus
 } /* extern "C" */

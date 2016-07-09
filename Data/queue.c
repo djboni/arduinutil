@@ -1,9 +1,6 @@
 /*
  Arduinutil Queue - Queue implementation in C
 
- Supported microcontrollers:
- See Arduinutil.h
-
 
  Copyright 2016 Djones A. Boni
 
@@ -23,90 +20,168 @@
 #include "Data/queue.h"
 #include <string.h>
 
-void Queue_init(struct Queue_t *o, uint8_t *buff, Size_t size)
+void Queue_init(struct Queue_t *o, uint8_t *buff, Size_t length, Size_t item_size)
 {
-    o->Buff = buff;
-    o->Size = size;
+    o->ItemSize = item_size;
+    o->Free = length;
     o->Used = 0U;
-    o->Head = 0U;
-    o->Tail = 0U;
+    o->WLock = 0U;
+    o->RLock = 0U;
+    o->Head = buff;
+    o->Tail = buff;
+    o->Buff = buff;
+    o->BufEnd = &buff[(length - 1U) * item_size];
 }
 
-uint8_t Queue_pushfront(struct Queue_t *o, uint8_t val)
+uint8_t Queue_pushfront(struct Queue_t *o, const void *val)
 {
     uint8_t ret;
     ENTER_CRITICAL();
     {
-        ret = Queue_free(o) != 0U;
+        ret = o->Free != 0U;
         if(ret != 0U)
         {
-            ++(o->Used);
-            if(--(o->Head) >= o->Size)
-                o->Head = o->Size - 1U;
-            o->Buff[o->Head] = val;
+            Size_t lock;
+            uint8_t *pos;
+
+            lock = (o->WLock)++;
+            --(o->Free);
+
+            if((o->Head -= o->ItemSize) < o->Buff)
+                o->Head = o->BufEnd;
+            pos = o->Head;
+
+            EXIT_CRITICAL();
+            {
+                memcpy(pos, val, o->ItemSize);
+            }
+            ENTER_CRITICAL();
+
+            if(lock == 0U)
+            {
+                o->Used += o->WLock;
+                o->WLock = 0;
+            }
         }
     }
     EXIT_CRITICAL();
     return ret;
 }
 
-uint8_t Queue_pushback(struct Queue_t *o, uint8_t val)
+uint8_t Queue_pushback(struct Queue_t *o, const void *val)
 {
     uint8_t ret;
     ENTER_CRITICAL();
     {
-        ret = Queue_free(o) != 0U;
+        ret = o->Free != 0U;
         if(ret != 0U)
         {
-            ++(o->Used);
-            o->Buff[o->Tail] = val;
-            if(++(o->Tail) >= o->Size)
-                o->Tail = 0U;
+            Size_t lock;
+            uint8_t *pos;
+
+            lock = (o->WLock)++;
+            --(o->Free);
+
+            pos = o->Tail;
+            if((o->Tail += o->ItemSize) > o->BufEnd)
+                o->Tail = o->Buff;
+
+            EXIT_CRITICAL();
+            {
+                memcpy(pos, val, o->ItemSize);
+            }
+            ENTER_CRITICAL();
+
+            if(lock == 0U)
+            {
+                o->Used += o->WLock;
+                o->WLock = 0;
+            }
         }
     }
     EXIT_CRITICAL();
     return ret;
 }
 
-uint8_t Queue_popfront(struct Queue_t *o, uint8_t *val)
+uint8_t Queue_popfront(struct Queue_t *o, void *val)
 {
     uint8_t ret;
     ENTER_CRITICAL();
     {
-        ret = Queue_used(o) != 0U;
+        ret = o->Used != 0U;
         if(ret != 0U)
         {
+            Size_t lock;
+            uint8_t *pos;
+
+            lock = (o->RLock)++;
             --(o->Used);
-            *val = o->Buff[o->Head];
-            if(++(o->Head) >= o->Size)
-                o->Head = 0U;
+
+            pos = o->Head;
+            if((o->Head += o->ItemSize) > o->BufEnd)
+                o->Head = o->Buff;
+
+            EXIT_CRITICAL();
+            {
+                memcpy(val, pos, o->ItemSize);
+            }
+            ENTER_CRITICAL();
+
+            if(lock == 0U)
+            {
+                o->Free += o->RLock;
+                o->RLock = 0;
+            }
         }
     }
     EXIT_CRITICAL();
     return ret;
 }
 
-uint8_t Queue_popback(struct Queue_t *o, uint8_t *val)
+uint8_t Queue_popback(struct Queue_t *o, void *val)
 {
     uint8_t ret;
     ENTER_CRITICAL();
     {
-        ret = Queue_used(o) != 0U;
+        ret = o->Used != 0U;
         if(ret != 0U)
         {
+            Size_t lock;
+            uint8_t *pos;
+
+            lock = (o->RLock)++;
             --(o->Used);
-            if(--(o->Tail) >= o->Size)
-                o->Tail = o->Size - 1U;
-            *val = o->Buff[o->Tail];
+
+            if((o->Tail -= o->ItemSize) < o->Buff)
+                o->Tail = o->BufEnd;
+            pos = o->Tail;
+
+            EXIT_CRITICAL();
+            {
+                memcpy(val, pos, o->ItemSize);
+            }
+            ENTER_CRITICAL();
+
+            if(lock == 0U)
+            {
+                o->Free += o->RLock;
+                o->RLock = 0;
+            }
         }
     }
     EXIT_CRITICAL();
     return ret;
 }
 
-Size_t Queue_size(const struct Queue_t *o)
+Size_t Queue_length(const struct Queue_t *o)
 {
-    return o->Size;
+    Size_t ret;
+    ENTER_CRITICAL();
+    {
+        ret = o->Used + o->Free + o->RLock + o->WLock;
+    }
+    EXIT_CRITICAL();
+    return ret;
 }
 
 Size_t Queue_used(const struct Queue_t *o)
@@ -122,5 +197,11 @@ Size_t Queue_used(const struct Queue_t *o)
 
 Size_t Queue_free(const struct Queue_t *o)
 {
-    return Queue_size(o) - Queue_used(o);
+    Size_t ret;
+    ENTER_CRITICAL();
+    {
+        ret = o->Free;
+    }
+    EXIT_CRITICAL();
+    return ret;
 }
