@@ -20,17 +20,19 @@
 #include "Data/queue.h"
 #include <string.h>
 
-void Queue_init(struct Queue_t *o, uint8_t *buff, Size_t length, Size_t item_size)
+void Queue_init(struct Queue_t *o, void *buff, Size_t length, Size_t item_size)
 {
+	uint8_t *buff8 = (uint8_t*)buff;
+
     o->ItemSize = item_size;
     o->Free = length;
     o->Used = 0U;
     o->WLock = 0U;
     o->RLock = 0U;
-    o->Head = buff;
-    o->Tail = buff;
-    o->Buff = buff;
-    o->BufEnd = &buff[(length - 1U) * item_size];
+    o->Head = buff8;
+    o->Tail = buff8;
+    o->Buff = buff8;
+    o->BufEnd = &buff8[(length - 1U) * item_size];
 }
 
 uint8_t Queue_pushfront(struct Queue_t *o, const void *val)

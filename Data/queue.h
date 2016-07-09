@@ -39,7 +39,7 @@ struct Queue_t {
     uint8_t *BufEnd;
 };
 
-void Queue_init(struct Queue_t *o, uint8_t *buff, Size_t length, Size_t item_size);
+void Queue_init(struct Queue_t *o, void *buff, Size_t length, Size_t item_size);
 uint8_t Queue_pushfront(struct Queue_t *o, const void *val);
 uint8_t Queue_pushback(struct Queue_t *o, const void *val);
 uint8_t Queue_popfront(struct Queue_t *o, void *val);
