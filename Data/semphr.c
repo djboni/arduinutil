@@ -27,7 +27,7 @@ void Semaphore_initbinary(struct Semaphore_t *o)
 
 void Semaphore_init(struct Semaphore_t *o, Size_t max)
 {
-	o->Count = max;
+	o->Count = 0U;
 	o->Max = max;
 }
 
