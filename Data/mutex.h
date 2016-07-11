@@ -29,7 +29,7 @@ extern "C" {
 #endif
 
 struct Mutex_t {
-	struct Semaphore_t sem;
+    struct Semaphore_t sem;
 };
 
 void Mutex_init(struct Mutex_t *o);

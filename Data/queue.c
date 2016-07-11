@@ -20,9 +20,11 @@
 #include "Data/queue.h"
 #include <string.h>
 
+#if (QUEUE_ENABLE != 0)
+
 void Queue_init(struct Queue_t *o, void *buff, Size_t length, Size_t item_size)
 {
-	uint8_t *buff8 = (uint8_t*)buff;
+    uint8_t *buff8 = (uint8_t*)buff;
 
     o->ItemSize = item_size;
     o->Free = length;
@@ -207,3 +209,5 @@ Size_t Queue_free(const struct Queue_t *o)
     EXIT_CRITICAL();
     return ret;
 }
+
+#endif /* QUEUE_ENABLE */

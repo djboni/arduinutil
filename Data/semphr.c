@@ -20,15 +20,17 @@
 #include "Data/semphr.h"
 #include <string.h>
 
+#if (SEMAPHORE_ENABLE != 0)
+
 void Semaphore_initbinary(struct Semaphore_t *o)
 {
-	Semaphore_init(o, 1U);
+    Semaphore_init(o, 1U);
 }
 
 void Semaphore_init(struct Semaphore_t *o, Size_t max)
 {
-	o->Count = 0U;
-	o->Max = max;
+    o->Count = 0U;
+    o->Max = max;
 }
 
 uint8_t Semaphore_lock(struct Semaphore_t *o)
@@ -36,11 +38,11 @@ uint8_t Semaphore_lock(struct Semaphore_t *o)
     uint8_t ret;
     ENTER_CRITICAL();
     {
-    	ret = o->Count != 0U;
-    	if(ret)
-    	{
-    		--(o->Count);
-    	}
+        ret = o->Count != 0U;
+        if(ret)
+        {
+            --(o->Count);
+        }
     }
     EXIT_CRITICAL();
     return ret;
@@ -51,11 +53,11 @@ uint8_t Semaphore_unlock(struct Semaphore_t *o)
     uint8_t ret;
     ENTER_CRITICAL();
     {
-    	ret = o->Count < o->Max;
-    	if(ret)
-    	{
-    		++(o->Count);
-    	}
+        ret = o->Count < o->Max;
+        if(ret)
+        {
+            ++(o->Count);
+        }
     }
     EXIT_CRITICAL();
     return ret;
@@ -76,3 +78,5 @@ Size_t Semaphore_getmax(const struct Semaphore_t *o)
 {
     return o->Max;
 }
+
+#endif /* SEMAPHORE_ENABLE */

@@ -30,6 +30,10 @@
 extern "C" {
 #endif
 
+#define QUEUE_ENABLE                 1
+#define SEMAPHORE_ENABLE             1
+#define MUTEX_ENABLE                 1
+
 #define SERIAL_ENABLE                0
 #define SERIAL_RBUFSZ                64U
 #define SERIAL_TBUFSZ                64U

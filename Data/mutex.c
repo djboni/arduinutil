@@ -20,10 +20,12 @@
 #include "Data/mutex.h"
 #include <string.h>
 
+#if (MUTEX_ENABLE != 0)
+
 void Mutex_init(struct Mutex_t *o)
 {
-	Semaphore_init(&o->sem, 1U);
-	Semaphore_unlock(&o->sem);
+    Semaphore_init(&o->sem, 1U);
+    Semaphore_unlock(&o->sem);
 }
 
 uint8_t Mutex_lock(struct Mutex_t *o)
@@ -33,5 +35,7 @@ uint8_t Mutex_lock(struct Mutex_t *o)
 
 uint8_t Mutex_unlock(struct Mutex_t *o)
 {
-	return Semaphore_unlock(&o->sem);
+    return Semaphore_unlock(&o->sem);
 }
+
+#endif /* MUTEX_ENABLE */
