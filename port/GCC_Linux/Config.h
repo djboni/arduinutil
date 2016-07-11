@@ -33,6 +33,7 @@ extern "C" {
 #endif
 
 #define QUEUE_ENABLE                 1
+#define MAILBOX_ENABLE               1
 #define SEMAPHORE_ENABLE             1
 #define MUTEX_ENABLE                 1
 
