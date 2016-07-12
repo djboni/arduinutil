@@ -21,11 +21,23 @@ limitations under the License.
 
 #if (MAILBOX_ENABLE != 0)
 
+/** Initialize mailbox struct.
+ *
+ * Note: Not thread-safe.
+ *
+ * @param o Pointer to mailbox.
+ */
 void Mailbox_init(struct Mailbox_t *o)
 {
     o->Msg = NULL;
 }
 
+/** Send message to mailbox.
+ *
+ * @param o Pointer to mailbox.
+ * @param msg Pointer to the message.
+ * @return 1U upon success, 0U otherwise.
+ */
 uint8_t Mailbox_send(struct Mailbox_t *o, void *msg)
 {
     uint8_t ret;
@@ -41,6 +53,11 @@ uint8_t Mailbox_send(struct Mailbox_t *o, void *msg)
     return ret;
 }
 
+/** Read message from mailbox.
+ *
+ * @param o Pointer to mailbox.
+ * @return Pointer to the message upon success, NULL otherwise.
+ */
 void *Mailbox_receive(struct Mailbox_t *o)
 {
     void *ret;

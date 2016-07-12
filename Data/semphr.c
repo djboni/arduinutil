@@ -22,17 +22,35 @@
 
 #if (SEMAPHORE_ENABLE != 0)
 
+/** Initialize semaphore struct as a binary semaphore.
+ *
+ * Note: Not thread-safe.
+ *
+ * @param o Pointer to semaphore.
+ */
 void Semaphore_initbinary(struct Semaphore_t *o)
 {
     Semaphore_init(o, 1U);
 }
 
+/** Initialize semaphore struct as a counting semaphore.
+ *
+ * Note: Not thread-safe.
+ *
+ * @param o Pointer to semaphore.
+ * @param max Maximum number of counts of the semaphore.
+ */
 void Semaphore_init(struct Semaphore_t *o, Size_t max)
 {
     o->Count = 0U;
     o->Max = max;
 }
 
+/** Lock semaphore.
+ *
+ * @param o Pointer to semaphore.
+ * @return 1U upon success, 0U otherwise.
+ */
 uint8_t Semaphore_lock(struct Semaphore_t *o)
 {
     uint8_t ret;
@@ -48,6 +66,11 @@ uint8_t Semaphore_lock(struct Semaphore_t *o)
     return ret;
 }
 
+/** Unlock semaphore.
+ *
+ * @param o Pointer to semaphore.
+ * @return 1U upon success, 0U otherwise.
+ */
 uint8_t Semaphore_unlock(struct Semaphore_t *o)
 {
     uint8_t ret;
@@ -63,6 +86,11 @@ uint8_t Semaphore_unlock(struct Semaphore_t *o)
     return ret;
 }
 
+/** Get semaphore count value.
+ *
+ * @param o Pointer to semaphore.
+ * @return Counter value of the semaphore.
+ */
 Size_t Semaphore_getcount(const struct Semaphore_t *o)
 {
     Size_t ret;
@@ -74,6 +102,14 @@ Size_t Semaphore_getcount(const struct Semaphore_t *o)
     return ret;
 }
 
+/** Get semaphore maximum count value.
+ *
+ * Note: Not thread-safe.
+ * Max should not be changed after initialization.
+ *
+ * @param o Pointer to semaphore.
+ * @return Maximum counter value of the semaphore.
+ */
 Size_t Semaphore_getmax(const struct Semaphore_t *o)
 {
     return o->Max;

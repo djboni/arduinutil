@@ -22,17 +22,33 @@
 
 #if (MUTEX_ENABLE != 0)
 
+/** Initialize mutex struct.
+ *
+ * Note: Not thread-safe.
+ *
+ * @param o Pointer to mutex.
+ */
 void Mutex_init(struct Mutex_t *o)
 {
     Semaphore_init(&o->sem, 1U);
     Semaphore_unlock(&o->sem);
 }
 
+/** Lock mutex.
+ *
+ * @param o Pointer to mutex.
+ * @return 1U upon success, 0U otherwise.
+ */
 uint8_t Mutex_lock(struct Mutex_t *o)
 {
     return Semaphore_lock(&o->sem);
 }
 
+/** Unlock mutex.
+ *
+ * @param o Pointer to mutex.
+ * @return 1U upon success, 0U otherwise.
+ */
 uint8_t Mutex_unlock(struct Mutex_t *o)
 {
     return Semaphore_unlock(&o->sem);

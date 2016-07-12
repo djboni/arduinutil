@@ -22,6 +22,15 @@
 
 #if (QUEUE_ENABLE != 0)
 
+/** Initialize queue struct.
+ *
+ * Note: Not thread-safe.
+ *
+ * @param o Pointer to queue.
+ * @param buff Pointer to data buffer (must be length*item_size bytes long).
+ * @param length Number of items the queue can hold.
+ * @param item_size Number of bytes per item.
+ */
 void Queue_init(struct Queue_t *o, void *buff, Size_t length, Size_t item_size)
 {
     uint8_t *buff8 = (uint8_t*)buff;
@@ -37,6 +46,12 @@ void Queue_init(struct Queue_t *o, void *buff, Size_t length, Size_t item_size)
     o->BufEnd = &buff8[(length - 1U) * item_size];
 }
 
+/** Insert item in the front of the queue.
+ *
+ * @param o Pointer to queue.
+ * @param val Pointer to item.
+ * @return 1U upon success, 0U otherwise.
+ */
 uint8_t Queue_pushfront(struct Queue_t *o, const void *val)
 {
     uint8_t ret;
@@ -72,6 +87,12 @@ uint8_t Queue_pushfront(struct Queue_t *o, const void *val)
     return ret;
 }
 
+/** Insert item in the back of the queue.
+ *
+ * @param o Pointer to queue.
+ * @param val Pointer to item.
+ * @return 1U upon success, 0U otherwise.
+ */
 uint8_t Queue_pushback(struct Queue_t *o, const void *val)
 {
     uint8_t ret;
@@ -107,6 +128,12 @@ uint8_t Queue_pushback(struct Queue_t *o, const void *val)
     return ret;
 }
 
+/** Remove item in the front of the queue.
+ *
+ * @param o Pointer to queue.
+ * @param val Pointer to item.
+ * @return 1U upon success, 0U otherwise.
+ */
 uint8_t Queue_popfront(struct Queue_t *o, void *val)
 {
     uint8_t ret;
@@ -142,6 +169,12 @@ uint8_t Queue_popfront(struct Queue_t *o, void *val)
     return ret;
 }
 
+/** Remove item in the back of the queue.
+ *
+ * @param o Pointer to queue.
+ * @param val Pointer to item.
+ * @return 1U upon success, 0U otherwise.
+ */
 uint8_t Queue_popback(struct Queue_t *o, void *val)
 {
     uint8_t ret;
@@ -177,6 +210,11 @@ uint8_t Queue_popback(struct Queue_t *o, void *val)
     return ret;
 }
 
+/** Get the queue length.
+ *
+ * @param o Pointer to queue.
+ * @return Length of the queue.
+ */
 Size_t Queue_length(const struct Queue_t *o)
 {
     Size_t ret;
@@ -188,6 +226,11 @@ Size_t Queue_length(const struct Queue_t *o)
     return ret;
 }
 
+/** Get the number of used positions of the queue.
+ *
+ * @param o Pointer to queue.
+ * @return Number of used positions of the queue.
+ */
 Size_t Queue_used(const struct Queue_t *o)
 {
     Size_t ret;
@@ -199,6 +242,11 @@ Size_t Queue_used(const struct Queue_t *o)
     return ret;
 }
 
+/** Get the number of free positions of the queue.
+ *
+ * @param o Pointer to queue.
+ * @return Number of free positions of the queue.
+ */
 Size_t Queue_free(const struct Queue_t *o)
 {
     Size_t ret;
