@@ -258,4 +258,22 @@ Size_t Queue_free(const struct Queue_t *o)
     return ret;
 }
 
+/** Clear the queue, freeing all positions.
+ *
+ * @param o Pointer to queue.
+ */
+void Queue_clear(struct Queue_t *o)
+{
+    ENTER_CRITICAL();
+    {
+        o->Free = Queue_length(o);
+        o->Used = 0U;
+        o->WLock = 0U;
+        o->RLock = 0U;
+        o->Head = o->Buff;
+        o->Tail = o->Buff;
+    }
+    EXIT_CRITICAL();
+}
+
 #endif /* QUEUE_ENABLE */
