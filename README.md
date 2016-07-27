@@ -16,7 +16,7 @@ improvements and suggestions. `:-)`
 You are free to copy, modify, and distribute Arduinutil with attribution under
 the terms of the
 [Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
-See the LICENSE file for details.
+See the doc/LICENSE file for details.
 
 
 ## Supported hardware
@@ -30,7 +30,7 @@ At this point Arduinutil runs in the following hardware:
 ## How to use Arduinutil
 
 To use Arduinutil the only thing you really need is a C compiler for the target
-hardware. 
+hardware.
 
 For this tutorial, however, you will need a clean AVR project on Eclipse CDT
 for the microcontroller ATmega328P. For other IDEs, such as Atmel Studio, the
@@ -52,8 +52,8 @@ GCC_ATmega2560  GCC_ATmega328P  GCC_Linux  OTHERS
 $ rm -r GCC_ATmega2560 GCC_Linux OTHERS
 ```
 
-Add `Source/Arduinutil` and `Source/Arduinutil/port/GCC_ATmega328P` to the
-include paths. On Eclipse go to
+Add `Source/Arduinutil` and `Source/Arduinutil/port/GCC_ATmega328P` to
+the include paths. On Eclipse go to
 `Project > Properties > C/C++ Build > Settings > AVR Compiler > Directories`
 and add them.
 
@@ -67,17 +67,17 @@ int main(void)
 {
     /* Must init first! */
     init();
-    
+
     /* setup() */
     pinMode(13, OUTPUT);
     digitalWrite(13, HIGH);
-    
+
     /* loop() */
     for(;;)
     {
         /* ... */
     }
-    
+
     return 0;
 }
 ```
@@ -92,9 +92,9 @@ functions for each module.
 
 Also check the `port/SOME_PORT/Config.h` file to enable the modules.
 
-Big executable? Try add `-ffunctions-sections -fdata-sections` to the compiler
-options and `-Wl,--gc-sections` to the linker options. You can also link with
-`-lm -lm` (twice) to get rid of the annoying `__clz_tab`.
+Big executable? Try add `-ffunctions-sections -fdata-sections` to the
+compiler options and `-Wl,--gc-sections` to the linker options. You can also
+link with `-lm -lm` (twice) to get rid of the annoying `__clz_tab`.
 
 
 ## Contributing to Arduinutil
@@ -107,4 +107,4 @@ If you have suggestions for improving Arduinutil, please
 
 `README.md` Fast introduction (this file).
 
-`LICENCE` Complete license text.
+`doc/LICENCE` Complete license text.
