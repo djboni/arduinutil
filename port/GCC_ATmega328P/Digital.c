@@ -130,22 +130,24 @@ byte digitalRead(byte io)
 static volatile uint8_t * convIoToInterruptRegister(uint8_t io)
 {
     volatile uint8_t *reg;
-    uint16_t port = (uint16_t)pgm_read_word(&portIOLIST[io]);
+    void *port = (void *)pgm_read_word(&portIOLIST[io]);
 
     ASSERT(io < MAXIO);
 
-    switch(port)
+    if(port == &PORTB)
     {
-    case (uint16_t)&PORTB:
         reg = &PCMSK0;
-        break;
-    case (uint16_t)&PORTC:
+    }
+    else if(port == &PORTC)
+    {
         reg = &PCMSK1;
-        break;
-    case (uint16_t)&PORTD:
+    }
+    else if(port == &PORTD)
+    {
         reg = &PCMSK2;
-        break;
-    default:
+    }
+    else
+    {
         ASSERT(0); /* Invalid port. */
     }
 

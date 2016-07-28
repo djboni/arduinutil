@@ -176,27 +176,30 @@ struct InterruptRegBit_t {
 static struct InterruptRegBit_t convIoToInterruptRegister(uint8_t io)
 {
     struct InterruptRegBit_t intrpt;
-    uint16_t port = (uint16_t)pgm_read_word(&portIOLIST[io]);
+    void *port = (void *)pgm_read_word(&portIOLIST[io]);
     intrpt.bit = pgm_read_byte(&bitIOLIST[io]);
 
     ASSERT(io < MAXIO);
 
-    switch(port)
+    if(port == &PORTB)
     {
-    case (uint16_t)&PORTB:
         intrpt.reg = &PCMSK0;
-        break;
-    case (uint16_t)&PORTE:
+    }
+    else if(port == &PORTE)
+    {
         intrpt.reg = &PCMSK1;
-        break;
-    case (uint16_t)&PORTJ:
+    }
+    else if(port == &PORTJ)
+    {
         intrpt.reg = &PCMSK1;
         intrpt.bit += 1U;
-        break;
-    case (uint16_t)&PORTK:
+    }
+    else if(port == &PORTK)
+    {
         intrpt.reg = &PCMSK2;
-        break;
-    default:
+    }
+    else
+    {
         ASSERT(0); /* Invalid port. */
     }
 
