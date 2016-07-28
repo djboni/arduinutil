@@ -91,7 +91,10 @@ void Serial_flush(void)
 
 void Serial_writeByte(uint8_t data)
 {
-    if((UCSR0A & (1U << UDRE0)))
+    ENTER_CRITICAL();
+
+    if(     (UCSR0A & (1U << UDRE0)) &&
+            Queue_empty(&TxBuff))
     {
         UDR0 = data;
     }
@@ -100,9 +103,15 @@ void Serial_writeByte(uint8_t data)
         UCSR0B |= (1U << UDRIE0);
         while(!Queue_pushback(&TxBuff, &data))
         {
+            EXIT_CRITICAL();
+
             WAIT();
+
+            ENTER_CRITICAL();
         }
     }
+
+    EXIT_CRITICAL();
 }
 
 void Serial_write(const void *str)
@@ -152,9 +161,9 @@ ISR(USART_UDRE_vect)
 {
     uint8_t data;
     if(Queue_popfront(&TxBuff, &data))
-    UDR0 = data;
+        UDR0 = data;
     else
-    UCSR0B &= ~(1U << UDRIE0);
+        UCSR0B &= ~(1U << UDRIE0);
 }
 
 ISR(USART_TX_vect)
