@@ -71,16 +71,16 @@ void analogReference(uint8_t reference);
 
 void timerBegin(void);
 void timerEnd(void);
-uint32_t timerConvCountToMs(uint32_t count);
-uint32_t timerConvMsToCount(uint32_t ms);
-uint32_t timerConvCountToUs(uint32_t count);
-uint32_t timerConvUsToCount(uint32_t us);
 uint32_t timerCounts(void);
 void delayCounts(uint32_t counts);
 uint32_t millis(void);
 uint32_t micros(void);
 void delay(uint32_t ms);
 void delayMicroseconds(uint32_t us);
+uint32_t timerCountToMs(uint32_t count);
+uint32_t timerMsToCount(uint32_t ms);
+uint32_t timerCountToUs(uint32_t count);
+uint32_t timerUsToCount(uint32_t us);
 
 void Serial_begin(uint32_t speed, uint32_t config);
 void Serial_end(void);

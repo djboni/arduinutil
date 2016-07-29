@@ -31,6 +31,16 @@ extern "C" {
 #endif
 
 /*******************************************************************************
+ Timer.c
+ ******************************************************************************/
+
+#define TIMER_COUNT_TO_MS(x) ((x) * TIMER_PRESCALER / (F_CPU / 1000UL) )
+#define TIMER_MS_TO_COUNT(x) ((x) * (F_CPU / 1000UL) / TIMER_PRESCALER )
+
+#define TIMER_COUNT_TO_US(x) ((x) * (TIMER_PRESCALER * 125UL) / (F_CPU / 8000UL) )
+#define TIMER_US_TO_COUNT(x) ((x) * (F_CPU / 8000UL) / (TIMER_PRESCALER * 125UL) )
+
+/*******************************************************************************
  Digital.c
  ******************************************************************************/
 

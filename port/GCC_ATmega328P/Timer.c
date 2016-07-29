@@ -26,12 +26,6 @@
 
 #if (TIMER_ENABLE != 0)
 
-#define CONV_TIMER_CNT_TO_US (TIMER_PRESCALER * 125UL) / (F_CPU / 8000UL)
-#define CONV_US_TO_TIMER_CNT (F_CPU / 8000UL) / (TIMER_PRESCALER * 125UL)
-
-#define CONV_TIMER_CNT_TO_MS TIMER_PRESCALER / (F_CPU / 1000UL)
-#define CONV_MS_TO_TIMER_CNT (F_CPU / 1000UL) / TIMER_PRESCALER
-
 static uint32_t TimerIntCount = 0U;
 
 /** Enable Timer. */
@@ -94,27 +88,27 @@ ISR(TIMER0_OVF_vect)
 }
 
 /** Convert timer counts to milliseconds. */
-uint32_t timerConvCountToMs(uint32_t count)
+uint32_t timerCountToMs(uint32_t count)
 {
-    return count * CONV_TIMER_CNT_TO_MS;
+    return TIMER_COUNT_TO_MS(count);
 }
 
 /** Convert milliseconds to timer counts. */
-uint32_t timerConvMsToCount(uint32_t us)
+uint32_t timerMsToCount(uint32_t ms)
 {
-    return us * CONV_MS_TO_TIMER_CNT;
+    return TIMER_MS_TO_COUNT(ms);
 }
 
 /** Convert timer counts to microseconds. */
-uint32_t timerConvCountToUs(uint32_t count)
+uint32_t timerCountToUs(uint32_t count)
 {
-    return count * CONV_TIMER_CNT_TO_US;
+    return TIMER_COUNT_TO_US(count);
 }
 
 /** Convert microseconds to timer counts. */
-uint32_t timerConvUsToCount(uint32_t us)
+uint32_t timerUsToCount(uint32_t us)
 {
-    return us * CONV_US_TO_TIMER_CNT;
+    return TIMER_US_TO_COUNT(us);
 }
 
 /** Return the number of milliseconds the timer is running.
@@ -122,7 +116,7 @@ uint32_t timerConvUsToCount(uint32_t us)
  Note: This function may return an outdated value if interrupts are disabled. */
 uint32_t millis(void)
 {
-    return timerConvCountToMs(timerCounts());
+    return timerCountToMs(timerCounts());
 }
 
 /** Return the number of microseconds the timer is running.
@@ -130,7 +124,7 @@ uint32_t millis(void)
  Note: This function may return an outdated value if interrupts are disabled. */
 uint32_t micros(void)
 {
-    return timerConvCountToUs(timerCounts());
+    return timerCountToUs(timerCounts());
 }
 
 /** Return the number of counts the timer had.
@@ -156,7 +150,7 @@ uint32_t timerCounts(void)
  Note: This function requires interrupts to be enabled. */
 void delay(uint32_t ms)
 {
-    delayCounts(timerConvMsToCount(ms));
+    delayCounts(timerMsToCount(ms));
 }
 
 /** Stop execution for a given time in microseconds.
@@ -164,7 +158,7 @@ void delay(uint32_t ms)
  Note: This function requires interrupts to be enabled. */
 void delayMicroseconds(uint32_t us)
 {
-    delayCounts(timerConvUsToCount(us));
+    delayCounts(timerUsToCount(us));
 }
 
 /** Stop execution for a given number of timer counts.
