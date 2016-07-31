@@ -2,6 +2,7 @@
  Arduinutil - Arduino-like library written in C
 
  Supported microcontrollers:
+
  ATmega328P
  ATmega2560
 
@@ -34,15 +35,6 @@ extern "C" {
 
 typedef uint8_t byte;
 typedef uint16_t word;
-
-enum {
-    LOW = 0U,
-    HIGH = 1U,
-
-    INPUT = 0U,
-    OUTPUT = 1U,
-    INPUT_PULLUP = 2U
-};
 
 void init(void);
 

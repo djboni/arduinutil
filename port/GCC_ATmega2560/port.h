@@ -47,6 +47,15 @@ extern "C" {
 #define ANALOGIO 54U
 #define MAXIO    (ANALOGIO + 16U)
 
+enum DigitalPinModes {
+    LOW = 0U,
+    HIGH = 1U,
+
+    INPUT = 0U,
+    OUTPUT = 1U,
+    INPUT_PULLUP = 2U
+};
+
 enum DigitalInterruptModes {
     /* LOW = 0x00U, */
     CHANGE = 0x01U,
@@ -102,9 +111,6 @@ enum AnalogReferences {
 #define EXIT_CRITICAL() do{                           \
     __asm volatile("pop   __tmp_reg__" ::);           \
     __asm volatile("out   __SREG__,__tmp_reg__" ::);  }while(0U)
-
-#define ENTER_CRITICAL_IF_CONCURRENT() if(Concurrent) ENTER_CRITICAL()
-#define EXIT_CRITICAL_IF_CONCURRENT()  if(Concurrent) EXIT_CRITICAL()
 
 #define WAIT() __asm volatile("sleep" ::)
 
