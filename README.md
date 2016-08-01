@@ -105,6 +105,11 @@ If you have suggestions for improving Arduinutil, please
 
 ## Important files
 
-`README.md` Fast introduction (this file).
+[README.md](https://github.com/djboni/arduinutil/blob/master/README.md)
+Fast introduction (this file).
 
-`doc/LICENCE` Complete license text.
+[doc/TUTORIAL.md](https://github.com/djboni/arduinutil/blob/master/doc/TUTORIAL.md)
+List with useful tutorials.
+
+[doc/LICENCE](https://github.com/djboni/arduinutil/blob/master/doc/LICENSE)
+Complete license text.
