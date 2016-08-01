@@ -129,6 +129,9 @@ void pinMode(byte io, byte mode)
         /* Enable pull-up. */
         SET_BITS(*port, (1U << bit), byte);
         break;
+    default:
+        ASSERT(0); /* Invalid pin mode. */
+        break;
     }
 }
 
@@ -147,7 +150,7 @@ void digitalWrite(byte io, byte value)
     case LOW:
         CLEAR_BITS(*port, (1U << bit), byte);
         break;
-    case HIGH:
+    default:
         SET_BITS(*port, (1U << bit), byte);
         break;
     }
