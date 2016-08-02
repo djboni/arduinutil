@@ -26,7 +26,7 @@
 
 #if (ANALOG_ENABLE != 0)
 
-PROGMEM static const byte muxADC[] = {
+PROGMEM static const uint8_t muxADC[] = {
         /* A0 - A7 */
         0U, 1U, 2U, 3U, 4U, 5U, 6U, 7U,
         /* A8 - A15 */

@@ -28,7 +28,7 @@
 #define SET_BITS(reg, bits, cast)   do{reg=(cast)((reg)|(bits));}while(0U)
 #define CLEAR_BITS(reg, bits, cast) do{reg=(cast)((reg)&(~(bits)));}while(0U)
 
-PROGMEM static volatile byte * const portIOLIST[] = {
+PROGMEM static volatile uint8_t * const portIOLIST[] = {
         /* 0 - 13 */
         &PORTE, &PORTE, &PORTE, &PORTE, &PORTG, &PORTE, &PORTH, &PORTH, &PORTH,
         &PORTH, &PORTB, &PORTB, &PORTB, &PORTB,
@@ -47,7 +47,7 @@ PROGMEM static volatile byte * const portIOLIST[] = {
         &PORTK, &PORTK, &PORTK, &PORTK, &PORTK, &PORTK, &PORTK
 };
 
-PROGMEM static volatile byte * const pinIOLIST[] = {
+PROGMEM static volatile uint8_t * const pinIOLIST[] = {
         /* 0 - 13 */
         &PINE, &PINE, &PINE, &PINE, &PING, &PINE, &PINH, &PINH, &PINH, &PINH,
         &PINB, &PINB, &PINB, &PINB,
@@ -66,7 +66,7 @@ PROGMEM static volatile byte * const pinIOLIST[] = {
         &PINK, &PINK, &PINK, &PINK, &PINK, &PINK
 };
 
-PROGMEM static volatile byte * const ddrIOLIST[] = {
+PROGMEM static volatile uint8_t * const ddrIOLIST[] = {
         /* 0 - 13 */
         &DDRE, &DDRE, &DDRE, &DDRE, &DDRG, &DDRE, &DDRH, &DDRH, &DDRH, &DDRH,
         &DDRB, &DDRB, &DDRB, &DDRB,
@@ -85,7 +85,7 @@ PROGMEM static volatile byte * const ddrIOLIST[] = {
         &DDRK, &DDRK, &DDRK, &DDRK, &DDRK, &DDRK
 };
 
-PROGMEM static const byte bitIOLIST[] = {
+PROGMEM static const uint8_t bitIOLIST[] = {
         /* 0 - 13 */
         0U, 1U, 4U, 5U, 5U, 3U, 3U, 4U, 5U, 6U, 4U, 5U, 6U, 7U,
         /* 14 - 21 */
@@ -103,11 +103,11 @@ PROGMEM static const byte bitIOLIST[] = {
 /** Change pin configuration. The modes are INPUT, OUTPUT and INPUT_PULLUP.
 
  Note: Use pin ANALOGIO+X for analog pin X. */
-void pinMode(byte io, byte mode)
+void pinMode(uint8_t io, uint8_t mode)
 {
-    volatile byte *port = (volatile byte *)pgm_read_word(&portIOLIST[io]);
-    volatile byte *ddr = (volatile byte *)pgm_read_word(&ddrIOLIST[io]);
-    byte bit = pgm_read_byte(&bitIOLIST[io]);
+    volatile uint8_t *port = (volatile uint8_t *)pgm_read_word(&portIOLIST[io]);
+    volatile uint8_t *ddr = (volatile uint8_t *)pgm_read_word(&ddrIOLIST[io]);
+    uint8_t bit = pgm_read_byte(&bitIOLIST[io]);
 
     ASSERT(io < MAXIO);
 
@@ -115,19 +115,19 @@ void pinMode(byte io, byte mode)
     {
     case INPUT:
         /* Input. */
-        CLEAR_BITS(*ddr, (1U << bit), byte);
+        CLEAR_BITS(*ddr, (1U << bit), uint8_t);
         /* Disable pull-up. */
-        CLEAR_BITS(*port, (1U << bit), byte);
+        CLEAR_BITS(*port, (1U << bit), uint8_t);
         break;
     case OUTPUT:
         /* Output. */
-        SET_BITS(*ddr, (1U << bit), byte);
+        SET_BITS(*ddr, (1U << bit), uint8_t);
         break;
     case INPUT_PULLUP:
         /* Input. */
-        CLEAR_BITS(*ddr, (1U << bit), byte);
+        CLEAR_BITS(*ddr, (1U << bit), uint8_t);
         /* Enable pull-up. */
-        SET_BITS(*port, (1U << bit), byte);
+        SET_BITS(*port, (1U << bit), uint8_t);
         break;
     default:
         ASSERT(0); /* Invalid pin mode. */
@@ -138,20 +138,20 @@ void pinMode(byte io, byte mode)
 /** Change pin output value or input pull-up. The values are LOW and HIGH.
 
  Note: Use pin ANALOGIO+X for analog pin X. */
-void digitalWrite(byte io, byte value)
+void digitalWrite(uint8_t io, uint8_t value)
 {
-    volatile byte *port = (volatile byte *)pgm_read_word(&portIOLIST[io]);
-    byte bit = pgm_read_byte(&bitIOLIST[io]);
+    volatile uint8_t *port = (volatile uint8_t *)pgm_read_word(&portIOLIST[io]);
+    uint8_t bit = pgm_read_byte(&bitIOLIST[io]);
 
     ASSERT(io < MAXIO);
 
     switch(value)
     {
     case LOW:
-        CLEAR_BITS(*port, (1U << bit), byte);
+        CLEAR_BITS(*port, (1U << bit), uint8_t);
         break;
     default:
-        SET_BITS(*port, (1U << bit), byte);
+        SET_BITS(*port, (1U << bit), uint8_t);
         break;
     }
 }
@@ -159,10 +159,10 @@ void digitalWrite(byte io, byte value)
 /** Read pin input value. The values returned are LOW and HIGH.
 
  Note: Use pin ANALOGIO+X for analog pin X. */
-byte digitalRead(byte io)
+uint8_t digitalRead(uint8_t io)
 {
-    volatile byte *pin = (volatile byte *)pgm_read_word(&pinIOLIST[io]);
-    byte bit = pgm_read_byte(&bitIOLIST[io]);
+    volatile uint8_t *pin = (volatile uint8_t *)pgm_read_word(&pinIOLIST[io]);
+    uint8_t bit = pgm_read_byte(&bitIOLIST[io]);
 
     ASSERT(io < MAXIO);
 

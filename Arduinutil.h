@@ -33,9 +33,6 @@
 extern "C" {
 #endif
 
-typedef uint8_t byte;
-typedef uint16_t word;
-
 void init(void);
 
 void disablePeripheralsClocks(void);
@@ -44,9 +41,9 @@ void enablePeripheralsClocks(void);
 void disableDigitalInputsOfAnalogPins(void);
 void enableDigitalInputsOfAnalogPins(void);
 
-void pinMode(byte pin, byte mode);
-void digitalWrite(byte pin, byte value);
-byte digitalRead(byte pin);
+void pinMode(uint8_t pin, uint8_t mode);
+void digitalWrite(uint8_t pin, uint8_t value);
+uint8_t digitalRead(uint8_t pin);
 uint8_t digitalPinToInterrupt(uint8_t pin);
 void attachInterrupt(uint8_t pin, void (*isr)(void), uint8_t mode);
 void detachInterrupt(uint8_t pin);
