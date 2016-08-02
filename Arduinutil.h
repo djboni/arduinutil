@@ -6,6 +6,8 @@
  ATmega328P
  ATmega2560
 
+ MSP430G2553
+
 
  Copyright 2016 Djones A. Boni
 

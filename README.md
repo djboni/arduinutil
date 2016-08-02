@@ -25,6 +25,7 @@ At this point Arduinutil runs in the following hardware:
 
 * Arduino Uno - ATmega328P (GCC)
 * Arduino Mega - ATmega2560 (GCC)
+* LaunchPad MSP430 - MSP430G2553 (GCC)
 
 
 ## How to use Arduinutil
