@@ -41,5 +41,9 @@ void init(void)
     P2REN = 0xFFU;
     P2OUT = 0xFFU;
 
+    /* Configure external interrupts registers. */
+    P1IE = 0U;
+    P2IE = 0U;
+
     ENABLE_INTERRUPTS();
 }

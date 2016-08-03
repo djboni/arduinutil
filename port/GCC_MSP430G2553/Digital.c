@@ -170,3 +170,127 @@ uint8_t digitalRead(uint8_t io)
 
     return (*in & bit) != 0U;
 }
+
+#if (DIGITAL_ATTACH_INT_ENABLE != 0)
+
+static void (*extIntVector1[8U])(void) = {0};
+static void (*extIntVector2[8U])(void) = {0};
+
+/** Convert a digital pin to a interrupt number.
+
+ In this implementation it does nothing other than avoid breaking people code.
+ */
+uint8_t digitalPinToInterrupt(uint8_t pin)
+{
+    return pin;
+}
+
+static volatile uint8_t *pin2ifg(uint8_t pin);
+static volatile uint8_t *pin2ies(uint8_t pin);
+static volatile uint8_t *pin2ie(uint8_t pin);
+static uint8_t bit2num(uint8_t bit);
+
+static volatile uint8_t *pin2ifg(uint8_t pin)
+{
+    if(pin < 2 || pin >= 8)
+        return &P1IFG;
+    else
+        return &P2IFG;
+}
+
+static volatile uint8_t *pin2ies(uint8_t pin)
+{
+    if(pin < 2 || pin >= 8)
+        return &P1IES;
+    else
+        return &P2IES;
+}
+
+static volatile uint8_t *pin2ie(uint8_t pin)
+{
+    if(pin < 2 || pin >= 8)
+        return &P1IE;
+    else
+        return &P2IE;
+}
+
+static uint8_t bit2num(uint8_t bit)
+{
+    uint8_t i;
+    bit >>= 1U;
+    for(i = 0U; bit != 0U; ++i)
+        bit >>= 1U;
+    return i;
+}
+
+/** Enable external interrupt.
+
+ isr is a pointer to the function to be called when the interrupt fires.
+ mode is the interrupt mode. See enum DigitalInterruptModes. */
+void attachInterrupt(uint8_t pin, void (*isr)(void), uint8_t mode)
+{
+    volatile uint8_t *ifg = pin2ifg(pin);
+    volatile uint8_t *ies = pin2ies(pin);
+    volatile uint8_t *ie = pin2ie(pin);
+    uint8_t bit = pin2bit(pin);
+    uint8_t num = bit2num(bit);
+
+    ASSERT(pin < MAXIO);
+
+    if(ie == &P1IE)
+        extIntVector1[num] = isr;
+    else
+        extIntVector2[num] = isr;
+
+    *ifg &= ~bit;
+    if(mode == RISING)
+        *ies &= ~bit;
+    else
+        *ies |= bit;
+    *ie |= bit;
+}
+
+/** Disable external interrupt. */
+void detachInterrupt(uint8_t pin)
+{
+    volatile uint8_t *ie = pin2ie(pin);
+    uint8_t bit = pin2bit(pin);
+
+    ASSERT(pin < MAXIO);
+
+    *ie &= ~bit;
+}
+
+__attribute__((interrupt(PORT1_VECTOR)))
+void port1_isr(void)
+{
+    uint8_t i;
+    uint8_t bit;
+    for(i = 0U, bit = 1U; i < 8U; ++i, bit <<= 1U)
+    {
+        if(     (P1IE & bit) &&
+                (P1IFG & bit))
+        {
+            P1IFG &= ~bit;
+            extIntVector1[i]();
+        }
+    }
+}
+
+__attribute__((interrupt(PORT2_VECTOR)))
+void port2_isr(void)
+{
+    uint8_t i;
+    uint8_t bit;
+    for(i = 0U, bit = 1U; i < 8U; ++i, bit <<= 1U)
+    {
+        if(     (P2IE & bit) &&
+                (P2IFG & bit))
+        {
+            P2IFG &= ~bit;
+            extIntVector2[i]();
+        }
+    }
+}
+
+#endif /* DIGITAL_ATTACH_INT_ENABLE */
