@@ -35,6 +35,10 @@ extern "C" {
 #define SEMAPHORE_ENABLE             1
 #define MUTEX_ENABLE                 1
 
+#define SERIAL_ENABLE                0
+#define SERIAL_RBUFSZ                16U
+#define SERIAL_TBUFSZ                16U
+
 #define ANALOG_ENABLE                0
 
 #define DIGITAL_ATTACH_INT_ENABLE    0
