@@ -31,10 +31,12 @@ void init(void)
      You can change pin direction and pull-up with pinMode() or make changes
      directly here. */
     P1SEL = 0U;
+    P1SEL2 = 0U;
     P1DIR = 0U;
     P1REN = 0xFFU;
     P1OUT = 0xFFU;
     P2SEL = 0U;
+    P2SEL2 = 0U;
     P2DIR = 0U;
     P2REN = 0xFFU;
     P2OUT = 0xFFU;

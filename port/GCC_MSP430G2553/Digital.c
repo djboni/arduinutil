@@ -23,6 +23,7 @@
 #include "Arduinutil.h"
 
 static volatile uint8_t *pin2sel(uint8_t pin);
+static volatile uint8_t *pin2sel2(uint8_t pin);
 static volatile uint8_t *pin2dir(uint8_t pin);
 static volatile uint8_t *pin2ren(uint8_t pin);
 static volatile uint8_t *pin2out(uint8_t pin);
@@ -35,6 +36,14 @@ static volatile uint8_t *pin2sel(uint8_t pin)
         return &P1SEL;
     else
         return &P2SEL;
+}
+
+static volatile uint8_t *pin2sel2(uint8_t pin)
+{
+    if(pin < 2 || pin >= 8)
+        return &P1SEL2;
+    else
+        return &P2SEL2;
 }
 
 static volatile uint8_t *pin2dir(uint8_t pin)
@@ -96,6 +105,7 @@ static uint8_t pin2bit(uint8_t pin)
 void pinMode(uint8_t io, uint8_t mode)
 {
     volatile uint8_t *sel = pin2sel(io);
+    volatile uint8_t *sel2 = pin2sel2(io);
     volatile uint8_t *dir = pin2dir(io);
     volatile uint8_t *ren = pin2ren(io);
     uint8_t bit = pin2bit(io);
@@ -103,6 +113,7 @@ void pinMode(uint8_t io, uint8_t mode)
     ASSERT(io < MAXIO);
 
     *sel &= ~bit;
+    *sel2 &= ~bit;
 
     switch(mode)
     {
