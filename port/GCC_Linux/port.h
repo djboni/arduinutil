@@ -33,6 +33,7 @@ extern "C" {
 #define DISABLE_INTERRUPTS() do{}while(0U)
 #define ENABLE_INTERRUPTS()  do{}while(0U)
 
+#define VAR_CRITICAL()
 #define ENTER_CRITICAL() do{}while(0U)
 #define EXIT_CRITICAL()  do{}while(0U)
 

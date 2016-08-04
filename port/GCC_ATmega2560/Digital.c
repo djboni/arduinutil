@@ -248,6 +248,8 @@ static struct InterruptRegBit_t convIoToInterruptRegister(uint8_t io)
 void enableExternalInterrupt(uint8_t io)
 {
     struct InterruptRegBit_t intrpt = convIoToInterruptRegister(io);
+    VAR_CRITICAL();
+
     ENTER_CRITICAL();
     {
         *intrpt.reg |= (1U << intrpt.bit);
@@ -259,6 +261,8 @@ void enableExternalInterrupt(uint8_t io)
 void disableExternalInterrupt(uint8_t io)
 {
     struct InterruptRegBit_t intrpt = convIoToInterruptRegister(io);
+    VAR_CRITICAL();
+
     ENTER_CRITICAL();
     {
         *intrpt.reg &= ~(1U << intrpt.bit);

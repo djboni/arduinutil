@@ -41,6 +41,8 @@ void Mailbox_init(struct Mailbox_t *o)
 uint8_t Mailbox_send(struct Mailbox_t *o, void *msg)
 {
     uint8_t ret;
+    VAR_CRITICAL();
+
     ENTER_CRITICAL();
     {
         ret = o->Msg == NULL;
@@ -61,6 +63,8 @@ uint8_t Mailbox_send(struct Mailbox_t *o, void *msg)
 void *Mailbox_receive(struct Mailbox_t *o)
 {
     void *ret;
+    VAR_CRITICAL();
+
     ENTER_CRITICAL();
     {
         ret = o->Msg;

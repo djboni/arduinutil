@@ -134,6 +134,8 @@ uint32_t timerCounts(void)
 {
     uint32_t timerIntCount;
     uint8_t timerCount;
+    VAR_CRITICAL();
+
     ENTER_CRITICAL();
     {
         timerIntCount = TimerIntCount;

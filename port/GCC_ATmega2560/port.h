@@ -104,6 +104,7 @@ enum AnalogReferences {
 #define DISABLE_INTERRUPTS() do{ __asm volatile("cli" ::); }while(0U)
 #define ENABLE_INTERRUPTS()  do{ __asm volatile("sei" ::); }while(0U)
 
+#define VAR_CRITICAL()
 #define ENTER_CRITICAL() do{                          \
     __asm volatile("in    __tmp_reg__,__SREG__" ::);  \
     __asm volatile("cli" ::);                         \

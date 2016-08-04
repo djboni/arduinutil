@@ -91,6 +91,8 @@ void Serial_flush(void)
 
 void Serial_writeByte(uint8_t data)
 {
+    VAR_CRITICAL();
+
     ENTER_CRITICAL();
 
     if(     (UCSR0A & (1U << UDRE0)) &&

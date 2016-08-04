@@ -54,6 +54,8 @@ void Semaphore_init(struct Semaphore_t *o, Size_t max)
 uint8_t Semaphore_lock(struct Semaphore_t *o)
 {
     uint8_t ret;
+    VAR_CRITICAL();
+
     ENTER_CRITICAL();
     {
         ret = o->Count != 0U;
@@ -74,6 +76,8 @@ uint8_t Semaphore_lock(struct Semaphore_t *o)
 uint8_t Semaphore_unlock(struct Semaphore_t *o)
 {
     uint8_t ret;
+    VAR_CRITICAL();
+
     ENTER_CRITICAL();
     {
         ret = o->Count < o->Max;
@@ -94,6 +98,8 @@ uint8_t Semaphore_unlock(struct Semaphore_t *o)
 Size_t Semaphore_getcount(const struct Semaphore_t *o)
 {
     Size_t ret;
+    VAR_CRITICAL();
+
     ENTER_CRITICAL();
     {
         ret = o->Count;

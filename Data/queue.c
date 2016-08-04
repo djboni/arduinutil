@@ -55,6 +55,8 @@ void Queue_init(struct Queue_t *o, void *buff, Size_t length, Size_t item_size)
 uint8_t Queue_pushfront(struct Queue_t *o, const void *val)
 {
     uint8_t ret;
+    VAR_CRITICAL();
+
     ENTER_CRITICAL();
     {
         ret = o->Free != 0U;
@@ -96,6 +98,8 @@ uint8_t Queue_pushfront(struct Queue_t *o, const void *val)
 uint8_t Queue_pushback(struct Queue_t *o, const void *val)
 {
     uint8_t ret;
+    VAR_CRITICAL();
+
     ENTER_CRITICAL();
     {
         ret = o->Free != 0U;
@@ -137,6 +141,8 @@ uint8_t Queue_pushback(struct Queue_t *o, const void *val)
 uint8_t Queue_popfront(struct Queue_t *o, void *val)
 {
     uint8_t ret;
+    VAR_CRITICAL();
+
     ENTER_CRITICAL();
     {
         ret = o->Used != 0U;
@@ -178,6 +184,8 @@ uint8_t Queue_popfront(struct Queue_t *o, void *val)
 uint8_t Queue_popback(struct Queue_t *o, void *val)
 {
     uint8_t ret;
+    VAR_CRITICAL();
+
     ENTER_CRITICAL();
     {
         ret = o->Used != 0U;
@@ -218,6 +226,8 @@ uint8_t Queue_popback(struct Queue_t *o, void *val)
 Size_t Queue_length(const struct Queue_t *o)
 {
     Size_t ret;
+    VAR_CRITICAL();
+
     ENTER_CRITICAL();
     {
         ret = o->Used + o->Free + o->RLock + o->WLock;
@@ -234,6 +244,8 @@ Size_t Queue_length(const struct Queue_t *o)
 Size_t Queue_used(const struct Queue_t *o)
 {
     Size_t ret;
+    VAR_CRITICAL();
+
     ENTER_CRITICAL();
     {
         ret = o->Used;
@@ -250,6 +262,8 @@ Size_t Queue_used(const struct Queue_t *o)
 Size_t Queue_free(const struct Queue_t *o)
 {
     Size_t ret;
+    VAR_CRITICAL();
+
     ENTER_CRITICAL();
     {
         ret = o->Free;
@@ -264,6 +278,8 @@ Size_t Queue_free(const struct Queue_t *o)
  */
 void Queue_clear(struct Queue_t *o)
 {
+    VAR_CRITICAL();
+
     ENTER_CRITICAL();
     {
         o->Free = Queue_length(o);
