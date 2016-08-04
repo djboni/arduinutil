@@ -61,7 +61,11 @@ enum DigitalPinModes {
     INPUT = 0U,
     OUTPUT = 1U,
     INPUT_PULLUP = 2U,
-    INPUT_PULLDOWN = 3U
+    INPUT_PULLDOWN = 3U,
+
+    /* Available only if ANALOG_ENABLE=1. */
+    ANALOG_INPUT = 4U, /* Configure analog capable pin as analog input. */
+    NOT_ANALOG_INPUT = 5U /* Undo ANALOG_INPUT. */
 };
 
 enum DigitalInterruptModes {
@@ -81,7 +85,22 @@ enum AnalogDefinition {
     A4 = P14,
     A5 = P15,
     A6 = P16,
-    A7 = P17
+    A7 = P17,
+    AREFP = 16U,
+    AREFM = 17U,
+    ATEMP = 18U
+};
+
+enum AnalogReferences {
+    INTERNALVCC = 0U, /* Internal voltage VCC. */
+    EXTERNAL = 1U, /* External voltage on VREF+. */
+
+    INTERNAL1V5 = 2U, /* Internal voltage reference 1.5V. */
+    INTERNAL2V5 = 3U, /* Internal voltage reference 2.5V. */
+
+    /* Arduino IDE compatibility. */
+    DEFAULT = INTERNALVCC,
+    INTERNAL = INTERNAL1V5
 };
 
 /*******************************************************************************

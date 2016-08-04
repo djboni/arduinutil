@@ -22,6 +22,8 @@
 
 #include "Arduinutil.h"
 
+uint8_t pin2analog(uint8_t pin); /* Analog.c */
+
 static volatile uint8_t *pin2sel(uint8_t pin);
 static volatile uint8_t *pin2sel2(uint8_t pin);
 static volatile uint8_t *pin2dir(uint8_t pin);
@@ -135,6 +137,16 @@ void pinMode(uint8_t io, uint8_t mode)
         *ren |= bit;
         *pin2out(io) &= ~bit;
         break;
+
+    #if (ANALOG_ENABLE != 0)
+        case ANALOG_INPUT:
+            ADC10AE0 |= (1U << pin2analog(io));
+            break;
+        case NOT_ANALOG_INPUT:
+            ADC10AE0 &= ~(1U << pin2analog(io));
+            break;
+    #endif
+
     default:
         ASSERT(0); /* Invalid pin mode. */
         break;
