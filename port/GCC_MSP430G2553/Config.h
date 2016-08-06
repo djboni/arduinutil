@@ -39,6 +39,9 @@ extern "C" {
 #define SERIAL_RBUFSZ                16U
 #define SERIAL_TBUFSZ                16U
 
+#define TIMER_ENABLE                 0
+#define TIMER_PRESCALER              8U /* 1, 2, 4, 8 */
+
 #define ANALOG_ENABLE                0
 
 #define DIGITAL_ATTACH_INT_ENABLE    0

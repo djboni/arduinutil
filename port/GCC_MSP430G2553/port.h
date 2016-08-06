@@ -30,6 +30,16 @@ extern "C" {
 #include <msp430.h>
 
 /*******************************************************************************
+ Timer.c
+ ******************************************************************************/
+
+#define TIMER_COUNT_TO_MS(x) ((x) / (F_CPU / 1000UL) * TIMER_PRESCALER  )
+#define TIMER_MS_TO_COUNT(x) ((x) * (F_CPU / 1000UL) / TIMER_PRESCALER )
+
+#define TIMER_COUNT_TO_US(x) ((x) / (F_CPU / 8000UL) * (TIMER_PRESCALER * 125UL) )
+#define TIMER_US_TO_COUNT(x) ((x) * (F_CPU / 8000UL) / (TIMER_PRESCALER * 125UL) )
+
+/*******************************************************************************
  Digital.c
  ******************************************************************************/
 
