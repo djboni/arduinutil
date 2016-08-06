@@ -28,6 +28,7 @@ extern "C" {
 
 char conv_digit2char(uint8_t digit);
 char *conv_ul2str(char *str, uint8_t size, uint32_t val, uint8_t base);
+char *conv_fillstr(char *str, uint8_t num, char ch);
 
 #ifdef __cplusplus
 } /* extern "C" */
