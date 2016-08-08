@@ -4,6 +4,7 @@
  Supported microcontrollers:
 
  ATmega328P
+ ATmega328PB
  ATmega2560
 
  MSP430G2553

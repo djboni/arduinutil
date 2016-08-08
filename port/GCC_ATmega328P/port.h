@@ -138,6 +138,19 @@ enum AnalogReferences {
 #define SERIAL_7O2 SERIAL_CONF(0x00UL, 0x98UL, 0x3CUL)
 #define SERIAL_8O2 SERIAL_CONF(0x00UL, 0x98UL, 0x3EUL)
 
+/*******************************************************************************
+ Multi-port
+ ******************************************************************************/
+
+/* ATmega328PB */
+#if defined(__AVR_ATmega328PB__)
+    /* Alias names from ATmega328P headers that were renamed in ATmega328PB. */
+    #define PRR              PRR0
+    #define USART_UDRE_vect  USART0_UDRE_vect
+    #define USART_TX_vect    USART0_TX_vect
+    #define USART_RX_vect    USART0_RX_vect
+#endif
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
