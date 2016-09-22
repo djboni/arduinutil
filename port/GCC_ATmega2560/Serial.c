@@ -72,8 +72,8 @@ void Serial_begin(uint32_t speed, uint32_t config)
 
 void Serial_end(void)
 {
-    UCSR0B = 0; /* Disable TX and RX. */
-    PRR0 |= (1 << PRUSART0); /* Disable UART clock. */
+    UCSR0B = 0U; /* Disable TX and RX. */
+    PRR0 |= (1U << PRUSART0); /* Disable UART clock. */
 }
 
 Size_t Serial_available(void)
