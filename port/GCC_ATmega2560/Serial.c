@@ -30,8 +30,6 @@
 
 #if (SERIAL_ENABLE != 0)
 
-PROGMEM static const char msg_overflow[] = "Overflow!\n";
-
 static struct Queue_t RxBuff;
 uint8_t RxBuff_data[SERIAL_RBUFSZ];
 
@@ -136,9 +134,7 @@ void Serial_print(const void *format, ...)
     {
         va_list vl;
         va_start(vl, format);
-        if(vsnprintf(buf, SERIAL_PRINT_BUFSZ, format, vl) >=
-                (int)SERIAL_PRINT_BUFSZ)
-            strncpy_P(buf, msg_overflow, SERIAL_PRINT_BUFSZ);
+        vsnprintf(buf, SERIAL_PRINT_BUFSZ, format, vl);
         va_end(vl);
     }
     Serial_write(buf);
