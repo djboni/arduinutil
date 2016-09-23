@@ -80,7 +80,7 @@ void Serial_flush(void);
 void Serial_writeByte(uint8_t data);
 void Serial_write(const void *str);
 void Serial_writeBuff(const void *buff, uint16_t length);
-void Serial_print(const void *format, ...);
+int Serial_print(const void *format, ...);
 int16_t Serial_read(void);
 
 void Serial1_begin(uint32_t speed, uint32_t config);
@@ -90,7 +90,7 @@ void Serial1_flush(void);
 void Serial1_writeByte(uint8_t data);
 void Serial1_write(const void *str);
 void Serial1_writeBuff(const void *buff, uint16_t length);
-void Serial1_print(const void *format, ...);
+int Serial1_print(const void *format, ...);
 int16_t Serial1_read(void);
 
 void Serial2_begin(uint32_t speed, uint32_t config);
@@ -100,7 +100,7 @@ void Serial2_flush(void);
 void Serial2_writeByte(uint8_t data);
 void Serial2_write(const void *str);
 void Serial2_writeBuff(const void *buff, uint16_t length);
-void Serial2_print(const void *format, ...);
+int Serial2_print(const void *format, ...);
 int16_t Serial2_read(void);
 
 void Serial3_begin(uint32_t speed, uint32_t config);
@@ -110,7 +110,7 @@ void Serial3_flush(void);
 void Serial3_writeByte(uint8_t data);
 void Serial3_write(const void *str);
 void Serial3_writeBuff(const void *buff, uint16_t length);
-void Serial3_print(const void *format, ...);
+int Serial3_print(const void *format, ...);
 int16_t Serial3_read(void);
 
 #ifdef __cplusplus

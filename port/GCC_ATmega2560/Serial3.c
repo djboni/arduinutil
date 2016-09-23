@@ -128,16 +128,18 @@ void Serial3_writeBuff(const void *buff, uint16_t length)
         Serial3_writeByte(*b++);
 }
 
-void Serial3_print(const void *format, ...)
+int Serial3_print(const void *format, ...)
 {
+	int used_length;
     char buf[SERIAL_PRINT_BUFSZ];
     {
         va_list vl;
         va_start(vl, format);
-        vsnprintf(buf, SERIAL3_PRINT_BUFSZ, format, vl);
+        used_length = vsnprintf(buf, SERIAL3_PRINT_BUFSZ, format, vl);
         va_end(vl);
     }
     Serial3_write(buf);
+    return used_length;
 }
 
 int16_t Serial3_read(void)
