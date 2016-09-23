@@ -31,10 +31,10 @@
 #if (SERIAL1_ENABLE != 0)
 
 static struct Queue_t RxBuff;
-uint8_t RxBuff_data[SERIAL_RBUFSZ];
+uint8_t RxBuff_data[SERIAL1_RBUFSZ];
 
 static struct Queue_t TxBuff;
-uint8_t TxBuff_data[SERIAL_TBUFSZ];
+uint8_t TxBuff_data[SERIAL1_TBUFSZ];
 
 void Serial1_begin(uint32_t speed, uint32_t config)
 {
