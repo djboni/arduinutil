@@ -40,6 +40,21 @@ extern "C" {
 #define SERIAL_TBUFSZ                64U
 #define SERIAL_PRINT_BUFSZ           32U
 
+#define SERIAL1_ENABLE               0
+#define SERIAL1_RBUFSZ               64U
+#define SERIAL1_TBUFSZ               64U
+#define SERIAL1_PRINT_BUFSZ          32U
+
+#define SERIAL2_ENABLE               0
+#define SERIAL2_RBUFSZ               64U
+#define SERIAL2_TBUFSZ               64U
+#define SERIAL2_PRINT_BUFSZ          32U
+
+#define SERIAL3_ENABLE               0
+#define SERIAL3_RBUFSZ               64U
+#define SERIAL3_TBUFSZ               64U
+#define SERIAL3_PRINT_BUFSZ          32U
+
 #define TIMER_ENABLE                 0
 #define TIMER_PRESCALER              1024U
 

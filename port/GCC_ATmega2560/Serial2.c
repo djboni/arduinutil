@@ -28,15 +28,15 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#if (SERIAL_ENABLE != 0)
+#if (SERIAL2_ENABLE != 0)
 
 static struct Queue_t RxBuff;
-static uint8_t RxBuff_data[SERIAL_RBUFSZ];
+static uint8_t RxBuff_data[SERIAL2_RBUFSZ];
 
 static struct Queue_t TxBuff;
-static uint8_t TxBuff_data[SERIAL_TBUFSZ];
+static uint8_t TxBuff_data[SERIAL2_TBUFSZ];
 
-void Serial_begin(uint32_t speed, uint32_t config)
+void Serial2_begin(uint32_t speed, uint32_t config)
 {
     uint8_t ucsra;
     uint32_t ubrr;
@@ -47,39 +47,39 @@ void Serial_begin(uint32_t speed, uint32_t config)
     if(ubrr > 0x0FFFU)
     {
         ubrr = (F_CPU - 8U * speed) / (16U * speed);
-        ucsra &= ~(1U << U2X0);
+        ucsra &= ~(1U << U2X2);
     }
     else
     {
-        ucsra |= (1U << U2X0);
+        ucsra |= (1U << U2X2);
     }
 
-    PRR0 &= ~(1U << PRUSART0); /* Enable UART clock. */
+    PRR1 &= ~(1U << PRUSART2); /* Enable UART clock. */
 
-    UCSR0B = 0; /* Disable TX and RX. */
+    UCSR2B = 0; /* Disable TX and RX. */
 
     Queue_init(&RxBuff, &RxBuff_data[0], sizeof(RxBuff_data), sizeof(RxBuff_data[0]));
     Queue_init(&TxBuff, &TxBuff_data[0], sizeof(TxBuff_data), sizeof(TxBuff_data[0]));
 
     /* Set speed and other configurations. */
-    UBRR0 = ubrr;
-    UCSR0A = ucsra;
-    UCSR0B = config >> 8U;
-    UCSR0C = config >> 16U;
+    UBRR2 = ubrr;
+    UCSR2A = ucsra;
+    UCSR2B = config >> 8U;
+    UCSR2C = config >> 16U;
 }
 
-void Serial_end(void)
+void Serial2_end(void)
 {
-    UCSR0B = 0U; /* Disable TX and RX. */
-    PRR0 |= (1U << PRUSART0); /* Disable UART clock. */
+    UCSR2B = 0U; /* Disable TX and RX. */
+    PRR1 |= (1U << PRUSART2); /* Disable UART clock. */
 }
 
-Size_t Serial_available(void)
+Size_t Serial2_available(void)
 {
     return Queue_used(&RxBuff);
 }
 
-void Serial_flush(void)
+void Serial2_flush(void)
 {
     while(Queue_used(&TxBuff) != 0U)
     {
@@ -87,20 +87,20 @@ void Serial_flush(void)
     }
 }
 
-void Serial_writeByte(uint8_t data)
+void Serial2_writeByte(uint8_t data)
 {
     VAR_CRITICAL();
 
     ENTER_CRITICAL();
 
-    if(     (UCSR0A & (1U << UDRE0)) &&
+    if(     (UCSR2A & (1U << UDRE2)) &&
             Queue_empty(&TxBuff))
     {
-        UDR0 = data;
+        UDR2 = data;
     }
     else
     {
-        UCSR0B |= (1U << UDRIE0);
+        UCSR2B |= (1U << UDRIE2);
         while(!Queue_pushback(&TxBuff, &data))
         {
             EXIT_CRITICAL();
@@ -114,33 +114,33 @@ void Serial_writeByte(uint8_t data)
     EXIT_CRITICAL();
 }
 
-void Serial_write(const void *str)
+void Serial2_write(const void *str)
 {
     const uint8_t *s = (const uint8_t *)str;
     while(*s != 0U)
-        Serial_writeByte(*s++);
+        Serial2_writeByte(*s++);
 }
 
-void Serial_writeBuff(const void *buff, uint16_t length)
+void Serial2_writeBuff(const void *buff, uint16_t length)
 {
     const uint8_t *b = (const uint8_t *)buff;
     while(length-- != 0)
-        Serial_writeByte(*b++);
+        Serial2_writeByte(*b++);
 }
 
-void Serial_print(const void *format, ...)
+void Serial2_print(const void *format, ...)
 {
     char buf[SERIAL_PRINT_BUFSZ];
     {
         va_list vl;
         va_start(vl, format);
-        vsnprintf(buf, SERIAL_PRINT_BUFSZ, format, vl);
+        vsnprintf(buf, SERIAL2_PRINT_BUFSZ, format, vl);
         va_end(vl);
     }
-    Serial_write(buf);
+    Serial2_write(buf);
 }
 
-int16_t Serial_read(void)
+int16_t Serial2_read(void)
 {
     uint8_t data;
     if(Queue_popfront(&RxBuff, &data))
@@ -149,23 +149,23 @@ int16_t Serial_read(void)
         return -1;
 }
 
-ISR(USART0_RX_vect)
+ISR(USART2_RX_vect)
 {
-    uint8_t data = UDR0;
+    uint8_t data = UDR2;
     Queue_pushback(&RxBuff, &data);
 }
 
-ISR(USART0_UDRE_vect)
+ISR(USART2_UDRE_vect)
 {
     uint8_t data;
     if(Queue_popfront(&TxBuff, &data))
-        UDR0 = data;
+        UDR2 = data;
     else
-        UCSR0B &= ~(1U << UDRIE0);
+        UCSR2B &= ~(1U << UDRIE2);
 }
 
-ISR(USART0_TX_vect)
+ISR(USART2_TX_vect)
 {
 }
 
-#endif /* SERIAL_ENABLE */
+#endif /* SERIAL2_ENABLE */
