@@ -76,36 +76,12 @@ void timer0_a1_isr(void)
     }
 }
 
-/** Convert timer counts to milliseconds. */
-uint32_t timerCountToMs(uint32_t count)
-{
-    return TIMER_COUNT_TO_MS(count);
-}
-
-/** Convert milliseconds to timer counts. */
-uint32_t timerMsToCount(uint32_t ms)
-{
-    return TIMER_MS_TO_COUNT(ms);
-}
-
-/** Convert timer counts to microseconds. */
-uint32_t timerCountToUs(uint32_t count)
-{
-    return TIMER_COUNT_TO_US(count);
-}
-
-/** Convert microseconds to timer counts. */
-uint32_t timerUsToCount(uint32_t us)
-{
-    return TIMER_US_TO_COUNT(us);
-}
-
 /** Return the number of milliseconds the timer is running.
 
  Note: This function may return an outdated value if interrupts are disabled. */
 uint32_t millis(void)
 {
-    return timerCountToMs(timerCounts());
+    return TIMER_COUNT_TO_MS(timerCounts());
 }
 
 /** Return the number of microseconds the timer is running.
@@ -113,7 +89,7 @@ uint32_t millis(void)
  Note: This function may return an outdated value if interrupts are disabled. */
 uint32_t micros(void)
 {
-    return timerCountToUs(timerCounts());
+    return TIMER_COUNT_TO_US(timerCounts());
 }
 
 /** Return the number of counts the timer had.
@@ -158,7 +134,7 @@ uint32_t timerCounts(void)
  Note: This function requires interrupts to be enabled. */
 void delay(uint32_t ms)
 {
-    delayCounts(timerMsToCount(ms));
+    delayCounts(TIMER_MS_TO_COUNT(ms));
 }
 
 /** Stop execution for a given time in microseconds.
@@ -166,7 +142,7 @@ void delay(uint32_t ms)
  Note: This function requires interrupts to be enabled. */
 void delayMicroseconds(uint32_t us)
 {
-    delayCounts(timerUsToCount(us));
+    delayCounts(TIMER_US_TO_COUNT(us));
 }
 
 /** Stop execution for a given number of timer counts.
