@@ -130,7 +130,7 @@ void Serial_writeBuff(const void *buff, uint16_t length)
 
 int Serial_print(const void *format, ...)
 {
-	int used_length;
+    int used_length;
     char buf[SERIAL_PRINT_BUFSZ];
     {
         va_list vl;

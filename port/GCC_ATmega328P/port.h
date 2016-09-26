@@ -138,6 +138,14 @@ enum AnalogReferences {
 #define SERIAL_7O2 SERIAL_CONF(0x00UL, 0x98UL, 0x3CUL)
 #define SERIAL_8O2 SERIAL_CONF(0x00UL, 0x98UL, 0x3EUL)
 
+/*******************************************************************************
+ I2c.c
+ ******************************************************************************/
+
+typedef enum I2C_STATUS_t {
+    I2C_OK             = 0x00U
+} I2C_STATUS;
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
