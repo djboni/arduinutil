@@ -27,7 +27,7 @@
 #if (I2C_ENABLE != 0)
 
 #define I2C_RETURN_IF_NOTOK(expr) do{  \
-    I2C_STATUS x;                      \
+    uint8_t x;                         \
     x = expr;                          \
     if(x != I2C_OK)                    \
         return x;                      }while(0U)
@@ -88,7 +88,7 @@ void I2c_end(void)
     PRR |= (1U << PRTWI); /* Disable I2C clock. */
 }
 
-I2C_STATUS I2c_sendStart(uint8_t addr, uint8_t r1w0)
+uint8_t I2c_sendStart(uint8_t addr, uint8_t r1w0)
 {
     r1w0 = ((r1w0 == 0U) ? 0U : 1U); /* To bool 0 or 1. */
     addr = (addr << 1U) | r1w0;
@@ -121,7 +121,7 @@ void I2c_sendStop(void)
     TWCR |= (1U << TWSTO); /* Send STO. Auto-clears. */
 }
 
-I2C_STATUS I2c_writeByte(uint8_t data)
+uint8_t I2c_writeByte(uint8_t data)
 {
     /* Send data. */
     TWDR = data;
@@ -134,7 +134,7 @@ I2C_STATUS I2c_writeByte(uint8_t data)
     return I2C_OK;
 }
 
-I2C_STATUS I2c_readByte(uint8_t *data, uint8_t ack1nack0)
+uint8_t I2c_readByte(uint8_t *data, uint8_t ack1nack0)
 {
     if(ack1nack0 != 0U)
     {

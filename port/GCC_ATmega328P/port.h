@@ -142,7 +142,7 @@ enum AnalogReferences {
  I2c.c
  ******************************************************************************/
 
-typedef enum I2C_STATUS_t {
+enum I2C_STATUS_t {
     I2C_OK             = 0x00U,
     I2C_START          = 0x08U,
     I2C_RSTART         = 0x10U,
@@ -155,7 +155,7 @@ typedef enum I2C_STATUS_t {
     I2C_SLAR_NACK      = 0x48U,
     I2C_RDATA_ACK      = 0x50U,
     I2C_RDATA_NACK     = 0x58U
-} I2C_STATUS;
+};
 
 #ifdef __cplusplus
 } /* extern "C" */
