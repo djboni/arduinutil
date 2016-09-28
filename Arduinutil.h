@@ -111,12 +111,10 @@ int16_t Serial3_read(void);
 
 void I2c_begin(uint32_t speed);
 void I2c_end(void);
-uint8_t I2c_write(uint8_t addr, const uint8_t *buff, uint8_t length, uint8_t *numsent);
-uint8_t I2c_read(uint8_t addr, uint8_t *buff, uint8_t length, uint8_t *numread);
-void I2c_sendStop(void);
-uint8_t I2c_sendStart(uint8_t addr, uint8_t r1w0);
-uint8_t I2c_writeByte(uint8_t data);
-uint8_t I2c_readByte(uint8_t *data, uint8_t ack1nack0);
+uint8_t I2c_getStatus(void);
+void I2c_write(uint8_t addr, const uint8_t *buff, uint8_t length, uint8_t *numsent);
+void I2c_read(uint8_t addr, uint8_t *buff, uint8_t length, uint8_t *numread);
+void I2c_stop(void);
 
 #ifdef __cplusplus
 } /* extern "C" */

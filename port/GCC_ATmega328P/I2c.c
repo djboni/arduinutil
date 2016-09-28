@@ -26,38 +26,56 @@
 
 #if (I2C_ENABLE != 0)
 
-enum {
-    I2C_TWCR_ENABLE = (1U << TWINT) | (1U << TWEN), /* Enable I2C. Clear interrupt flag. */
+enum I2c_twcr_values_t {
+    I2C_TWCR_ENABLE = (1U << TWEN), /* Enable I2C. */
     I2C_TWCR_DISABLE = 0U, /* Disable I2C. */
-    I2C_TWCR_CLEAR_INT = I2C_TWCR_ENABLE, /* Clear interrupt flag. */
+
+    I2C_TWCR_CLEAR_INT = (1U << TWINT) | (1U << TWIE) | I2C_TWCR_ENABLE, /* Enable interrupt. Clear interrupt flag. */
+    I2C_TWCR_DIS_INT = I2C_TWCR_ENABLE, /* Disable interrupt. Do not clear interrupt. */
+
     I2C_TWCR_SEND_STA = (1U << TWSTA) | I2C_TWCR_CLEAR_INT, /* Send STA. */
     I2C_TWCR_CLEAR_STA = I2C_TWCR_CLEAR_INT, /* Clear STA bit. */
-    I2C_TWCR_SEND_STO = (1U << TWSTO) | I2C_TWCR_CLEAR_INT, /* Send STO. */
+    I2C_TWCR_SEND_STO = (1U << TWINT) | (1U << TWSTO) | I2C_TWCR_DIS_INT, /* Send STO. Clear and disable interrupt. */
+
     I2C_TWCR_SEND_ACK = (1U << TWEA) | I2C_TWCR_CLEAR_INT, /* Send ACK. */
     I2C_TWCR_SEND_NACK = I2C_TWCR_CLEAR_INT /* Send NACK */
 };
 
-#define I2C_RETURN_IF_NOTOK(expr) do{  \
-    uint8_t x;                         \
-    x = expr;                          \
-    if(x != I2C_OK)                    \
-        return x;                      }while(0U)
+enum I2c_twsr_status_t {
+    I2C_OK             = 0x00U,
+    I2C_START          = 0x08U,
+    I2C_RESTART        = 0x10U,
+    I2C_SLAW_ACK       = 0x18U,
+    I2C_SLAW_NACK      = 0x20U,
+    I2C_WDATA_ACK      = 0x28U,
+    I2C_WDATA_NACK     = 0x30U,
+    I2C_ARBITRATION    = 0x38U,
+    I2C_SLAR_ACK       = 0x40U,
+    I2C_SLAR_NACK      = 0x48U,
+    I2C_RDATA_ACK      = 0x50U,
+    I2C_RDATA_NACK     = 0x58U
+};
 
-static uint8_t waitIntStatus(uint8_t a)
-{
-    uint8_t twsr;
-    while(!(TWCR & (1U << TWINT))) {}
-    twsr = TWSR & 0xF8U;
-    return (twsr == a) ? I2C_OK : twsr;
-}
+enum I2c_interrupt_status_t {
+    IDLE = 0U,
+    STA_SLAW = 1U,
+    SLAW = 2U,
+    WDATA = 3U,
+    STA_SLAR = 4U,
+    SLAR = 5U,
+    RDATA = 6U
+};
 
-static uint8_t waitIntStatus2(uint8_t a, uint8_t b)
-{
-    uint8_t twsr;
-    while(!(TWCR & (1U << TWINT))) {}
-    twsr = TWSR & 0xF8U;
-    return (twsr == a || twsr == b) ? I2C_OK : twsr;
-}
+struct I2c_buffer_t {
+    uint8_t status;
+    uint8_t addr;
+    uint8_t length;
+    uint8_t *num;
+    const uint8_t *txbuff;
+    uint8_t *rxbuff;
+};
+
+static struct I2c_buffer_t RxTxBuffer;
 
 void I2c_begin(uint32_t speed)
 {
@@ -91,115 +109,212 @@ void I2c_begin(uint32_t speed)
     TWBR = (uint8_t)twbr_val; /* Bit rate. */
 
     TWCR = I2C_TWCR_ENABLE;
+
+    RxTxBuffer.status = IDLE;
 }
 
 void I2c_end(void)
 {
-    TWCR = I2C_TWCR_DISABLE; 
+    TWCR = I2C_TWCR_DISABLE;
     PRR |= (1U << PRTWI); /* Disable I2C clock. */
 }
 
-uint8_t I2c_sendStart(uint8_t addr, uint8_t r1w0)
+uint8_t I2c_getStatus(void)
 {
-    TWCR = I2C_TWCR_SEND_STA; /* Send STA. */
-    I2C_RETURN_IF_NOTOK(waitIntStatus2(I2C_START, I2C_RSTART));
-    
-    r1w0 = ((r1w0 == 0U) ? 0U : 1U); /* To bool 0 or 1. */
-    addr = (addr << 1U) | r1w0;
-        
-    TWDR = addr; /* Send SLA+W or SLA+R. */
-    TWCR = I2C_TWCR_CLEAR_STA; /* Clear STA bit. */
-    I2C_RETURN_IF_NOTOK(waitIntStatus(r1w0 ? I2C_SLAR_ACK : I2C_SLAW_ACK));
-
-    return I2C_OK;
+    return RxTxBuffer.status;
 }
 
-void I2c_sendStop(void)
+void I2c_stop(void)
 {
     TWCR = I2C_TWCR_SEND_STO; /* Send STO. STO bit auto-clears. */
 }
 
-uint8_t I2c_writeByte(uint8_t data)
+void I2c_write(uint8_t addr, const uint8_t *buff, uint8_t length, uint8_t *numsent)
 {
-    TWDR = data; /* Send data. */
-    TWCR = I2C_TWCR_CLEAR_INT; /* Clear TWINT. */
-    I2C_RETURN_IF_NOTOK(waitIntStatus(I2C_WDATA_ACK));
-    return I2C_OK;
-}
-
-uint8_t I2c_readByte(uint8_t *data, uint8_t ack1nack0)
-{
-    TWCR = (ack1nack0 != 0U) ? I2C_TWCR_SEND_ACK : I2C_TWCR_SEND_NACK; /* ACK or NACK data? */
-    I2C_RETURN_IF_NOTOK(waitIntStatus2(I2C_RDATA_NACK, I2C_RDATA_ACK));
-    *data = TWDR; /* Read data. */
-    return I2C_OK;
-}
-
-uint8_t I2c_write(uint8_t addr, const uint8_t *buff, uint8_t length, uint8_t *numsent)
-{
-    uint8_t x;
-    
-    *numsent = 0U;
-    
-    x = I2c_sendStart(addr, 0U);
-    if(x != I2C_OK)
-        goto err;
-    
-    while(length != 0U)
+    ENTER_CRITICAL();
     {
-        x = I2c_writeByte(*buff);
-        
-        if(x != I2C_OK && x != I2C_WDATA_NACK)
+        if(RxTxBuffer.status == IDLE)
         {
-            goto err;
-        }                
+            RxTxBuffer.status = STA_SLAW;
+            EXIT_CRITICAL();
+
+            *numsent = 0U;
+
+            RxTxBuffer.addr = (addr << 1U);
+            RxTxBuffer.txbuff = buff;
+            RxTxBuffer.length = length;
+            RxTxBuffer.num = numsent;
+
+            TWCR = I2C_TWCR_SEND_STA; /* Send STA. */
+        }
         else
         {
-            *numsent += 1U;
-            
-             if(x == I2C_WDATA_NACK)
-             {
-                 x = I2C_OK;
-                break;
-             }                 
+            EXIT_CRITICAL();
         }
-        
-        ++buff;
-        --length;
     }
-    
-err:
-    return x;
 }
 
-uint8_t I2c_read(uint8_t addr, uint8_t *buff, uint8_t length, uint8_t *numread)
+void I2c_read(uint8_t addr, uint8_t *buff, uint8_t length, uint8_t *numread)
 {
-    uint8_t x;
-    
-    *numread = 0U;
-    
-    x = I2c_sendStart(addr, 1U);
-    if(x != I2C_OK)
-        goto err;
-    
-    while(length != 0U)
+    ENTER_CRITICAL();
     {
-        x = I2c_readByte(buff, length > 1U);
-        if(x != I2C_OK)
-            goto err;
+        if(RxTxBuffer.status == IDLE)
+        {
+            RxTxBuffer.status = STA_SLAR;
+            EXIT_CRITICAL();
 
-        *numread += 1U;
-        
-        ++buff;
-        --length;
+            *numread = 0U;
+
+            RxTxBuffer.addr = (addr << 1U) | 1U;
+            RxTxBuffer.rxbuff = buff;
+            RxTxBuffer.length = length;
+            RxTxBuffer.num = numread;
+
+            TWCR = I2C_TWCR_SEND_STA; /* Send STA. */
+        }
+        else
+        {
+            EXIT_CRITICAL();
+        }
     }
-    
-err:
-    return x;
 }
 
 ISR(TWI_vect)
 {
+    uint8_t twsr = TWSR & 0xF8U;
+
+    switch(RxTxBuffer.status)
+    {
+        case STA_SLAW:
+        {
+            if(twsr == I2C_START || twsr == I2C_RESTART)
+            {
+                RxTxBuffer.status = SLAW;
+                TWDR = RxTxBuffer.addr; /* Send SLA+W. */
+                TWCR = I2C_TWCR_CLEAR_STA; /* Clear STA bit. */
+            }
+            else
+            {
+                goto err;
+            }
+            break;
+        }
+        case SLAW:
+        {
+            if(twsr == I2C_SLAW_ACK)
+            {
+                RxTxBuffer.status = WDATA;
+                twsr = I2C_WDATA_ACK;
+            }
+            else
+            {
+                goto err;
+            }
+            /* No break! */
+        }
+        case WDATA:
+        {
+            if(twsr == I2C_WDATA_ACK)
+            {
+                if(RxTxBuffer.length != 0U)
+                {
+                    TWDR = *(RxTxBuffer.txbuff); /* Send data. */
+                    TWCR = I2C_TWCR_CLEAR_INT; /* Clear TWINT. */
+
+                    ++(*RxTxBuffer.num);
+                    ++(RxTxBuffer.txbuff);
+                    --(RxTxBuffer.length);
+                }
+                else
+                {
+                    goto clrint;
+                }
+            }
+            else if(twsr == I2C_WDATA_NACK)
+            {
+                goto clrint;
+            }
+            else
+            {
+                goto err;
+            }
+            break;
+        }
+
+        case STA_SLAR:
+        {
+            if(twsr == I2C_START || twsr == I2C_RESTART)
+            {
+                RxTxBuffer.status = SLAR;
+                TWDR = RxTxBuffer.addr; /* Send SLA+R. */
+                TWCR = I2C_TWCR_CLEAR_STA; /* Clear STA bit. */
+            }
+            else
+            {
+                goto err;
+            }
+            break;
+        }
+        case SLAR:
+        {
+            if(twsr == I2C_SLAR_ACK)
+            {
+                RxTxBuffer.status = RDATA;
+                if(RxTxBuffer.length > 1U)
+                {
+                    TWCR = I2C_TWCR_SEND_ACK; /* Start receiving. Send ACK. */
+                }
+                else
+                {
+                    TWCR = I2C_TWCR_SEND_NACK; /* Start receiving. Send NACK. */
+                }
+            }
+            else
+            {
+                goto err;
+            }
+            break;
+        }
+        case RDATA:
+        {
+            if(twsr == I2C_RDATA_ACK || twsr == I2C_RDATA_NACK)
+            {
+                *RxTxBuffer.rxbuff = TWDR; /* Get received data. */
+                ++*RxTxBuffer.num;
+                ++RxTxBuffer.rxbuff;
+                --RxTxBuffer.length;
+
+                if(RxTxBuffer.length > 1U)
+                {
+                    TWCR = I2C_TWCR_SEND_ACK; /* Start receiving. Send ACK. */
+                }
+                else if(RxTxBuffer.length == 1U)
+                {
+                    TWCR = I2C_TWCR_SEND_NACK; /* Start receiving. Send NACK. */
+                }
+                else
+                {
+                    goto clrint; /* Nothing to receive. */
+                }
+            }
+            else
+            {
+                goto err;
+            }
+            break;
+        }
+        default:
+        {
+            goto clrint;
+        }
+    }
+
+    return;
+
+clrint:
+err:
+    RxTxBuffer.status = IDLE;
+    TWCR = I2C_TWCR_DIS_INT;
 }
 
 #endif /* I2C_ENABLE */
