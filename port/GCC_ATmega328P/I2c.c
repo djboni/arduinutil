@@ -62,7 +62,7 @@ static uint8_t waitIntStatus2(uint8_t a, uint8_t b)
 void I2c_begin(uint32_t speed)
 {
     uint8_t twsr_twps_bits;
-    uint8_t twbr_val;
+    uint32_t twbr_val;
 
     switch(I2C_PRESCALER) {
     case 1U:
@@ -79,15 +79,16 @@ void I2c_begin(uint32_t speed)
         break;
     default:
         twsr_twps_bits = 3U;
-        ASSERT(0); /* Invalid prescaler value */
+        ASSERT(0); /* Invalid prescaler value. */
     }
 
     twbr_val = (F_CPU - 16UL * speed) / (2 * I2C_PRESCALER * speed);
+    ASSERT(twbr_val <= 0xFFU); /* Prescaler and/or speed too low. */
 
     PRR &= ~(1U << PRTWI); /* Enable I2C clock. */
 
     TWSR = (twsr_twps_bits << TWPS0); /* Prescaler. */
-    TWBR = twbr_val; /* Bit rate. */
+    TWBR = (uint8_t)twbr_val; /* Bit rate. */
 
     TWCR = I2C_TWCR_ENABLE;
 }
