@@ -26,6 +26,7 @@
 
 #if (I2C_ENABLE != 0)
 
+/* These are values written to the TWCR control register. */
 enum I2c_twcr_values_t {
     I2C_TWCR_ENABLE = (1U << TWEN), /* Enable I2C. */
     I2C_TWCR_DISABLE = 0U, /* Disable I2C. */
@@ -41,6 +42,7 @@ enum I2c_twcr_values_t {
     I2C_TWCR_SEND_NACK = I2C_TWCR_CLEAR_INT /* Send NACK */
 };
 
+/* These are the used status from the TWSR status register. */
 enum I2c_twsr_status_t {
     I2C_OK             = 0x00U,
     I2C_START          = 0x08U,
@@ -56,6 +58,8 @@ enum I2c_twsr_status_t {
     I2C_RDATA_NACK     = 0x58U
 };
 
+/* These are the status returned by I2c_getStatus() function. Zero means the I2C
+ peripheral is IDLE and non-zero means it is busy. */
 enum I2c_interrupt_status_t {
     IDLE = 0U,
     STA_SLAW = 1U,
@@ -66,6 +70,7 @@ enum I2c_interrupt_status_t {
     RDATA = 6U
 };
 
+/* Data structure which holds I2C peripheral status and communication data. */
 struct I2c_buffer_t {
     uint8_t status;
     uint8_t addr;
@@ -77,6 +82,7 @@ struct I2c_buffer_t {
 
 static struct I2c_buffer_t RxTxBuffer;
 
+/** Initialize peripheral for communication. */
 void I2c_begin(uint32_t speed)
 {
     uint8_t twsr_twps_bits;
@@ -113,22 +119,30 @@ void I2c_begin(uint32_t speed)
     RxTxBuffer.status = IDLE;
 }
 
+/** Disable peripheral. */
 void I2c_end(void)
 {
     TWCR = I2C_TWCR_DISABLE;
     PRR |= (1U << PRTWI); /* Disable I2C clock. */
 }
 
+/** Return peripheral status. Zero means IDLE, busy otherwise. */
 uint8_t I2c_getStatus(void)
 {
     return RxTxBuffer.status;
 }
 
+/** Send stop condition in the bus. */
 void I2c_stop(void)
 {
     TWCR = I2C_TWCR_SEND_STO; /* Send STO. STO bit auto-clears. */
 }
 
+/** Send start condition in the bus and send (write) up to 'length' bytes from
+ 'buff' to the device of address 'addr'. The value pointed by 'numsent' holds
+ the actual number of bytes sent. The function returns immediately after
+ starting the communication. To test if the communication has finished use the
+ function I2c_getStatus(). A stop condition is not sent by this function. */
 void I2c_write(uint8_t addr, const uint8_t *buff, uint8_t length, uint8_t *numsent)
 {
     ENTER_CRITICAL();
@@ -154,6 +168,11 @@ void I2c_write(uint8_t addr, const uint8_t *buff, uint8_t length, uint8_t *numse
     }
 }
 
+/** Send start condition in the bus and receive (read) up to 'length' bytes in
+ 'buff' from the device of address 'addr'. The value pointed by 'numread' holds
+ the actual number of bytes received. The function returns immediately after
+ starting the communication. To test if the communication has finished use the
+ function I2c_getStatus(). A stop condition is not sent by this function. */
 void I2c_read(uint8_t addr, uint8_t *buff, uint8_t length, uint8_t *numread)
 {
     ENTER_CRITICAL();
@@ -179,6 +198,7 @@ void I2c_read(uint8_t addr, uint8_t *buff, uint8_t length, uint8_t *numread)
     }
 }
 
+/* Interrupt vector for I2C peripheral. */
 ISR(TWI_vect)
 {
     uint8_t twsr = TWSR & 0xF8U;
