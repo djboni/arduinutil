@@ -26,6 +26,17 @@
 
 #if (I2C_ENABLE != 0)
 
+enum {
+    I2C_TWCR_ENABLE = (1U << TWINT) | (1U << TWEN), /* Enable I2C. Clear interrupt flag. */
+    I2C_TWCR_DISABLE = 0U, /* Disable I2C. */
+    I2C_TWCR_CLEAR_INT = I2C_TWCR_ENABLE, /* Clear interrupt flag. */
+    I2C_TWCR_SEND_STA = (1U << TWSTA) | I2C_TWCR_CLEAR_INT, /* Send STA. */
+    I2C_TWCR_CLEAR_STA = I2C_TWCR_CLEAR_INT, /* Clear STA bit. */
+    I2C_TWCR_SEND_STO = (1U << TWSTO) | I2C_TWCR_CLEAR_INT, /* Send STO. */
+    I2C_TWCR_SEND_ACK = (1U << TWEA) | I2C_TWCR_CLEAR_INT, /* Send ACK. */
+    I2C_TWCR_SEND_NACK = I2C_TWCR_CLEAR_INT /* Send NACK */
+};
+
 #define I2C_RETURN_IF_NOTOK(expr) do{  \
     uint8_t x;                         \
     x = expr;                          \
@@ -78,78 +89,48 @@ void I2c_begin(uint32_t speed)
     TWSR = (twsr_twps_bits << TWPS0); /* Prescaler. */
     TWBR = twbr_val; /* Bit rate. */
 
-    TWCR =  (1U << TWINT) | /* Clear interrupt flag. */
-            (1U << TWEN); /* Enable I2C. */
+    TWCR = I2C_TWCR_ENABLE;
 }
 
 void I2c_end(void)
 {
-    TWCR = 0U; /* Disable I2C. */
+    TWCR = I2C_TWCR_DISABLE; 
     PRR |= (1U << PRTWI); /* Disable I2C clock. */
 }
 
 uint8_t I2c_sendStart(uint8_t addr, uint8_t r1w0)
 {
+    TWCR = I2C_TWCR_SEND_STA; /* Send STA. */
+    I2C_RETURN_IF_NOTOK(waitIntStatus2(I2C_START, I2C_RSTART));
+    
     r1w0 = ((r1w0 == 0U) ? 0U : 1U); /* To bool 0 or 1. */
     addr = (addr << 1U) | r1w0;
-
-    /* Send STA. */
-    TWCR |= (1U << TWSTA);
-
-    I2C_RETURN_IF_NOTOK(waitIntStatus2(I2C_START, I2C_RSTART));
-
-    /* Send SLA+W or SLA+R. */
-    TWDR = addr;
-
-    /* Clear STA and TWINT bits. */
-    TWCR = (TWCR & ~(1U << TWSTA)) | (1U << TWINT);
-
-    if(r1w0)
-    {
-        I2C_RETURN_IF_NOTOK(waitIntStatus(I2C_SLAW_ACK));
-    }
-    else
-    {
-        I2C_RETURN_IF_NOTOK(waitIntStatus(I2C_SLAR_ACK));
-    }
+        
+    TWDR = addr; /* Send SLA+W or SLA+R. */
+    TWCR = I2C_TWCR_CLEAR_STA; /* Clear STA bit. */
+    I2C_RETURN_IF_NOTOK(waitIntStatus(r1w0 ? I2C_SLAR_ACK : I2C_SLAW_ACK));
 
     return I2C_OK;
 }
 
 void I2c_sendStop(void)
 {
-    TWCR |= (1U << TWSTO); /* Send STO. Auto-clears. */
+    TWCR = I2C_TWCR_SEND_STO; /* Send STO. STO bit auto-clears. */
 }
 
 uint8_t I2c_writeByte(uint8_t data)
 {
-    /* Send data. */
-    TWDR = data;
-
-    /* Clear TWINT. */
-    TWCR |= (1U << TWINT);
-
+    TWDR = data; /* Send data. */
+    TWCR = I2C_TWCR_CLEAR_INT; /* Clear TWINT. */
     I2C_RETURN_IF_NOTOK(waitIntStatus(I2C_WDATA_ACK));
-
     return I2C_OK;
 }
 
 uint8_t I2c_readByte(uint8_t *data, uint8_t ack1nack0)
 {
-    if(ack1nack0 != 0U)
-    {
-        /* Send ACK. Clear TWINT. */
-        TWCR |= (1U << TWEA) | (1U << TWINT);
-    }
-    else
-    {
-        /* Send NACK. Clear TWINT. */
-        TWCR = (TWCR & ~(1U << TWEA)) | (1U << TWINT);
-    }
+    TWCR = (ack1nack0 != 0U) ? I2C_TWCR_SEND_ACK : I2C_TWCR_SEND_NACK; /* ACK or NACK data? */
     I2C_RETURN_IF_NOTOK(waitIntStatus2(I2C_RDATA_NACK, I2C_RDATA_ACK));
-
-    *data = TWDR;
-
+    *data = TWDR; /* Read data. */
     return I2C_OK;
 }
 
