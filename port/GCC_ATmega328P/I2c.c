@@ -135,6 +135,69 @@ uint8_t I2c_readByte(uint8_t *data, uint8_t ack1nack0)
     return I2C_OK;
 }
 
+uint8_t I2c_write(uint8_t addr, const uint8_t *buff, uint8_t length, uint8_t *numsent)
+{
+    uint8_t x;
+    
+    *numsent = 0U;
+    
+    x = I2c_sendStart(addr, 0U);
+    if(x != I2C_OK)
+        goto err;
+    
+    while(length != 0U)
+    {
+        x = I2c_writeByte(*buff);
+        
+        if(x != I2C_OK && x != I2C_WDATA_NACK)
+        {
+            goto err;
+        }                
+        else
+        {
+            *numsent += 1U;
+            
+             if(x == I2C_WDATA_NACK)
+             {
+                 x = I2C_OK;
+                break;
+             }                 
+        }
+        
+        ++buff;
+        --length;
+    }
+    
+err:
+    return x;
+}
+
+uint8_t I2c_read(uint8_t addr, uint8_t *buff, uint8_t length, uint8_t *numread)
+{
+    uint8_t x;
+    
+    *numread = 0U;
+    
+    x = I2c_sendStart(addr, 1U);
+    if(x != I2C_OK)
+        goto err;
+    
+    while(length != 0U)
+    {
+        x = I2c_readByte(buff, length > 1U);
+        if(x != I2C_OK)
+            goto err;
+
+        *numread += 1U;
+        
+        ++buff;
+        --length;
+    }
+    
+err:
+    return x;
+}
+
 ISR(TWI_vect)
 {
 }
