@@ -92,7 +92,7 @@ ISR(TIMER0_OVF_vect)
  Note: This function may return an outdated value if interrupts are disabled. */
 uint32_t millis(void)
 {
-    return TIMER_COUNT_TO_MS(timerCounts());
+    return timerCounts() * ( 4.0e-3 * (TIMER_PRESCALER / 64.0) / (F_CPU / 16.0e6) );
 }
 
 /** Return the number of microseconds the timer is running.
@@ -100,7 +100,7 @@ uint32_t millis(void)
  Note: This function may return an outdated value if interrupts are disabled. */
 uint32_t micros(void)
 {
-    return TIMER_COUNT_TO_US(timerCounts());
+    return timerCounts() * ( 4.0 * (TIMER_PRESCALER / 64.0) / (F_CPU / 16.0e6) );
 }
 
 /** Return the number of counts the timer had.

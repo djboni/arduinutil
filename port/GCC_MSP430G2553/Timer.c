@@ -134,7 +134,7 @@ uint32_t timerCounts(void)
  Note: This function requires interrupts to be enabled. */
 void delay(uint32_t ms)
 {
-    delayCounts(TIMER_MS_TO_COUNT(ms));
+    return timerCounts() * ( 4.0e-3 * (TIMER_PRESCALER / 64.0) / (F_CPU / 16.0e6) );
 }
 
 /** Stop execution for a given time in microseconds.
@@ -142,7 +142,7 @@ void delay(uint32_t ms)
  Note: This function requires interrupts to be enabled. */
 void delayMicroseconds(uint32_t us)
 {
-    delayCounts(TIMER_US_TO_COUNT(us));
+    return timerCounts() * ( 4.0 * (TIMER_PRESCALER / 64.0) / (F_CPU / 16.0e6) );
 }
 
 /** Stop execution for a given number of timer counts.
