@@ -109,6 +109,13 @@ void Serial3_writeBuff(const void *buff, uint16_t length);
 int Serial3_print(const void *format, ...);
 int16_t Serial3_read(void);
 
+void I2c_begin(uint32_t speed);
+void I2c_end(void);
+uint8_t I2c_getStatus(void);
+void I2c_write(uint8_t addr, const uint8_t *buff, uint8_t length, uint8_t *numsent);
+void I2c_read(uint8_t addr, uint8_t *buff, uint8_t length, uint8_t *numread);
+void I2c_stop(void);
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif

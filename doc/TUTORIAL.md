@@ -13,5 +13,8 @@ Read analog input and print to serial
 Read analog input and print to serial with NBW (No Busy Wait / without wait for
 conversion)
 
+[doc/tutor/I2c.md](./tutor/I2c.md)
+I2C example (EEPROM 24C32)
+
 [doc/tutor/ExecutionTime.md](./tutor/ExecutionTime.md)
 Measuring execution time

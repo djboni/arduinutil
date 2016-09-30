@@ -55,6 +55,9 @@ extern "C" {
 #define SERIAL3_TBUFSZ               64U
 #define SERIAL3_PRINT_BUFSZ          32U
 
+#define I2C_ENABLE                   0
+#define I2C_PRESCALER                64U
+
 #define TIMER_ENABLE                 0
 #define TIMER_PRESCALER              1024U
 
