@@ -76,7 +76,7 @@ void Serial_flush(void);
 void Serial_writeByte(uint8_t data);
 void Serial_write(const void *str);
 void Serial_writeBuff(const void *buff, uint16_t length);
-int Serial_print(const void *format, ...);
+int Serial_print(const char *format, ...);
 int16_t Serial_read(void);
 
 void Serial1_begin(uint32_t speed, uint32_t config);

@@ -128,7 +128,7 @@ void Serial_writeBuff(const void *buff, uint16_t length)
         Serial_writeByte(*b++);
 }
 
-int Serial_print(const void *format, ...)
+int Serial_print(const char *format, ...)
 {
     int used_length;
     char buf[SERIAL_PRINT_BUFSZ];
