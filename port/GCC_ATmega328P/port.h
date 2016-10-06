@@ -94,19 +94,19 @@ enum AnalogReferences {
  Others
  ******************************************************************************/
 
-#define DISABLE_INTERRUPTS() do{ __asm volatile("cli" ::); }while(0U)
-#define ENABLE_INTERRUPTS()  do{ __asm volatile("sei" ::); }while(0U)
+#define DISABLE_INTERRUPTS() do{ __asm __volatile("cli" ::); }while(0U)
+#define ENABLE_INTERRUPTS()  do{ __asm __volatile("sei" ::); }while(0U)
 
 #define VAR_CRITICAL()
-#define ENTER_CRITICAL() do{                          \
-    __asm volatile("in    __tmp_reg__,__SREG__" ::);  \
-    __asm volatile("cli" ::);                         \
-    __asm volatile("push  __tmp_reg__" ::);           }while(0U)
-#define EXIT_CRITICAL() do{                           \
-    __asm volatile("pop   __tmp_reg__" ::);           \
-    __asm volatile("out   __SREG__,__tmp_reg__" ::);  }while(0U)
+#define ENTER_CRITICAL() do{                              \
+    __asm __volatile("in    __tmp_reg__,__SREG__   \n\t"  \
+                     "cli                          \n\t"  \
+                     "push  __tmp_reg__" ::);             }while(0U)
+#define EXIT_CRITICAL() do{                               \
+    __asm __volatile("pop   __tmp_reg__            \n\t"  \
+                     "out   __SREG__,__tmp_reg__" ::);    }while(0U)
 
-#define WAIT() __asm volatile("sleep" ::)
+#define WAIT() __asm __volatile("sleep" ::)
 
 /*******************************************************************************
  Serial.c
