@@ -83,7 +83,7 @@ uint8_t Queue_pushfront(struct Queue_t *o, const void *val)
             if(lock == 0U)
             {
                 o->Used += o->WLock;
-                o->WLock = 0;
+                o->WLock = 0U;
             }
         }
     }
@@ -126,7 +126,7 @@ uint8_t Queue_pushback(struct Queue_t *o, const void *val)
             if(lock == 0U)
             {
                 o->Used += o->WLock;
-                o->WLock = 0;
+                o->WLock = 0U;
             }
         }
     }
@@ -169,7 +169,7 @@ uint8_t Queue_popfront(struct Queue_t *o, void *val)
             if(lock == 0U)
             {
                 o->Free += o->RLock;
-                o->RLock = 0;
+                o->RLock = 0U;
             }
         }
     }
@@ -212,7 +212,7 @@ uint8_t Queue_popback(struct Queue_t *o, void *val)
             if(lock == 0U)
             {
                 o->Free += o->RLock;
-                o->RLock = 0;
+                o->RLock = 0U;
             }
         }
     }
