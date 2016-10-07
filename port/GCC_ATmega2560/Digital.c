@@ -169,12 +169,12 @@ uint8_t digitalRead(uint8_t io)
     return (*pin & (1U << bit)) != 0U;
 }
 
+#if (DIGITAL_EXTERNAL_INT_ENABLE != 0)
+
 struct InterruptRegBit_t {
     volatile uint8_t *reg;
     uint8_t bit;
 };
-
-#if (DIGITAL_EXTERNAL_INT_ENABLE != 0)
 
 static struct InterruptRegBit_t convIoToInterruptRegister(uint8_t io)
 {
