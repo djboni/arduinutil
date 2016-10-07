@@ -28,7 +28,7 @@ extern "C" {
 #endif
 
 struct Mailbox_t {
-    void *Msg;
+    void *volatile Msg;
 };
 
 void Mailbox_init(struct Mailbox_t *o);

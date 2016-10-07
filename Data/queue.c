@@ -22,6 +22,8 @@
 
 #if (QUEUE_ENABLE != 0)
 
+#define UNCONST(type, var) *((type*)&(var))
+
 /** Initialize queue struct.
  *
  * Note: Not thread-safe.
@@ -35,15 +37,15 @@ void Queue_init(struct Queue_t *o, void *buff, Size_t length, Size_t item_size)
 {
     uint8_t *buff8 = (uint8_t*)buff;
 
-    o->ItemSize = item_size;
+    UNCONST(Size_t, o->ItemSize) = item_size;
     o->Free = length;
     o->Used = 0U;
     o->WLock = 0U;
     o->RLock = 0U;
     o->Head = buff8;
     o->Tail = buff8;
-    o->Buff = buff8;
-    o->BufEnd = &buff8[(length - 1U) * item_size];
+    UNCONST(uint8_t*, o->Buff) = buff8;
+    UNCONST(uint8_t*, o->BufEnd) = &buff8[(length - 1U) * item_size];
 }
 
 /** Insert item in the front of the queue.

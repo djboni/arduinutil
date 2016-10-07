@@ -28,8 +28,8 @@ extern "C" {
 #endif
 
 struct Semaphore_t {
-    Size_t Count;
-    Size_t Max;
+    volatile Size_t Count;
+    const Size_t Max;
 };
 
 void Semaphore_initbinary(struct Semaphore_t *o);
