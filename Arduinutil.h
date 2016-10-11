@@ -116,6 +116,10 @@ void I2c_write(uint8_t addr, const uint8_t *buff, uint8_t length, uint8_t *numse
 void I2c_read(uint8_t addr, uint8_t *buff, uint8_t length, uint8_t *numread);
 void I2c_stop(void);
 
+void Wdt_enable(uint16_t timeout_ms);
+void Wdt_disable(void);
+void Wdt_reset(void);
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
