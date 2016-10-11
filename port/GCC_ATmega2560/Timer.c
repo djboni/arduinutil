@@ -147,6 +147,7 @@ void delayCounts(uint32_t counts)
     uint32_t call_time = timerCounts();
     while((timerCounts() - call_time) < counts)
     {
+        WAIT_BUSY();
     }
 }
 

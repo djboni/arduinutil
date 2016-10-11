@@ -40,7 +40,8 @@ extern "C" {
 #define ENTER_CRITICAL_IF_CONCURRENT() if(Concurrent) ENTER_CRITICAL()
 #define EXIT_CRITICAL_IF_CONCURRENT()  if(Concurrent) EXIT_CRITICAL()
 
-#define WAIT() do{}while(0U)
+#define WAIT_INT() do{}while(0U)
+#define WAIT_BUSY() do{}while(0U)
 
 #ifdef __cplusplus
 } /* extern "C" */

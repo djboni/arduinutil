@@ -22,6 +22,7 @@
 
 #include "Arduinutil.h"
 #include <avr/io.h>
+#include <avr/sleep.h>
 
 #define SET_BITS(reg, bits, cast)   do{reg=(cast)((reg)|(bits));}while(0U)
 #define CLEAR_BITS(reg, bits, cast) do{reg=(cast)((reg)&(~(bits)));}while(0U)
@@ -59,6 +60,9 @@ void init(void)
     PCICR = 0x07U;
 
     ENABLE_INTERRUPTS();
+
+    set_sleep_mode(0); /* IDLE */
+    sleep_enable();
 }
 
 /** Disable all peripherals clocks for lower power consumption.

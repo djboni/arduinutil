@@ -83,7 +83,7 @@ void Serial_flush(void)
 {
     while(Queue_used(&TxBuff) != 0U)
     {
-        WAIT();
+        WAIT_INT();
     }
 }
 
@@ -105,7 +105,7 @@ void Serial_writeByte(uint8_t data)
         {
             EXIT_CRITICAL();
 
-            WAIT();
+            WAIT_INT();
 
             ENTER_CRITICAL();
         }

@@ -106,7 +106,8 @@ enum AnalogReferences {
         "pop   __tmp_reg__            \n\t"      \
         "out   __SREG__,__tmp_reg__" ::: "memory")
 
-#define WAIT() __asm __volatile("sleep" ::: "memory")
+#define WAIT_INT()  __asm __volatile("sleep" ::: "memory")
+#define WAIT_BUSY() __asm __volatile("sleep" ::: "memory")
 
 /*******************************************************************************
  Serial.c
