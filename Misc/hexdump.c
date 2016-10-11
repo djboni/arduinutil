@@ -18,17 +18,13 @@ limitations under the License.
 */
 
 #include "hexdump.h"
+#include "convintstr.h"
 
 #ifndef hexdump_write
 #define hexdump_write Serial_write
 #endif
 
-#ifndef hexdump_print
-#define hexdump_print Serial_print
-#endif
-
 extern int hexdump_write(const void *str);
-extern int hexdump_print(const char *format, ...);
 
 void hexdump(const void *vdata, uint16_t len, uint8_t bytes_per_line,
         uint8_t print_line_number)
@@ -38,13 +34,22 @@ void hexdump(const void *vdata, uint16_t len, uint8_t bytes_per_line,
     uint16_t i;
     for (i = 0U; i < len; ++i)
     {
+        char str[5], *ptr;
+
         if(print_line_number != 0U && j == 0U)
         {
-            hexdump_print("%04X", i);
+            /*hexdump_print("%04X", i);*/
+            ptr = conv_ul2str(str, sizeof(str), i, 16);
+            ptr = conv_fillstr(ptr, 4, '0');
+            hexdump_write(ptr);
+
             hexdump_write(" ");
         }
 
-        hexdump_print("%02X", data[i]);
+        /*hexdump_print("%02X", data[i]);*/
+        ptr = conv_ul2str(str, sizeof(str), data[i], 16);
+        ptr = conv_fillstr(ptr, 2, '0');
+        hexdump_write(ptr);
 
         if (++j < bytes_per_line)
         {
