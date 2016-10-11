@@ -59,6 +59,8 @@ extern "C" {
 #define I2C_PRESCALER                64U
 
 #define WATCHDOG_ENABLE              0
+#define WATCHDOG_AUTOINIT            0
+#define WATCHDOG_AUTOINIT_TIMEOUT    0U
 
 #define TIMER_ENABLE                 0
 #define TIMER_PRESCALER              1024U

@@ -79,4 +79,22 @@ void Wdt_reset(void)
     wdt_reset();
 }
 
+#if (WATCHDOG_AUTOINIT != 0)
+
+__attribute__((naked)) __attribute__((section(".init3")))
+void wdt_init(void)
+{
+    #if (WATCHDOG_AUTOINIT_TIMEOUT != 0U)
+    {
+        Wdt_enable(WATCHDOG_AUTOINIT_TIMEOUT);
+    }
+    #else
+    {
+        Wdt_disable();
+    }
+    #endif
+}
+
+#endif /* WATCHDOG_AUTOINIT */
+
 #endif /* WATCHDOG_ENABLE */
