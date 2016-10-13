@@ -27,6 +27,11 @@
 extern "C" {
 #endif
 
+#define QUEUE_INIT(buff, length, item_size) \
+    {(item_size), (length), 0U, 0U, 0U, \
+    (uint8_t*)(buff), (uint8_t*)(buff), (uint8_t*)(buff), \
+    &((uint8_t*)(buff))[((length) - 1U) * (item_size)]}
+
 struct Queue_t {
     const Size_t ItemSize;
     volatile Size_t Free;

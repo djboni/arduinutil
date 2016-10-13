@@ -28,6 +28,8 @@
 extern "C" {
 #endif
 
+#define MUTEX_INIT {{1U, 1U}}
+
 struct Mutex_t {
     struct Semaphore_t sem;
 };
