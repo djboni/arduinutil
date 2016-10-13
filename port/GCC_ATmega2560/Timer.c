@@ -21,6 +21,7 @@
  */
 
 #include "Arduinutil.h"
+#include "Arduinutil_Timer.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
@@ -121,6 +122,29 @@ uint32_t timerCounts(void)
     }
     EXIT_CRITICAL();
     return (timerIntCount * 256UL + timerCount);
+}
+
+/** Add counts to timer counter variable.
+
+ This function allows to update the timer count for the time the microcontroller
+ has been sleeping. This way the application will know time has passed if it
+ should do something in the meantime.
+
+  void enter_sleep_mode_and_update_time(void) {
+    hw_sleep();
+    after_wakeup();
+    timerAddSleepedCounts(TIMER_MS_TO_COUNT(1000));
+  }
+ */
+void timerAddSleepedCounts(uint32_t counts)
+{
+    VAR_CRITICAL();
+
+    ENTER_CRITICAL();
+    {
+        TimerIntCount += counts / 256UL;
+    }
+    EXIT_CRITICAL();
 }
 
 /** Stop execution for a given time in milliseconds.
