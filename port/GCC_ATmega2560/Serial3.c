@@ -30,11 +30,10 @@
 
 #if (SERIAL3_ENABLE != 0)
 
-static struct Queue_t RxBuff;
 static uint8_t RxBuff_data[SERIAL3_RBUFSZ];
-
-static struct Queue_t TxBuff;
 static uint8_t TxBuff_data[SERIAL3_TBUFSZ];
+static struct Queue_t RxBuff = QUEUE_INIT(&RxBuff_data[0], sizeof(RxBuff_data), 1U);
+static struct Queue_t TxBuff = QUEUE_INIT(&TxBuff_data[0], sizeof(TxBuff_data), 1U);
 
 void Serial3_begin(uint32_t speed, uint32_t config)
 {
@@ -58,8 +57,8 @@ void Serial3_begin(uint32_t speed, uint32_t config)
 
     UCSR3B = 0; /* Disable TX and RX. */
 
-    Queue_init(&RxBuff, &RxBuff_data[0], sizeof(RxBuff_data), sizeof(RxBuff_data[0]));
-    Queue_init(&TxBuff, &TxBuff_data[0], sizeof(TxBuff_data), sizeof(TxBuff_data[0]));
+    Queue_clear(&TxBuff);
+    Queue_clear(&TxBuff);
 
     /* Set speed and other configurations. */
     UBRR3 = ubrr;
