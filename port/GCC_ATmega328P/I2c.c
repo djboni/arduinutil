@@ -82,11 +82,15 @@ struct I2c_buffer_t {
 
 static struct I2c_buffer_t RxTxBuffer;
 
-/** Initialize peripheral for communication. */
+/** Initialize peripheral for communication.
+
+ @param speed Maximum speed the interface is allowed to use.
+ */
 void I2c_begin(uint32_t speed)
 {
     uint8_t twsr_twps_bits;
     uint32_t twbr_val;
+    uint32_t twbr_divider;
 
     switch(I2C_PRESCALER) {
     case 1U:
@@ -106,7 +110,9 @@ void I2c_begin(uint32_t speed)
         ASSERT(0); /* Invalid prescaler value. */
     }
 
-    twbr_val = (F_CPU - 16UL * speed) / (2 * I2C_PRESCALER * speed);
+    /* Ceiling of twbr_val. Avoids higher speeds than the 'speed' parameter. */
+    twbr_divider = 2 * I2C_PRESCALER * speed;
+    twbr_val = (F_CPU - 16UL * speed + twbr_divider - 1UL) / twbr_divider;
     ASSERT(twbr_val <= 0xFFU); /* Prescaler and/or speed too low. */
 
     PRR &= ~(1U << PRTWI); /* Enable I2C clock. */
