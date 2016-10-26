@@ -82,22 +82,40 @@ void enablePeripheralsClocks(void)
     PRR = 0U;
 }
 
-/** Disable digital inputs of analog pins for lower power consumption.
-
- Note: PRR0[PRADC] must be 1. */
+/** Disable digital inputs of analog pins for lower power consumption. */
 void disableDigitalInputsOfAnalogPins(void)
 {
-    /*  must be 1 */
-    DIDR0 = 0xFFU;
-    DIDR1 = 0xFFU;
+    VAR_CRITICAL();
+
+    ENTER_CRITICAL();
+    {
+        uint8_t prr_save = PRR;
+        PRR &= ~(1U << PRADC);
+
+        /* PRR0[PRADC] must be 0. */
+        DIDR0 = 0xFFU;
+        DIDR1 = 0xFFU;
+
+        PRR = prr_save;
+    }
+    EXIT_CRITICAL();
 }
 
-/** Enable digital inputs of analog pins.
-
- Note: PRR0[PRADC] must be 1. */
+/** Enable digital inputs of analog pins. */
 void enableDigitalInputsOfAnalogPins(void)
 {
-    /* PRR0[PRADC] must be 1 */
-    DIDR0 = 0U;
-    DIDR1 = 0U;
+    VAR_CRITICAL();
+
+    ENTER_CRITICAL();
+    {
+        uint8_t prr_save = PRR;
+        PRR &= ~(1U << PRADC);
+
+        /* PRR0[PRADC] must be 0. */
+        DIDR0 = 0U;
+        DIDR1 = 0U;
+
+        PRR = prr_save;
+    }
+    EXIT_CRITICAL();
 }
