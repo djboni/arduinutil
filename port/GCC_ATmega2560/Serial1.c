@@ -165,8 +165,4 @@ ISR(USART1_UDRE_vect)
         UCSR1B &= ~(1U << UDRIE1);
 }
 
-ISR(USART1_TX_vect)
-{
-}
-
 #endif /* SERIAL1_ENABLE */

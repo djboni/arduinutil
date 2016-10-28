@@ -165,8 +165,4 @@ ISR(USART3_UDRE_vect)
         UCSR3B &= ~(1U << UDRIE3);
 }
 
-ISR(USART3_TX_vect)
-{
-}
-
 #endif /* SERIAL3_ENABLE */
