@@ -62,13 +62,13 @@ void timerBegin(void)
     TCCR0A =
             (0x00U << COM0A0) | /* Normal port operation, OC0A disconnected. */
             (0x00U << COM0B0) | /* Normal port operation, OC0B disconnected. */
-            (0x00U << WGM00); /* Mode: Normal (WGM00:2=0b000). */
+            (0x03U << WGM00); /* Mode: Fast PWM (WGM02:0=0b011). */
 
     TCCR0B =
             (0x00U << FOC0A) |
-                    (0x00U << FOC0B) |
-                    (0x00U << WGM02) | /* Mode: Normal (WGM00:2=0b000). */
-                    (prescaler << CS00); /* Clock source. */
+            (0x00U << FOC0B) |
+            (0x00U << WGM02) | /* Mode: Fast PWM (WGM02:0=0b011). */
+            (prescaler << CS00); /* Clock source. */
 
     TCNT0 = 0U; /* Clear counter. */
     TIFR0 = 0xFFU; /* Clear interrupt flags. */

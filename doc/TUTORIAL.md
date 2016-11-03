@@ -6,6 +6,9 @@ Blink a LED
 [doc/tutor/BlinkNBW.md](./tutor/BlinkNBW.md)
 Blink a LED with NBW (No Busy Wait / without using delay)
 
+[doc/tutor/Pwm.md](./tutor/Pwm.md)
+Using PWM
+
 [doc/tutor/AnalogReadSerial.md](./tutor/AnalogReadSerial.md)
 Read analog input and print to serial
 

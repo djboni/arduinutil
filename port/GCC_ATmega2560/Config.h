@@ -67,6 +67,13 @@ extern "C" {
 
 #define ANALOG_ENABLE                0
 
+#define PWM_ENABLE                   0
+#define TIMER1_PRESCALER             1024U
+#define TIMER2_PRESCALER             1024U
+#define TIMER3_PRESCALER             1024U
+#define TIMER4_PRESCALER             1024U
+#define TIMER5_PRESCALER             1024U
+
 #define DIGITAL_EXTERNAL_INT_ENABLE  0
 #define DIGITAL_ATTACH_INT_ENABLE    0
 
