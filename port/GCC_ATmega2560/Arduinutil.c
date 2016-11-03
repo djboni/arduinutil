@@ -107,15 +107,15 @@ void disableDigitalInputsOfAnalogPins(void)
 
     ENTER_CRITICAL();
     {
-        uint8_t prr_save = PRR;
-        PRR &= ~(1U << PRADC);
+        uint8_t prr_save = PRR0;
+        PRR0 &= ~(1U << PRADC);
 
         /* PRR0[PRADC] must be 0. */
         DIDR0 = 0xFFU;
         DIDR1 = 0xFFU;
         DIDR2 = 0xFFU;
 
-        PRR = prr_save;
+        PRR0 = prr_save;
     }
     EXIT_CRITICAL();
 }
@@ -127,15 +127,15 @@ void enableDigitalInputsOfAnalogPins(void)
 
     ENTER_CRITICAL();
     {
-        uint8_t prr_save = PRR;
-        PRR &= ~(1U << PRADC);
+        uint8_t prr_save = PRR0;
+        PRR0 &= ~(1U << PRADC);
 
         /* PRR0[PRADC] must be 0. */
         DIDR0 = 0U;
         DIDR1 = 0U;
         DIDR2 = 0U;
 
-        PRR = prr_save;
+        PRR0 = prr_save;
     }
     EXIT_CRITICAL();
 }
