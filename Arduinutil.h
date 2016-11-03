@@ -60,6 +60,9 @@ uint16_t analogConvertGetValue(void);
 uint16_t analogRead(uint8_t analog);
 void analogReference(uint8_t reference);
 
+void pwmMode(uint8_t pin, enum PwmModes mode);
+void analogWrite(uint8_t pin, uint16_t value);
+
 void timerBegin(void);
 void timerEnd(void);
 uint32_t timerCounts(void);
