@@ -64,6 +64,12 @@ void timer1Begin(void);
 void timer1End(void);
 void timer2Begin(void);
 void timer2End(void);
+void timer3Begin(void);
+void timer3End(void);
+void timer4Begin(void);
+void timer4End(void);
+void timer5Begin(void);
+void timer5End(void);
 void pwmMode(uint8_t pin, enum PwmModes mode);
 void analogWrite(uint8_t pin, uint8_t value);
 
