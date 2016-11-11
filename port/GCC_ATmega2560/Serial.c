@@ -40,17 +40,38 @@ void Serial_begin(uint32_t speed, uint32_t config)
     uint8_t ucsra;
     uint32_t ubrr;
 
-    ubrr = (F_CPU - 4U * speed) / (8U * speed);
     ucsra = config;
 
-    if(ubrr > 0x0FFFU)
+    if((speed & SERIAL_CUSTOM_UBRR_MASK) == 0UL)
     {
-        ubrr = (F_CPU - 8U * speed) / (16U * speed);
-        ucsra &= ~(1U << U2X0);
+        ubrr = (F_CPU - 4U * speed) / (8U * speed);
+
+        if(ubrr > 0x0FFFU)
+        {
+            ubrr = (F_CPU - 8U * speed) / (16U * speed);
+            ucsra &= ~(1U << U2X0);
+        }
+        else
+        {
+            ucsra |= (1U << U2X0);
+        }
     }
     else
     {
-        ucsra |= (1U << U2X0);
+        ubrr = speed & ~SERIAL_CUSTOM_UBRR_MASK;
+
+        if((speed & SERIAL_CUSTOM_UBRR_DIV16) == 0UL)
+        {
+            ucsra |= (1U << U2X0);
+        }
+        else if((speed & SERIAL_CUSTOM_UBRR_DIV8) == 0UL)
+        {
+            ucsra &= ~(1U << U2X0);
+        }
+        else
+        {
+            ASSERT(0); /* Invalid custom speed option. */
+        }
     }
 
     PRR0 &= ~(1U << PRUSART0); /* Enable UART clock. */

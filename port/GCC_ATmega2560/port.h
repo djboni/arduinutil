@@ -130,6 +130,10 @@ enum PwmModes {
  Serial.c
  ******************************************************************************/
 
+#define SERIAL_CUSTOM_UBRR_DIV16     0x40000000UL
+#define SERIAL_CUSTOM_UBRR_DIV8      0x80000000UL
+#define SERIAL_CUSTOM_UBRR_MASK      0xC0000000UL
+
 #define SERIAL_CONF(A,B,C) ((A)|((B)<<8UL)|((C)<<16UL))
 #define SERIAL_5N1 SERIAL_CONF(0x00UL, 0x98UL, 0x00UL)
 #define SERIAL_6N1 SERIAL_CONF(0x00UL, 0x98UL, 0x02UL)
