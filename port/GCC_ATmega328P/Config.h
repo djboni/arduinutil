@@ -55,6 +55,8 @@ extern "C" {
 #define PWM_ENABLE                   0
 #define TIMER1_PRESCALER             1024U
 #define TIMER2_PRESCALER             1024U
+#define TIMER1_OVERFLOW_INTERRUPT    0
+#define TIMER2_OVERFLOW_INTERRUPT    0
 
 #define DIGITAL_EXTERNAL_INT_ENABLE  0
 #define DIGITAL_ATTACH_INT_ENABLE    0

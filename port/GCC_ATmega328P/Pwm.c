@@ -22,6 +22,7 @@
 
 #include "Arduinutil.h"
 #include <avr/io.h>
+#include <avr/interrupt.h>
 
 #if (PWM_ENABLE != 0)
 
@@ -65,12 +66,16 @@ void timer1Begin(void)
             (0x01U << WGM12) | /* Mode: Fast PWM 8bit (WGM13:0=0b0101). */
             (prescaler << CS10); /* Clock source. */
 
-     TCCR1C =
+    TCCR1C =
             (0x00U << FOC1A) |
             (0x00U << FOC1B);
 
     TCNT1 = 0U; /* Clear counter. */
     TIFR1 = 0xFFU; /* Clear interrupt flags. */
+
+    #if (TIMER1_OVERFLOW_INTERRUPT != 0)
+    TIMSK1 = (1U << TOIE1); /* Enable timer overflow interrupt. */
+    #endif
 }
 
 void timer1End()
@@ -79,6 +84,34 @@ void timer1End()
     TCCR1B = 0U; /* Disable clock source. */
     PRR |= (1U << PRTIM1); /* Disable timer clock. */
 }
+
+#if (TIMER1_OVERFLOW_INTERRUPT != 0)
+
+static uint32_t Timer1IntCount = 0U;
+
+uint32_t timer1Counts(void)
+{
+    uint32_t timerIntCount;
+    uint8_t timerCount;
+    VAR_CRITICAL();
+
+    ENTER_CRITICAL();
+    {
+        timerIntCount = Timer1IntCount;
+        timerCount = TCNT1L;
+        if(TIFR1 & (1U << TOV1))
+            timerCount = 255U;
+    }
+    EXIT_CRITICAL();
+    return (timerIntCount * 256UL + timerCount);
+}
+
+ISR(TIMER1_OVF_vect)
+{
+    Timer1IntCount += 1U;
+}
+
+#endif /* TIMER1_OVERFLOW_INTERRUPT */
 
 void timer2Begin(void)
 {
@@ -128,6 +161,10 @@ void timer2Begin(void)
 
     TCNT2 = 0U; /* Clear counter. */
     TIFR2 = 0xFFU; /* Clear interrupt flags. */
+
+    #if (TIMER2_OVERFLOW_INTERRUPT != 0)
+    TIMSK2 = (1U << TOIE2); /* Enable timer overflow interrupt. */
+    #endif
 }
 
 void timer2End()
@@ -136,6 +173,34 @@ void timer2End()
     TCCR2B = 0U; /* Disable clock source. */
     PRR |= (1U << PRTIM2); /* Disable timer clock. */
 }
+
+#if (TIMER2_OVERFLOW_INTERRUPT != 0)
+
+static uint32_t Timer2IntCount = 0U;
+
+uint32_t timer2Counts(void)
+{
+    uint32_t timerIntCount;
+    uint8_t timerCount;
+    VAR_CRITICAL();
+
+    ENTER_CRITICAL();
+    {
+        timerIntCount = Timer2IntCount;
+        timerCount = TCNT2;
+        if(TIFR2 & (1U << TOV2))
+            timerCount = 255U;
+    }
+    EXIT_CRITICAL();
+    return (timerIntCount * 256UL + timerCount);
+}
+
+ISR(TIMER2OVF_vect)
+{
+    Timer2IntCount += 1U;
+}
+
+#endif /* TIMER2_OVERFLOW_INTERRUPT */
 
 void pwmMode(uint8_t pin, enum PwmModes mode)
 {
