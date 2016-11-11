@@ -22,6 +22,7 @@
 
 #include "Arduinutil.h"
 #include <avr/io.h>
+#include <avr/interrupt.h>
 
 #if (PWM_ENABLE != 0)
 
@@ -75,6 +76,10 @@ void timer1Begin(void)
 
     TCNT1 = 0U; /* Clear counter. */
     TIFR1 = 0xFFU; /* Clear interrupt flags. */
+
+    #if (TIMER1_OVERFLOW_INTERRUPT != 0)
+    TIMSK1 = (1U << TOIE1); /* Enable timer overflow interrupt. */
+    #endif
 }
 
 void timer1End()
@@ -83,6 +88,34 @@ void timer1End()
     TCCR1B = 0U; /* Disable clock source. */
     PRR0 |= (1U << PRTIM1); /* Disable timer clock. */
 }
+
+#if (TIMER1_OVERFLOW_INTERRUPT != 0)
+
+static uint32_t Timer1IntCount = 0U;
+
+uint32_t timer1Counts(void)
+{
+    uint32_t timerIntCount;
+    uint8_t timerCount;
+    VAR_CRITICAL();
+
+    ENTER_CRITICAL();
+    {
+        timerIntCount = Timer1IntCount;
+        timerCount = TCNT1L;
+        if(TIFR1 & (1U << TOV1))
+            timerCount = 255U;
+    }
+    EXIT_CRITICAL();
+    return (timerIntCount * 256UL + timerCount);
+}
+
+ISR(TIMER1_OVF_vect)
+{
+    Timer1IntCount += 1U;
+}
+
+#endif /* TIMER1_OVERFLOW_INTERRUPT */
 
 void timer2Begin(void)
 {
@@ -132,6 +165,10 @@ void timer2Begin(void)
 
     TCNT2 = 0U; /* Clear counter. */
     TIFR2 = 0xFFU; /* Clear interrupt flags. */
+
+    #if (TIMER2_OVERFLOW_INTERRUPT != 0)
+    TIMSK2 = (1U << TOIE2); /* Enable timer overflow interrupt. */
+    #endif
 }
 
 void timer2End()
@@ -140,6 +177,34 @@ void timer2End()
     TCCR2B = 0U; /* Disable clock source. */
     PRR0 |= (1U << PRTIM2); /* Disable timer clock. */
 }
+
+#if (TIMER2_OVERFLOW_INTERRUPT != 0)
+
+static uint32_t Timer2IntCount = 0U;
+
+uint32_t timer2Counts(void)
+{
+    uint32_t timerIntCount;
+    uint8_t timerCount;
+    VAR_CRITICAL();
+
+    ENTER_CRITICAL();
+    {
+        timerIntCount = Timer2IntCount;
+        timerCount = TCNT2;
+        if(TIFR2 & (1U << TOV2))
+            timerCount = 255U;
+    }
+    EXIT_CRITICAL();
+    return (timerIntCount * 256UL + timerCount);
+}
+
+ISR(TIMER2_OVF_vect)
+{
+    Timer2IntCount += 1U;
+}
+
+#endif /* TIMER2_OVERFLOW_INTERRUPT */
 
 void timer3Begin(void)
 {
@@ -189,6 +254,10 @@ void timer3Begin(void)
 
     TCNT3 = 0U; /* Clear counter. */
     TIFR3 = 0xFFU; /* Clear interrupt flags. */
+
+    #if (TIMER3_OVERFLOW_INTERRUPT != 0)
+    TIMSK3 = (1U << TOIE3); /* Enable timer overflow interrupt. */
+    #endif
 }
 
 void timer3End()
@@ -197,6 +266,34 @@ void timer3End()
     TCCR3B = 0U; /* Disable clock source. */
     PRR1 |= (1U << PRTIM3); /* Disable timer clock. */
 }
+
+#if (TIMER3_OVERFLOW_INTERRUPT != 0)
+
+static uint32_t Timer3IntCount = 0U;
+
+uint32_t timer3Counts(void)
+{
+    uint32_t timerIntCount;
+    uint8_t timerCount;
+    VAR_CRITICAL();
+
+    ENTER_CRITICAL();
+    {
+        timerIntCount = Timer3IntCount;
+        timerCount = TCNT3;
+        if(TIFR3 & (1U << TOV3))
+            timerCount = 255U;
+    }
+    EXIT_CRITICAL();
+    return (timerIntCount * 256UL + timerCount);
+}
+
+ISR(TIMER3_OVF_vect)
+{
+    Timer3IntCount += 1U;
+}
+
+#endif /* TIMER2_OVERFLOW_INTERRUPT */
 
 void timer4Begin(void)
 {
@@ -246,6 +343,10 @@ void timer4Begin(void)
 
     TCNT4 = 0U; /* Clear counter. */
     TIFR4 = 0xFFU; /* Clear interrupt flags. */
+
+    #if (TIMER4_OVERFLOW_INTERRUPT != 0)
+    TIMSK4 = (1U << TOIE4); /* Enable timer overflow interrupt. */
+    #endif
 }
 
 void timer4End()
@@ -254,6 +355,34 @@ void timer4End()
     TCCR4B = 0U; /* Disable clock source. */
     PRR1 |= (1U << PRTIM4); /* Disable timer clock. */
 }
+
+#if (TIMER4_OVERFLOW_INTERRUPT != 0)
+
+static uint32_t Timer4IntCount = 0U;
+
+uint32_t timer4Counts(void)
+{
+    uint32_t timerIntCount;
+    uint8_t timerCount;
+    VAR_CRITICAL();
+
+    ENTER_CRITICAL();
+    {
+        timerIntCount = Timer4IntCount;
+        timerCount = TCNT4L;
+        if(TIFR4 & (1U << TOV4))
+            timerCount = 255U;
+    }
+    EXIT_CRITICAL();
+    return (timerIntCount * 256UL + timerCount);
+}
+
+ISR(TIMER4_OVF_vect)
+{
+    Timer4IntCount += 1U;
+}
+
+#endif /* TIMER4_OVERFLOW_INTERRUPT */
 
 void timer5Begin(void)
 {
@@ -303,6 +432,10 @@ void timer5Begin(void)
 
     TCNT5 = 0U; /* Clear counter. */
     TIFR5 = 0xFFU; /* Clear interrupt flags. */
+
+    #if (TIMER5_OVERFLOW_INTERRUPT != 0)
+    TIMSK5 = (1U << TOIE5); /* Enable timer overflow interrupt. */
+    #endif
 }
 
 void timer5End()
@@ -311,6 +444,34 @@ void timer5End()
     TCCR5B = 0U; /* Disable clock source. */
     PRR1 |= (1U << PRTIM5); /* Disable timer clock. */
 }
+
+#if (TIMER5_OVERFLOW_INTERRUPT != 0)
+
+static uint32_t Timer5IntCount = 0U;
+
+uint32_t timer5Counts(void)
+{
+    uint32_t timerIntCount;
+    uint8_t timerCount;
+    VAR_CRITICAL();
+
+    ENTER_CRITICAL();
+    {
+        timerIntCount = Timer5IntCount;
+        timerCount = TCNT5L;
+        if(TIFR5 & (1U << TOV5))
+            timerCount = 255U;
+    }
+    EXIT_CRITICAL();
+    return (timerIntCount * 256UL + timerCount);
+}
+
+ISR(TIMER5_OVF_vect)
+{
+    Timer5IntCount += 1U;
+}
+
+#endif /* TIMER5_OVERFLOW_INTERRUPT */
 
 void pwmMode(uint8_t pin, enum PwmModes mode)
 {
