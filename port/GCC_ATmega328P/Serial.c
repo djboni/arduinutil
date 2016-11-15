@@ -109,9 +109,9 @@ void Serial_flush(void)
 
 void Serial_writeByte(uint8_t data)
 {
-    VAR_CRITICAL();
+    CRITICAL_VAL();
 
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
 
     if(     (UCSR0A & (1U << UDRE0)) &&
             Queue_empty(&TxBuff))
@@ -123,15 +123,15 @@ void Serial_writeByte(uint8_t data)
         UCSR0B |= (1U << UDRIE0);
         while(!Queue_pushback(&TxBuff, &data))
         {
-            EXIT_CRITICAL();
+            CRITICAL_EXIT();
 
             WAIT_INT();
 
-            ENTER_CRITICAL();
+            CRITICAL_ENTER();
         }
     }
 
-    EXIT_CRITICAL();
+    CRITICAL_EXIT();
 }
 
 void Serial_write(const void *str)

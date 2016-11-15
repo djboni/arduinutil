@@ -75,7 +75,7 @@ void init(void)
     PCMSK2 = 0U;
     PCICR = 0x07U;
 
-    ENABLE_INTERRUPTS();
+    INTERRUPTS_ENABLE();
 
     set_sleep_mode(0); /* IDLE */
     sleep_enable();
@@ -103,9 +103,9 @@ void enablePeripheralsClocks(void)
 /** Disable digital inputs of analog pins for lower power consumption. */
 void disableDigitalInputsOfAnalogPins(void)
 {
-    VAR_CRITICAL();
+    CRITICAL_VAL();
 
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
     {
         uint8_t prr_save = PRR0;
         PRR0 &= ~(1U << PRADC);
@@ -117,15 +117,15 @@ void disableDigitalInputsOfAnalogPins(void)
 
         PRR0 = prr_save;
     }
-    EXIT_CRITICAL();
+    CRITICAL_EXIT();
 }
 
 /** Enable digital inputs of analog pins. */
 void enableDigitalInputsOfAnalogPins(void)
 {
-    VAR_CRITICAL();
+    CRITICAL_VAL();
 
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
     {
         uint8_t prr_save = PRR0;
         PRR0 &= ~(1U << PRADC);
@@ -137,5 +137,5 @@ void enableDigitalInputsOfAnalogPins(void)
 
         PRR0 = prr_save;
     }
-    EXIT_CRITICAL();
+    CRITICAL_EXIT();
 }

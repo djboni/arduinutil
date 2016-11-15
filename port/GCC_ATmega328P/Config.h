@@ -67,7 +67,7 @@ typedef uint8_t Size_t;
   do {                                                 \
     if((expr) == 0)                                    \
     {                                                  \
-      DISABLE_INTERRUPTS();                            \
+      INTERRUPTS_DISABLE();                            \
       /*assert_function(__FILE__, __LINE__, #expr);*/  \
       for(;;) {}                                       \
     }                                                  \

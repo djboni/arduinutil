@@ -57,9 +57,9 @@ void Queue_init(struct Queue_t *o, void *buff, Size_t length, Size_t item_size)
 uint8_t Queue_pushfront(struct Queue_t *o, const void *val)
 {
     uint8_t ret;
-    VAR_CRITICAL();
+    CRITICAL_VAL();
 
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
     {
         ret = o->Free != 0U;
         if(ret != 0U)
@@ -74,11 +74,11 @@ uint8_t Queue_pushfront(struct Queue_t *o, const void *val)
                 o->Head = o->BufEnd;
             pos = o->Head;
 
-            EXIT_CRITICAL();
+            CRITICAL_EXIT();
             {
                 memcpy(pos, val, o->ItemSize);
             }
-            ENTER_CRITICAL();
+            CRITICAL_ENTER();
 
             if(lock == 0U)
             {
@@ -87,7 +87,7 @@ uint8_t Queue_pushfront(struct Queue_t *o, const void *val)
             }
         }
     }
-    EXIT_CRITICAL();
+    CRITICAL_EXIT();
     return ret;
 }
 
@@ -100,9 +100,9 @@ uint8_t Queue_pushfront(struct Queue_t *o, const void *val)
 uint8_t Queue_pushback(struct Queue_t *o, const void *val)
 {
     uint8_t ret;
-    VAR_CRITICAL();
+    CRITICAL_VAL();
 
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
     {
         ret = o->Free != 0U;
         if(ret != 0U)
@@ -117,11 +117,11 @@ uint8_t Queue_pushback(struct Queue_t *o, const void *val)
             if((o->Tail += o->ItemSize) > o->BufEnd)
                 o->Tail = o->Buff;
 
-            EXIT_CRITICAL();
+            CRITICAL_EXIT();
             {
                 memcpy(pos, val, o->ItemSize);
             }
-            ENTER_CRITICAL();
+            CRITICAL_ENTER();
 
             if(lock == 0U)
             {
@@ -130,7 +130,7 @@ uint8_t Queue_pushback(struct Queue_t *o, const void *val)
             }
         }
     }
-    EXIT_CRITICAL();
+    CRITICAL_EXIT();
     return ret;
 }
 
@@ -143,9 +143,9 @@ uint8_t Queue_pushback(struct Queue_t *o, const void *val)
 uint8_t Queue_popfront(struct Queue_t *o, void *val)
 {
     uint8_t ret;
-    VAR_CRITICAL();
+    CRITICAL_VAL();
 
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
     {
         ret = o->Used != 0U;
         if(ret != 0U)
@@ -160,11 +160,11 @@ uint8_t Queue_popfront(struct Queue_t *o, void *val)
             if((o->Head += o->ItemSize) > o->BufEnd)
                 o->Head = o->Buff;
 
-            EXIT_CRITICAL();
+            CRITICAL_EXIT();
             {
                 memcpy(val, pos, o->ItemSize);
             }
-            ENTER_CRITICAL();
+            CRITICAL_ENTER();
 
             if(lock == 0U)
             {
@@ -173,7 +173,7 @@ uint8_t Queue_popfront(struct Queue_t *o, void *val)
             }
         }
     }
-    EXIT_CRITICAL();
+    CRITICAL_EXIT();
     return ret;
 }
 
@@ -186,9 +186,9 @@ uint8_t Queue_popfront(struct Queue_t *o, void *val)
 uint8_t Queue_popback(struct Queue_t *o, void *val)
 {
     uint8_t ret;
-    VAR_CRITICAL();
+    CRITICAL_VAL();
 
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
     {
         ret = o->Used != 0U;
         if(ret != 0U)
@@ -203,11 +203,11 @@ uint8_t Queue_popback(struct Queue_t *o, void *val)
                 o->Tail = o->BufEnd;
             pos = o->Tail;
 
-            EXIT_CRITICAL();
+            CRITICAL_EXIT();
             {
                 memcpy(val, pos, o->ItemSize);
             }
-            ENTER_CRITICAL();
+            CRITICAL_ENTER();
 
             if(lock == 0U)
             {
@@ -216,7 +216,7 @@ uint8_t Queue_popback(struct Queue_t *o, void *val)
             }
         }
     }
-    EXIT_CRITICAL();
+    CRITICAL_EXIT();
     return ret;
 }
 
@@ -228,13 +228,13 @@ uint8_t Queue_popback(struct Queue_t *o, void *val)
 Size_t Queue_length(const struct Queue_t *o)
 {
     Size_t ret;
-    VAR_CRITICAL();
+    CRITICAL_VAL();
 
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
     {
         ret = o->Used + o->Free + o->RLock + o->WLock;
     }
-    EXIT_CRITICAL();
+    CRITICAL_EXIT();
     return ret;
 }
 
@@ -246,13 +246,13 @@ Size_t Queue_length(const struct Queue_t *o)
 Size_t Queue_used(const struct Queue_t *o)
 {
     Size_t ret;
-    VAR_CRITICAL();
+    CRITICAL_VAL();
 
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
     {
         ret = o->Used;
     }
-    EXIT_CRITICAL();
+    CRITICAL_EXIT();
     return ret;
 }
 
@@ -264,13 +264,13 @@ Size_t Queue_used(const struct Queue_t *o)
 Size_t Queue_free(const struct Queue_t *o)
 {
     Size_t ret;
-    VAR_CRITICAL();
+    CRITICAL_VAL();
 
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
     {
         ret = o->Free;
     }
-    EXIT_CRITICAL();
+    CRITICAL_EXIT();
     return ret;
 }
 
@@ -280,9 +280,9 @@ Size_t Queue_free(const struct Queue_t *o)
  */
 void Queue_clear(struct Queue_t *o)
 {
-    VAR_CRITICAL();
+    CRITICAL_VAL();
 
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
     {
         o->Free = Queue_length(o);
         o->Used = 0U;
@@ -291,7 +291,7 @@ void Queue_clear(struct Queue_t *o)
         o->Head = o->Buff;
         o->Tail = o->Buff;
     }
-    EXIT_CRITICAL();
+    CRITICAL_EXIT();
 }
 
 #endif /* QUEUE_ENABLE */

@@ -151,12 +151,12 @@ void I2c_stop(void)
  function I2c_getStatus(). A stop condition is not sent by this function. */
 void I2c_write(uint8_t addr, const uint8_t *buff, uint8_t length, uint8_t *numsent)
 {
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
     {
         if(RxTxBuffer.status == IDLE)
         {
             RxTxBuffer.status = STA_SLAW;
-            EXIT_CRITICAL();
+            CRITICAL_EXIT();
 
             *numsent = 0U;
 
@@ -169,7 +169,7 @@ void I2c_write(uint8_t addr, const uint8_t *buff, uint8_t length, uint8_t *numse
         }
         else
         {
-            EXIT_CRITICAL();
+            CRITICAL_EXIT();
         }
     }
 }
@@ -181,12 +181,12 @@ void I2c_write(uint8_t addr, const uint8_t *buff, uint8_t length, uint8_t *numse
  function I2c_getStatus(). A stop condition is not sent by this function. */
 void I2c_read(uint8_t addr, uint8_t *buff, uint8_t length, uint8_t *numread)
 {
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
     {
         if(RxTxBuffer.status == IDLE)
         {
             RxTxBuffer.status = STA_SLAR;
-            EXIT_CRITICAL();
+            CRITICAL_EXIT();
 
             *numread = 0U;
 
@@ -199,7 +199,7 @@ void I2c_read(uint8_t addr, uint8_t *buff, uint8_t length, uint8_t *numread)
         }
         else
         {
-            EXIT_CRITICAL();
+            CRITICAL_EXIT();
         }
     }
 }

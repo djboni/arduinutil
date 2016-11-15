@@ -30,15 +30,15 @@ extern "C" {
 #define inline __inline
 #endif
 
-#define DISABLE_INTERRUPTS() do{}while(0U)
-#define ENABLE_INTERRUPTS()  do{}while(0U)
+#define INTERRUPTS_DISABLE() do{}while(0U)
+#define INTERRUPTS_ENABLE()  do{}while(0U)
 
-#define VAR_CRITICAL()
-#define ENTER_CRITICAL() do{}while(0U)
-#define EXIT_CRITICAL()  do{}while(0U)
+#define CRITICAL_VAL()
+#define CRITICAL_ENTER() do{}while(0U)
+#define CRITICAL_EXIT()  do{}while(0U)
 
-#define ENTER_CRITICAL_IF_CONCURRENT() if(Concurrent) ENTER_CRITICAL()
-#define EXIT_CRITICAL_IF_CONCURRENT()  if(Concurrent) EXIT_CRITICAL()
+#define CRITICAL_ENTER_IF_CONCURRENT() if(Concurrent) CRITICAL_ENTER()
+#define CRITICAL_EXIT_IF_CONCURRENT()  if(Concurrent) CRITICAL_EXIT()
 
 #define WAIT_INT() do{}while(0U)
 #define WAIT_BUSY() do{}while(0U)

@@ -105,9 +105,9 @@ uint32_t timerCounts(void)
 
     uint32_t timerIntCount;
     uint16_t timerCount;
-    VAR_CRITICAL();
+    CRITICAL_VAL();
 
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
     {
         timerIntCount = TimerIntCount;
 
@@ -125,7 +125,7 @@ uint32_t timerCounts(void)
         }
         #endif
     }
-    EXIT_CRITICAL();
+    CRITICAL_EXIT();
 
     return (timerIntCount * 65536U + timerCount);
 }
@@ -144,13 +144,13 @@ uint32_t timerCounts(void)
  */
 void timerAddSleepedCounts(uint32_t counts)
 {
-    VAR_CRITICAL();
+    CRITICAL_VAL();
 
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
     {
         TimerIntCount += counts / 65536U;
     }
-    EXIT_CRITICAL();
+    CRITICAL_EXIT();
 }
 
 /** Stop execution for a given time in milliseconds.

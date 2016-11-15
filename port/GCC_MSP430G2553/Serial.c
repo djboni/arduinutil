@@ -92,9 +92,9 @@ void Serial_flush(void)
 
 void Serial_writeByte(uint8_t data)
 {
-    VAR_CRITICAL();
+    CRITICAL_VAL();
 
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
 
     if(     (IFG2 & UCA0TXIFG) &&
             Queue_empty(&TxBuff))
@@ -106,15 +106,15 @@ void Serial_writeByte(uint8_t data)
         IE2 |= UCA0TXIE; /* Enable TX interrupt */
         while(!Queue_pushback(&TxBuff, &data))
         {
-            EXIT_CRITICAL();
+            CRITICAL_EXIT();
 
             YIELD();
 
-            ENTER_CRITICAL();
+            CRITICAL_ENTER();
         }
     }
 
-    EXIT_CRITICAL();
+    CRITICAL_EXIT();
 }
 
 void Serial_write(const void *str)

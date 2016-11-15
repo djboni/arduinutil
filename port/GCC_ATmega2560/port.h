@@ -111,15 +111,15 @@ enum PwmModes {
  Others
  ******************************************************************************/
 
-#define DISABLE_INTERRUPTS() __asm __volatile("cli" ::: "memory")
-#define ENABLE_INTERRUPTS()  __asm __volatile("sei" ::: "memory")
+#define INTERRUPTS_DISABLE() __asm __volatile("cli" ::: "memory")
+#define INTERRUPTS_ENABLE()  __asm __volatile("sei" ::: "memory")
 
-#define VAR_CRITICAL()
-#define ENTER_CRITICAL() __asm __volatile(       \
+#define CRITICAL_VAL()
+#define CRITICAL_ENTER() __asm __volatile(       \
         "in    __tmp_reg__,__SREG__   \n\t"      \
         "cli                          \n\t"      \
         "push  __tmp_reg__" ::: "memory")
-#define EXIT_CRITICAL() __asm __volatile(        \
+#define CRITICAL_EXIT() __asm __volatile(        \
         "pop   __tmp_reg__            \n\t"      \
         "out   __SREG__,__tmp_reg__" ::: "memory")
 

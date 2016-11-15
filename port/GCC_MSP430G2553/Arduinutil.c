@@ -45,5 +45,5 @@ void init(void)
     P1IE = 0U;
     P2IE = 0U;
 
-    ENABLE_INTERRUPTS();
+    INTERRUPTS_ENABLE();
 }

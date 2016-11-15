@@ -97,16 +97,16 @@ uint32_t timer1Counts(void)
 {
     uint32_t timerIntCount;
     uint8_t timerCount;
-    VAR_CRITICAL();
+    CRITICAL_VAL();
 
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
     {
         timerIntCount = Timer1IntCount;
         timerCount = TCNT1L;
         if(TIFR1 & (1U << TOV1))
             timerCount = 255U;
     }
-    EXIT_CRITICAL();
+    CRITICAL_EXIT();
     return (timerIntCount * 256UL + timerCount);
 }
 
@@ -186,16 +186,16 @@ uint32_t timer2Counts(void)
 {
     uint32_t timerIntCount;
     uint8_t timerCount;
-    VAR_CRITICAL();
+    CRITICAL_VAL();
 
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
     {
         timerIntCount = Timer2IntCount;
         timerCount = TCNT2;
         if(TIFR2 & (1U << TOV2))
             timerCount = 255U;
     }
-    EXIT_CRITICAL();
+    CRITICAL_EXIT();
     return (timerIntCount * 256UL + timerCount);
 }
 
@@ -275,16 +275,16 @@ uint32_t timer3Counts(void)
 {
     uint32_t timerIntCount;
     uint8_t timerCount;
-    VAR_CRITICAL();
+    CRITICAL_VAL();
 
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
     {
         timerIntCount = Timer3IntCount;
         timerCount = TCNT3;
         if(TIFR3 & (1U << TOV3))
             timerCount = 255U;
     }
-    EXIT_CRITICAL();
+    CRITICAL_EXIT();
     return (timerIntCount * 256UL + timerCount);
 }
 
@@ -364,16 +364,16 @@ uint32_t timer4Counts(void)
 {
     uint32_t timerIntCount;
     uint8_t timerCount;
-    VAR_CRITICAL();
+    CRITICAL_VAL();
 
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
     {
         timerIntCount = Timer4IntCount;
         timerCount = TCNT4L;
         if(TIFR4 & (1U << TOV4))
             timerCount = 255U;
     }
-    EXIT_CRITICAL();
+    CRITICAL_EXIT();
     return (timerIntCount * 256UL + timerCount);
 }
 
@@ -453,16 +453,16 @@ uint32_t timer5Counts(void)
 {
     uint32_t timerIntCount;
     uint8_t timerCount;
-    VAR_CRITICAL();
+    CRITICAL_VAL();
 
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
     {
         timerIntCount = Timer5IntCount;
         timerCount = TCNT5L;
         if(TIFR5 & (1U << TOV5))
             timerCount = 255U;
     }
-    EXIT_CRITICAL();
+    CRITICAL_EXIT();
     return (timerIntCount * 256UL + timerCount);
 }
 
@@ -475,7 +475,7 @@ ISR(TIMER5_OVF_vect)
 
 void pwmMode(uint8_t pin, enum PwmModes mode)
 {
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
 
     switch(pin) {
 
@@ -563,7 +563,7 @@ void pwmMode(uint8_t pin, enum PwmModes mode)
         ASSERT(0); /* Invalid PWM pin. */
     }
 
-    EXIT_CRITICAL();
+    CRITICAL_EXIT();
 }
 
 void analogWrite(uint8_t pin, uint8_t value)

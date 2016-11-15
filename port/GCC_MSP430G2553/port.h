@@ -117,12 +117,12 @@ enum AnalogReferences {
  Others
  ******************************************************************************/
 
-#define DISABLE_INTERRUPTS() __asm__ __volatile__("DINT \n\t" "NOP" ::: "memory")
-#define ENABLE_INTERRUPTS()  __asm__ __volatile__("NOP \n\t" "EINT \n\t" "NOP" ::: "memory")
+#define INTERRUPTS_DISABLE() __asm__ __volatile__("DINT \n\t" "NOP" ::: "memory")
+#define INTERRUPTS_ENABLE()  __asm__ __volatile__("NOP \n\t" "EINT \n\t" "NOP" ::: "memory")
 
-#define VAR_CRITICAL()       __istate_t __istate_val
+#define CRITICAL_VAL()       __istate_t __istate_val
 
-#define ENTER_CRITICAL() \
+#define CRITICAL_ENTER() \
     __asm__ __volatile__( \
         "MOV R2, %0 \n\t" \
         "DINT \n\t" \
@@ -132,7 +132,7 @@ enum AnalogReferences {
         : "memory" \
     )
 
-#define EXIT_CRITICAL() \
+#define CRITICAL_EXIT() \
     __asm__ __volatile__( \
         "MOV %0, R2 \n\t" \
         "NOP" \

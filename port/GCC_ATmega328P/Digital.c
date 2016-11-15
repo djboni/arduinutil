@@ -195,13 +195,13 @@ void enableExternalInterrupt(uint8_t io)
 {
     volatile uint8_t *reg = convIoToInterruptRegister(io);
     uint8_t bit = pgm_read_byte(&bitIOLIST[io]);
-    VAR_CRITICAL();
+    CRITICAL_VAL();
 
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
     {
         *reg |= (1U << bit);
     }
-    EXIT_CRITICAL();
+    CRITICAL_EXIT();
 }
 
 /** Disable external interrupt. */
@@ -209,13 +209,13 @@ void disableExternalInterrupt(uint8_t io)
 {
     volatile uint8_t *reg = convIoToInterruptRegister(io);
     uint8_t bit = pgm_read_byte(&bitIOLIST[io]);
-    VAR_CRITICAL();
+    CRITICAL_VAL();
 
-    ENTER_CRITICAL();
+    CRITICAL_ENTER();
     {
         *reg &= ~(1U << bit);
     }
-    EXIT_CRITICAL();
+    CRITICAL_EXIT();
 }
 
 #endif /* DIGITAL_EXTERNAL_INT_ENABLE */
