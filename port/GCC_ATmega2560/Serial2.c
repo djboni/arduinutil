@@ -78,7 +78,7 @@ void Serial2_begin(uint32_t speed, uint32_t config)
 
     UCSR2B = 0; /* Disable TX and RX. */
 
-    Queue_clear(&TxBuff);
+    Queue_clear(&RxBuff);
     Queue_clear(&TxBuff);
 
     /* Set speed and other configurations. */

@@ -42,7 +42,7 @@ void Serial_begin(uint32_t speed, uint32_t config)
     br = (br3 >> 3U);
     mctl = (br3 & 0x07U) << 1U;
 
-    Queue_clear(&TxBuff);
+    Queue_clear(&RxBuff);
     Queue_clear(&TxBuff);
 
     /* Configure TX and RX pins. */
