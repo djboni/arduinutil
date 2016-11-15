@@ -29,8 +29,8 @@
 
 static uint8_t RxBuff_data[SERIAL_RBUFSZ];
 static uint8_t TxBuff_data[SERIAL_TBUFSZ];
-static struct Queue_t RxBuff = QUEUE_INIT(&RxBuff_data[0], sizeof(RxBuff_data), 1U);
-static struct Queue_t TxBuff = QUEUE_INIT(&TxBuff_data[0], sizeof(TxBuff_data), 1U);
+static struct Queue_t RxBuff;
+static struct Queue_t TxBuff;
 
 void Serial_begin(uint32_t speed, uint32_t config)
 {
@@ -42,8 +42,8 @@ void Serial_begin(uint32_t speed, uint32_t config)
     br = (br3 >> 3U);
     mctl = (br3 & 0x07U) << 1U;
 
-    Queue_clear(&RxBuff);
-    Queue_clear(&TxBuff);
+    Queue_init(&RxBuff, &RxBuff_data, sizeof(RxBuff_data), 1);
+    Queue_init(&TxBuff, &TxBuff_data, sizeof(TxBuff_data), 1);
 
     /* Configure TX and RX pins. */
     P1REN &= ~(BIT1 | BIT2);

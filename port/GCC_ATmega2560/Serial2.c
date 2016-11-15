@@ -32,8 +32,8 @@
 
 static uint8_t RxBuff_data[SERIAL2_RBUFSZ];
 static uint8_t TxBuff_data[SERIAL2_TBUFSZ];
-static struct Queue_t RxBuff = QUEUE_INIT(&RxBuff_data[0], sizeof(RxBuff_data), 1U);
-static struct Queue_t TxBuff = QUEUE_INIT(&TxBuff_data[0], sizeof(TxBuff_data), 1U);
+static struct Queue_t RxBuff;
+static struct Queue_t TxBuff;
 
 void Serial2_begin(uint32_t speed, uint32_t config)
 {
@@ -78,8 +78,8 @@ void Serial2_begin(uint32_t speed, uint32_t config)
 
     UCSR2B = 0; /* Disable TX and RX. */
 
-    Queue_clear(&RxBuff);
-    Queue_clear(&TxBuff);
+    Queue_init(&RxBuff, &RxBuff_data, sizeof(RxBuff_data), 1);
+    Queue_init(&TxBuff, &TxBuff_data, sizeof(TxBuff_data), 1);
 
     /* Set speed and other configurations. */
     UBRR2 = ubrr;

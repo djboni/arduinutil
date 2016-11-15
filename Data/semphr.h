@@ -29,9 +29,6 @@ extern "C" {
 
 #if (SEMAPHORE_ENABLE != 0)
 
-#define SEMAPHORE_INIT_BINARY       {0U, 1U}
-#define SEMAPHORE_INIT_COUNTER(max) {0U, (max)}
-
 struct Semaphore_t {
     volatile Size_t Count;
     const Size_t Max;
