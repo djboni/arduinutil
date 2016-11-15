@@ -104,7 +104,7 @@ void Serial_writeByte(uint8_t data)
     else
     {
         IE2 |= UCA0TXIE; /* Enable TX interrupt */
-        while(!Queue_pushback(&TxBuff, &data))
+        while(!Queue_write(&TxBuff, &data))
         {
             CRITICAL_EXIT();
 
@@ -134,7 +134,7 @@ void Serial_writeBuff(const void *buff, uint16_t length)
 int16_t Serial_read(void)
 {
     uint8_t data;
-    if(Queue_popfront(&RxBuff, &data))
+    if(Queue_read(&RxBuff, &data))
         return data;
     else
         return -1;
@@ -144,14 +144,14 @@ __attribute__((interrupt(USCIAB0RX_VECTOR)))
 void usci0rx_isr(void)
 {
     uint8_t data = UCA0RXBUF;
-    Queue_pushback(&RxBuff, &data);
+    Queue_write(&RxBuff, &data);
 }
 
 __attribute__((interrupt(USCIAB0TX_VECTOR)))
 void usci0tx_isr(void)
 {
     uint8_t data;
-    if(Queue_popfront(&TxBuff, &data))
+    if(Queue_read(&TxBuff, &data))
         UCA0TXBUF = data;
     else
         IE2 &= ~UCA0TXIE; /* Disable TX interrupt. */

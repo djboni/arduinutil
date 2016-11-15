@@ -121,7 +121,7 @@ void Serial1_writeByte(uint8_t data)
     else
     {
         UCSR1B |= (1U << UDRIE1);
-        while(!Queue_pushback(&TxBuff, &data))
+        while(!Queue_write(&TxBuff, &data))
         {
             CRITICAL_EXIT();
 
@@ -165,7 +165,7 @@ int Serial1_print(const void *format, ...)
 int16_t Serial1_read(void)
 {
     uint8_t data;
-    if(Queue_popfront(&RxBuff, &data))
+    if(Queue_read(&RxBuff, &data))
         return data;
     else
         return -1;
@@ -174,13 +174,13 @@ int16_t Serial1_read(void)
 ISR(USART1_RX_vect)
 {
     uint8_t data = UDR1;
-    Queue_pushback(&RxBuff, &data);
+    Queue_write(&RxBuff, &data);
 }
 
 ISR(USART1_UDRE_vect)
 {
     uint8_t data;
-    if(Queue_popfront(&TxBuff, &data))
+    if(Queue_read(&TxBuff, &data))
         UDR1 = data;
     else
         UCSR1B &= ~(1U << UDRIE1);

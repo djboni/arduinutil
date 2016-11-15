@@ -51,8 +51,8 @@ Size_t Queue_used(const struct Queue_t *o);
 Size_t Queue_free(const struct Queue_t *o);
 void Queue_clear(struct Queue_t *o);
 
-#define Queue_send(o, val)     Queue_pushback(o, val)
-#define Queue_receive(o, val)  Queue_popfront(o, val)
+#define Queue_write(o, val)    Queue_pushback(o, val)
+#define Queue_read(o, val)     Queue_popfront(o, val)
 #define Queue_empty(o)         (Queue_used(o) == 0U)
 #define Queue_full(o)          (Queue_free(o) == 0U)
 
