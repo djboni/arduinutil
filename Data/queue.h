@@ -27,6 +27,8 @@
 extern "C" {
 #endif
 
+#if (QUEUE_ENABLE != 0)
+
 #define QUEUE_INIT(buff, length, item_size) \
     {(item_size), (length), 0U, 0U, 0U, \
     (uint8_t*)(buff), (uint8_t*)(buff), (uint8_t*)(buff), \
@@ -58,6 +60,8 @@ void Queue_clear(struct Queue_t *o);
 #define Queue_receive(o, val)  Queue_popfront(o, val)
 #define Queue_empty(o)         (Queue_used(o) == 0U)
 #define Queue_full(o)          (Queue_free(o) == 0U)
+
+#endif /* QUEUE_ENABLE */
 
 #ifdef __cplusplus
 } /* extern "C" */

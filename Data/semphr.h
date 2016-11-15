@@ -27,6 +27,8 @@
 extern "C" {
 #endif
 
+#if (SEMAPHORE_ENABLE != 0)
+
 #define SEMAPHORE_INIT_BINARY       {0U, 1U}
 #define SEMAPHORE_INIT_COUNTER(max) {0U, (max)}
 
@@ -41,6 +43,8 @@ uint8_t Semaphore_lock(struct Semaphore_t *o);
 uint8_t Semaphore_unlock(struct Semaphore_t *o);
 Size_t Semaphore_getcount(const struct Semaphore_t *o);
 Size_t Semaphore_getmax(const struct Semaphore_t *o);
+
+#endif /* SEMAPHORE_ENABLE */
 
 #ifdef __cplusplus
 } /* extern "C" */

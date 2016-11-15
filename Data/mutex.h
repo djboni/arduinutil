@@ -28,6 +28,8 @@
 extern "C" {
 #endif
 
+#if (MUTEX_ENABLE != 0)
+
 #define MUTEX_INIT {{1U, 1U}}
 
 struct Mutex_t {
@@ -37,6 +39,8 @@ struct Mutex_t {
 void Mutex_init(struct Mutex_t *o);
 uint8_t Mutex_lock(struct Mutex_t *o);
 uint8_t Mutex_unlock(struct Mutex_t *o);
+
+#endif /* MUTEX_ENABLE */
 
 #ifdef __cplusplus
 } /* extern "C" */

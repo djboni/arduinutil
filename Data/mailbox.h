@@ -27,6 +27,8 @@ limitations under the License.
 extern "C" {
 #endif
 
+#if (MAILBOX_ENABLE != 0)
+
 struct Mailbox_t {
     void *volatile Msg;
 };
@@ -34,6 +36,8 @@ struct Mailbox_t {
 void Mailbox_init(struct Mailbox_t *o);
 uint8_t Mailbox_send(struct Mailbox_t *o, void *msg);
 void *Mailbox_receive(struct Mailbox_t *o);
+
+#endif /* MAILBOX_ENABLE */
 
 #ifdef __cplusplus
 } /* extern "C" */
