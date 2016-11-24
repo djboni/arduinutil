@@ -46,97 +46,121 @@ void enableDigitalInputsOfAnalogPins(void);
 void pinMode(uint8_t pin, uint8_t mode);
 void digitalWrite(uint8_t pin, uint8_t value);
 uint8_t digitalRead(uint8_t pin);
-uint8_t digitalPinToInterrupt(uint8_t pin);
-void attachInterrupt(uint8_t pin, void (*isr)(void), uint8_t mode);
-void detachInterrupt(uint8_t pin);
-void enableExternalInterrupt(uint8_t pin);
-void disableExternalInterrupt(uint8_t pin);
 
-void adcBegin(void);
-void adcEnd(void);
-void analogConvertStart(uint8_t analog);
-uint8_t analogConvertReady(void);
-uint16_t analogConvertGetValue(void);
-uint16_t analogRead(uint8_t analog);
-void analogReference(uint8_t reference);
+#if (defined(DIGITAL_ATTACH_INT_ENABLE) && DIGITAL_ATTACH_INT_ENABLE != 0)
+    uint8_t digitalPinToInterrupt(uint8_t pin);
+    void attachInterrupt(uint8_t pin, void (*isr)(void), uint8_t mode);
+    void detachInterrupt(uint8_t pin);
+#endif /* DIGITAL_ATTACH_INT_ENABLE */
 
-void timer1Begin(void);
-void timer1End(void);
-uint32_t timer1Counts(void);
-void timer2Begin(void);
-void timer2End(void);
-uint32_t timer2Counts(void);
-void timer3Begin(void);
-void timer3End(void);
-uint32_t timer3Counts(void);
-void timer4Begin(void);
-void timer4End(void);
-uint32_t timer4Counts(void);
-void timer5Begin(void);
-void timer5End(void);
-uint32_t timer5Counts(void);
-void pwmMode(uint8_t pin, enum PwmModes mode);
-void analogWrite(uint8_t pin, uint8_t value);
+#if (defined(DIGITAL_EXTERNAL_INT_ENABLE) && DIGITAL_EXTERNAL_INT_ENABLE != 0)
+    void enableExternalInterrupt(uint8_t pin);
+    void disableExternalInterrupt(uint8_t pin);
+#endif /* DIGITAL_EXTERNAL_INT_ENABLE */
 
-void timerBegin(void);
-void timerEnd(void);
-uint32_t timerCounts(void);
-void delayCounts(uint32_t counts);
-uint32_t millis(void);
-uint32_t micros(void);
-void delay(uint32_t ms);
-void delayMicroseconds(uint32_t us);
+#if (defined(ANALOG_ENABLE) && ANALOG_ENABLE != 0)
+    void adcBegin(void);
+    void adcEnd(void);
+    void analogConvertStart(uint8_t analog);
+    uint8_t analogConvertReady(void);
+    uint16_t analogConvertGetValue(void);
+    uint16_t analogRead(uint8_t analog);
+    void analogReference(uint8_t reference);
+#endif /* ANALOG_ENABLE */
 
-void Serial_begin(uint32_t speed, uint32_t config);
-void Serial_end(void);
-Size_t Serial_available(void);
-void Serial_flush(void);
-void Serial_writeByte(uint8_t data);
-void Serial_write(const void *str);
-void Serial_writeBuff(const void *buff, uint16_t length);
-int Serial_print(const char *format, ...);
-int16_t Serial_read(void);
+#if (defined(PWM_ENABLE) && PWM_ENABLE != 0)
+    void timer1Begin(void);
+    void timer1End(void);
+    uint32_t timer1Counts(void);
+    void timer2Begin(void);
+    void timer2End(void);
+    uint32_t timer2Counts(void);
+    void timer3Begin(void);
+    void timer3End(void);
+    uint32_t timer3Counts(void);
+    void timer4Begin(void);
+    void timer4End(void);
+    uint32_t timer4Counts(void);
+    void timer5Begin(void);
+    void timer5End(void);
+    uint32_t timer5Counts(void);
+    void pwmMode(uint8_t pin, enum PwmModes mode);
+    void analogWrite(uint8_t pin, uint8_t value);
+#endif /* PWM_ENABLE */
 
-void Serial1_begin(uint32_t speed, uint32_t config);
-void Serial1_end(void);
-Size_t Serial1_available(void);
-void Serial1_flush(void);
-void Serial1_writeByte(uint8_t data);
-void Serial1_write(const void *str);
-void Serial1_writeBuff(const void *buff, uint16_t length);
-int Serial1_print(const void *format, ...);
-int16_t Serial1_read(void);
+#if (defined(TIMER_ENABLE) && TIMER_ENABLE != 0)
+    void timerBegin(void);
+    void timerEnd(void);
+    uint32_t timerCounts(void);
+    void delayCounts(uint32_t counts);
+    uint32_t millis(void);
+    uint32_t micros(void);
+    void delay(uint32_t ms);
+    void delayMicroseconds(uint32_t us);
+#endif /* TIMER_ENABLE */
 
-void Serial2_begin(uint32_t speed, uint32_t config);
-void Serial2_end(void);
-Size_t Serial2_available(void);
-void Serial2_flush(void);
-void Serial2_writeByte(uint8_t data);
-void Serial2_write(const void *str);
-void Serial2_writeBuff(const void *buff, uint16_t length);
-int Serial2_print(const void *format, ...);
-int16_t Serial2_read(void);
+#if (defined(SERIAL_ENABLE) && SERIAL_ENABLE != 0)
+    void Serial_begin(uint32_t speed, uint32_t config);
+    void Serial_end(void);
+    Size_t Serial_available(void);
+    void Serial_flush(void);
+    void Serial_writeByte(uint8_t data);
+    void Serial_write(const void *str);
+    void Serial_writeBuff(const void *buff, uint16_t length);
+    int Serial_print(const char *format, ...);
+    int16_t Serial_read(void);
+#endif /* SERIAL_ENABLE */
 
-void Serial3_begin(uint32_t speed, uint32_t config);
-void Serial3_end(void);
-Size_t Serial3_available(void);
-void Serial3_flush(void);
-void Serial3_writeByte(uint8_t data);
-void Serial3_write(const void *str);
-void Serial3_writeBuff(const void *buff, uint16_t length);
-int Serial3_print(const void *format, ...);
-int16_t Serial3_read(void);
+#if (defined(SERIAL1_ENABLE) && SERIAL1_ENABLE != 0)
+    void Serial1_begin(uint32_t speed, uint32_t config);
+    void Serial1_end(void);
+    Size_t Serial1_available(void);
+    void Serial1_flush(void);
+    void Serial1_writeByte(uint8_t data);
+    void Serial1_write(const void *str);
+    void Serial1_writeBuff(const void *buff, uint16_t length);
+    int Serial1_print(const void *format, ...);
+    int16_t Serial1_read(void);
+#endif /* SERIAL1_ENABLE */
 
-void I2c_begin(uint32_t speed);
-void I2c_end(void);
-uint8_t I2c_getStatus(void);
-void I2c_write(uint8_t addr, const uint8_t *buff, uint8_t length, uint8_t *numsent);
-void I2c_read(uint8_t addr, uint8_t *buff, uint8_t length, uint8_t *numread);
-void I2c_stop(void);
+#if (defined(SERIAL2_ENABLE) && SERIAL2_ENABLE != 0)
+    void Serial2_begin(uint32_t speed, uint32_t config);
+    void Serial2_end(void);
+    Size_t Serial2_available(void);
+    void Serial2_flush(void);
+    void Serial2_writeByte(uint8_t data);
+    void Serial2_write(const void *str);
+    void Serial2_writeBuff(const void *buff, uint16_t length);
+    int Serial2_print(const void *format, ...);
+    int16_t Serial2_read(void);
+#endif /* SERIA2L_ENABLE */
 
-void Wdt_enable(uint16_t timeout_ms);
-void Wdt_disable(void);
-void Wdt_reset(void);
+#if (defined(SERIAL3_ENABLE) && SERIAL3_ENABLE != 0)
+    void Serial3_begin(uint32_t speed, uint32_t config);
+    void Serial3_end(void);
+    Size_t Serial3_available(void);
+    void Serial3_flush(void);
+    void Serial3_writeByte(uint8_t data);
+    void Serial3_write(const void *str);
+    void Serial3_writeBuff(const void *buff, uint16_t length);
+    int Serial3_print(const void *format, ...);
+    int16_t Serial3_read(void);
+#endif /* SERIAL3_ENABLE */
+
+#if (defined(I2C_ENABLE) && I2C_ENABLE != 0)
+    void I2c_begin(uint32_t speed);
+    void I2c_end(void);
+    uint8_t I2c_getStatus(void);
+    void I2c_write(uint8_t addr, const uint8_t *buff, uint8_t length, uint8_t *numsent);
+    void I2c_read(uint8_t addr, uint8_t *buff, uint8_t length, uint8_t *numread);
+    void I2c_stop(void);
+#endif /* I2C_ENABLE */
+
+#if (defined(WATCHDOG_ENABLE) && WATCHDOG_ENABLE != 0)
+    void Wdt_enable(uint16_t timeout_ms);
+    void Wdt_disable(void);
+    void Wdt_reset(void);
+#endif /* WATCHDOG_ENABLE */
 
 #ifdef __cplusplus
 } /* extern "C" */
