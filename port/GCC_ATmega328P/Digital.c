@@ -67,8 +67,11 @@ void pinMode(uint8_t io, uint8_t mode)
     volatile uint8_t *port = (volatile uint8_t *)pgm_read_word(&portIOLIST[io]);
     volatile uint8_t *ddr = (volatile uint8_t *)pgm_read_word(&ddrIOLIST[io]);
     uint8_t bit = pgm_read_byte(&bitIOLIST[io]);
+    CRITICAL_VAL();
 
     ASSERT(io < MAXIO);
+
+    CRITICAL_ENTER();
 
     switch(mode)
     {
@@ -92,6 +95,8 @@ void pinMode(uint8_t io, uint8_t mode)
         ASSERT(0); /* Invalid pin mode. */
         break;
     }
+
+    CRITICAL_EXIT();
 }
 
 /** Change pin output value or input pull-up. The values are LOW and HIGH.
@@ -101,8 +106,11 @@ void digitalWrite(uint8_t io, uint8_t value)
 {
     volatile uint8_t *port = (volatile uint8_t *)pgm_read_word(&portIOLIST[io]);
     uint8_t bit = pgm_read_byte(&bitIOLIST[io]);
+    CRITICAL_VAL();
 
     ASSERT(io < MAXIO);
+
+    CRITICAL_ENTER();
 
     switch(value)
     {
@@ -113,6 +121,8 @@ void digitalWrite(uint8_t io, uint8_t value)
         SET_BITS(*port, (1U << bit), uint8_t);
         break;
     }
+
+    CRITICAL_EXIT();
 }
 
 /** Read pin input value. The values returned are LOW and HIGH.
@@ -240,49 +250,53 @@ uint8_t digitalPinToInterrupt(uint8_t pin)
  mode is the interrupt mode. See enum DigitalInterruptModes. */
 void attachInterrupt(uint8_t pin, void (*isr)(void), uint8_t mode)
 {
+    CRITICAL_VAL();
+
     mode &= 0x03U;
+
+    CRITICAL_ENTER();
 
     switch(pin) {
     case 2U:
-    {
         EIMSK &= ~(1U << INT0);
         EIFR = (1U << INTF0);
         EICRA = (EICRA & ~(0x03U << ISC00)) | (mode << ISC00);
         extIntVector[0U] = isr;
         EIMSK |= (1U << INT0);
         break;
-    }
     case 3U:
-    {
         EIMSK &= ~(1U << INT1);
         EIFR = (1U << INTF1);
         EICRA = (EICRA & ~(0x03U << ISC10)) | (mode << ISC10);
         extIntVector[1U] = isr;
         EIMSK |= (1U << INT1);
         break;
-    }
     default:
         ASSERT(0); /* Invalid interrupt pin. */
     }
+
+    CRITICAL_EXIT();
 }
 
 /** Disable external interrupt. */
 void detachInterrupt(uint8_t pin)
 {
+    CRITICAL_VAL();
+
+    CRITICAL_ENTER();
+
     switch(pin) {
     case 2U:
-    {
         EIMSK &= ~(1U << INT0);
         break;
-    }
     case 3U:
-    {
         EIMSK &= ~(1U << INT1);
         break;
-    }
     default:
         ASSERT(0); /* Invalid interrupt pin. */
     }
+
+    CRITICAL_EXIT();
 }
 
 ISR(INT0_vect)

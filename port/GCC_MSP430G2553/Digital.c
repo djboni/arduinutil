@@ -111,11 +111,14 @@ void pinMode(uint8_t io, uint8_t mode)
     volatile uint8_t *dir = pin2dir(io);
     volatile uint8_t *ren = pin2ren(io);
     uint8_t bit = pin2bit(io);
+    CRITICAL_VAL();
 
     ASSERT(io < MAXIO);
 
     *sel &= ~bit;
     *sel2 &= ~bit;
+
+    CRITICAL_ENTER();
 
     switch(mode)
     {
@@ -151,6 +154,8 @@ void pinMode(uint8_t io, uint8_t mode)
         ASSERT(0); /* Invalid pin mode. */
         break;
     }
+
+    CRITICAL_EXIT();
 }
 
 /** Change pin output value or input pull-up. The values are LOW and HIGH. */
@@ -158,8 +163,11 @@ void digitalWrite(uint8_t io, uint8_t value)
 {
     volatile uint8_t *out = pin2out(io);
     uint8_t bit = pin2bit(io);
+    CRITICAL_VAL();
 
     ASSERT(io < MAXIO);
+
+    CRITICAL_ENTER();
 
     switch(value)
     {
@@ -170,6 +178,8 @@ void digitalWrite(uint8_t io, uint8_t value)
         *out |= bit;
         break;
     }
+
+    CRITICAL_EXIT();
 }
 
 /** Read pin input value. The values returned are LOW and HIGH. */
@@ -246,8 +256,11 @@ void attachInterrupt(uint8_t pin, void (*isr)(void), uint8_t mode)
     volatile uint8_t *ie = pin2ie(pin);
     uint8_t bit = pin2bit(pin);
     uint8_t num = bit2num(bit);
+    CRITICAL_VAL();
 
     ASSERT(pin < MAXIO);
+
+    CRITICAL_ENTER();
 
     if(ie == &P1IE)
         extIntVector1[num] = isr;
@@ -260,6 +273,8 @@ void attachInterrupt(uint8_t pin, void (*isr)(void), uint8_t mode)
     else
         *ies |= bit;
     *ie |= bit;
+
+    CRITICAL_EXIT();
 }
 
 /** Disable external interrupt. */
@@ -267,10 +282,15 @@ void detachInterrupt(uint8_t pin)
 {
     volatile uint8_t *ie = pin2ie(pin);
     uint8_t bit = pin2bit(pin);
+    CRITICAL_VAL();
 
     ASSERT(pin < MAXIO);
 
+    CRITICAL_ENTER();
+
     *ie &= ~bit;
+
+    CRITICAL_EXIT();
 }
 
 __attribute__((interrupt(PORT1_VECTOR)))
