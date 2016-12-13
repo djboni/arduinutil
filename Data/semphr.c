@@ -22,8 +22,6 @@
 
 #if (SEMAPHORE_ENABLE != 0)
 
-#define UNCONST(type, var) *((type*)&(var))
-
 /** Initialize semaphore struct as a binary semaphore.
  *
  * Note: Not thread-safe.
@@ -45,7 +43,7 @@ void Semaphore_initbinary(struct Semaphore_t *o)
 void Semaphore_init(struct Semaphore_t *o, Size_t max)
 {
     o->Count = 0U;
-    UNCONST(Size_t, o->Max) = max;
+    o->Max = max;
 }
 
 /** Lock semaphore.

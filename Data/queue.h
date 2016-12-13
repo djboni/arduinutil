@@ -30,15 +30,15 @@ extern "C" {
 #if (QUEUE_ENABLE != 0)
 
 struct Queue_t {
-    const Size_t ItemSize;
+    Size_t ItemSize;
     volatile Size_t Free;
     volatile Size_t Used;
     volatile Size_t WLock;
     volatile Size_t RLock;
     uint8_t *volatile Head;
     uint8_t *volatile Tail;
-    uint8_t *const Buff;
-    uint8_t *const BufEnd;
+    uint8_t* Buff;
+    uint8_t* BufEnd;
 };
 
 void Queue_init(struct Queue_t *o, void *buff, Size_t length, Size_t item_size);

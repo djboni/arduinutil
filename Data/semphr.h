@@ -31,7 +31,7 @@ extern "C" {
 
 struct Semaphore_t {
     volatile Size_t Count;
-    const Size_t Max;
+    Size_t Max;
 };
 
 void Semaphore_initbinary(struct Semaphore_t *o);
