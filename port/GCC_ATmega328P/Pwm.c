@@ -204,6 +204,7 @@ ISR(TIMER2OVF_vect)
 
 void pwmMode(uint8_t pin, enum PwmModes mode)
 {
+    CRITICAL_VAL();
     CRITICAL_ENTER();
 
     switch(pin) {

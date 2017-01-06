@@ -107,14 +107,14 @@ enum PwmModes {
 #define INTERRUPTS_DISABLE() __asm __volatile("cli" ::: "memory")
 #define INTERRUPTS_ENABLE()  __asm __volatile("sei" ::: "memory")
 
-#define CRITICAL_VAL()
-#define CRITICAL_ENTER() __asm __volatile(       \
-        "in    __tmp_reg__,__SREG__   \n\t"      \
-        "cli                          \n\t"      \
-        "push  __tmp_reg__" ::: "memory")
-#define CRITICAL_EXIT() __asm __volatile(        \
-        "pop   __tmp_reg__            \n\t"      \
-        "out   __SREG__,__tmp_reg__" ::: "memory")
+#define CRITICAL_VAL()   uint8_t __istate_val
+#define CRITICAL_ENTER() __asm __volatile( \
+        "in %0, __SREG__ \n\t"             \
+        "cli             \n\t"             \
+        :"=r" (__istate_val) ::"memory")
+#define CRITICAL_EXIT()  __asm __volatile( \
+        "out __SREG__, %0 \n\t"            \
+        ::"r" (__istate_val) :"memory")
 
 #define WAIT_INT()  __asm __volatile("sleep" ::: "memory")
 #define WAIT_BUSY() __asm __volatile("sleep" ::: "memory")
