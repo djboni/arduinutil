@@ -21,6 +21,7 @@
  */
 
 #include "Arduinutil.h"
+#include "Config.h"
 #include <avr/wdt.h>
 
 #if (WATCHDOG_ENABLE != 0)

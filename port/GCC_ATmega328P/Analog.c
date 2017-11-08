@@ -21,6 +21,7 @@
  */
 
 #include "Arduinutil.h"
+#include "Config.h"
 #include <avr/io.h>
 
 #if (ANALOG_ENABLE != 0)

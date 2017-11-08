@@ -21,6 +21,7 @@
  */
 
 #include "Arduinutil.h"
+#include "Config.h"
 #include "Arduinutil_Timer.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
