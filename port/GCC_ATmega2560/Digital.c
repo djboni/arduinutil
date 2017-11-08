@@ -312,14 +312,14 @@ void attachInterrupt(uint8_t pin, void (*isr)(void), uint8_t mode)
     case 2U:
         EIMSK &= ~(1U << INT4);
         EIFR = (1U << INTF4);
-        EICRB = (EICRA & ~(0x03U << ISC40)) | (mode << ISC40);
+        EICRB = (EICRB & ~(0x03U << ISC40)) | (mode << ISC40);
         extIntVector[4U] = isr;
         EIMSK |= (1U << INT4);
         break;
     case 3U:
         EIMSK &= ~(1U << INT5);
         EIFR = (1U << INTF5);
-        EICRB = (EICRA & ~(0x03U << ISC50)) | (mode << ISC50);
+        EICRB = (EICRB & ~(0x03U << ISC50)) | (mode << ISC50);
         extIntVector[5U] = isr;
         EIMSK |= (1U << INT5);
         break;
@@ -367,22 +367,22 @@ void detachInterrupt(uint8_t pin)
 
     switch(pin) {
     case 2U:
-        EIMSK &= ~(1U << INT0);
-        break;
-    case 3U:
-        EIMSK &= ~(1U << INT1);
-        break;
-    case 18U:
-        EIMSK &= ~(1U << INT2);
-        break;
-    case 19U:
-        EIMSK &= ~(1U << INT3);
-        break;
-    case 20U:
         EIMSK &= ~(1U << INT4);
         break;
-    case 21U:
+    case 3U:
         EIMSK &= ~(1U << INT5);
+        break;
+    case 18U:
+        EIMSK &= ~(1U << INT3);
+        break;
+    case 19U:
+        EIMSK &= ~(1U << INT2);
+        break;
+    case 20U:
+        EIMSK &= ~(1U << INT1);
+        break;
+    case 21U:
+        EIMSK &= ~(1U << INT0);
         break;
     default:
         ASSERT(0); /* Invalid interrupt pin. */
