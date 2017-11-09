@@ -40,8 +40,8 @@ void init(void);
 void disablePeripheralsClocks(void);
 void enablePeripheralsClocks(void);
 
-void disableDigitalInputsOfAnalogPins(void);
-void enableDigitalInputsOfAnalogPins(void);
+void disableDigitalInputsOfAnalogPins(uint32_t didr_bits);
+void enableDigitalInputsOfAnalogPins(uint32_t didr_bits);
 
 void pinMode(uint8_t pin, uint8_t mode);
 void digitalWrite(uint8_t pin, uint8_t value);

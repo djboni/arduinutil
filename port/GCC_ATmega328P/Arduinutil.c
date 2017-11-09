@@ -47,7 +47,7 @@ void init(void)
     DDRD = 0U;
     PORTD = 0xFFU;
 
-    disableDigitalInputsOfAnalogPins();
+    disableDigitalInputsOfAnalogPins(0xFFFFFFFF);
     disablePeripheralsClocks();
 
     /* Configure external interrupts registers. */
@@ -84,7 +84,7 @@ void enablePeripheralsClocks(void)
 }
 
 /** Disable digital inputs of analog pins for lower power consumption. */
-void disableDigitalInputsOfAnalogPins(void)
+void disableDigitalInputsOfAnalogPins(uint32_t didr_bits)
 {
     CRITICAL_VAL();
 
@@ -94,16 +94,19 @@ void disableDigitalInputsOfAnalogPins(void)
         PRR &= ~(1U << PRADC);
 
         /* PRR0[PRADC] must be 0. */
-        DIDR0 = 0xFFU;
-        DIDR1 = 0xFFU;
+        DIDR0 |= didr_bits;
+        DIDR1 |= didr_bits >> 8;
 
         PRR = prr_save;
     }
     CRITICAL_EXIT();
 }
-
-/** Enable digital inputs of analog pins. */
-void enableDigitalInputsOfAnalogPins(void)
+/** Enable digital inputs of analog pins.
+ *
+ * 0x00FF bits correspond to A7-A0
+ * 0x0300 bits correspond to analog comparator
+ */
+void enableDigitalInputsOfAnalogPins(uint32_t didr_bits)
 {
     CRITICAL_VAL();
 
@@ -113,8 +116,8 @@ void enableDigitalInputsOfAnalogPins(void)
         PRR &= ~(1U << PRADC);
 
         /* PRR0[PRADC] must be 0. */
-        DIDR0 = 0U;
-        DIDR1 = 0U;
+        DIDR0 &= ~didr_bits;
+        DIDR1 &= ~(didr_bits >> 8);
 
         PRR = prr_save;
     }
