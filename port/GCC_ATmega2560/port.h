@@ -124,7 +124,7 @@ enum PwmModes {
         ::"r" (__istate_val) :"memory")
 
 #define WAIT_INT()  __asm __volatile("sleep" ::: "memory")
-#define WAIT_BUSY() __asm __volatile("sleep" ::: "memory")
+#define WAIT_BUSY() __asm __volatile("nop" ::: "memory")
 
 /*******************************************************************************
  Serial.c
