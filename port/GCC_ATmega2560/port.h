@@ -80,7 +80,7 @@ enum DigitalInterruptModes {
 #define A9       (ANALOGIO + 9U)
 #define A10      (ANALOGIO + 10U)
 #define A11      (ANALOGIO + 11U)
-#define A12      (ANALOGIO + 12U
+#define A12      (ANALOGIO + 12U)
 #define A13      (ANALOGIO + 13U)
 #define A14      (ANALOGIO + 14U)
 #define A15      (ANALOGIO + 15U)
