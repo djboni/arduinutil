@@ -60,7 +60,7 @@ void analogConvertStart(uint8_t analog)
     analog = pgm_read_byte(&muxADC[analog - A0]);
     ADMUX = (ADMUX & ~(0x1FU << MUX0)) | ((analog & 0x1FU) << MUX0);
     ADCSRB = (ADCSRB & ~(1U << MUX5)) | (((analog & 0x20U) >> 5U) << MUX5);
-    ADCSRA |= (1U << ADSC);
+    ADCSRA |= (1U << ADEN) | (1U << ADSC);
 }
 
 /** Check if an analog to digital conversion has finished.

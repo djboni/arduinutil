@@ -49,7 +49,7 @@ void analogConvertStart(uint8_t analog)
 {
     analog -= A0;
     ADMUX = (ADMUX & ~(0x0FU << MUX0)) | (analog << MUX0);
-    ADCSRA |= (1U << ADSC);
+    ADCSRA |= (1U << ADEN) | (1U << ADSC);
 }
 
 /** Check if an analog to digital conversion has finished.
