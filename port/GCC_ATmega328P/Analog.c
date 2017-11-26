@@ -72,6 +72,7 @@ uint16_t analogRead(uint8_t analog)
     analogConvertStart(analog);
     while(!analogConvertReady())
     {
+      WAIT_BUSY();
     }
     return analogConvertGetValue();
 }
